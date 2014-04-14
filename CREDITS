@@ -1,0 +1,20 @@
+Credits File (Format taken from Linux Kernel 'CREDITS')
+
+(N) name
+(E) email
+(W) web-address
+(P) PGP key ID and fingerprint
+(D) description
+(S) snail-mail address
+
+------------------------------------------------------------------------
+
+N: Derald D. Woods
+E: woods.technical@gmail.com
+W: http://www.woodsts.org
+D: Electrical Engineer
+D: Creator of this Embedded Linux Development Solution
+S: USA
+
+# Edits to this file must have a unique Git commit with credit
+# modifications only.
