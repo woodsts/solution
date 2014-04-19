@@ -7,8 +7,8 @@
 # under the terms of the GNU General Public License version 2
 #
 
-SOLUTION := $(shell readlink -e $(CURDIR))
+ELDS := $(shell readlink -e $(CURDIR))
 
-CMD := $(shell echo $(SOLUTION) > $(SOLUTION)/.solution)
+CMD := $(shell echo $(ELDS) > $(ELDS)/.solution)
 
-export SOLUTION
+export ELDS
