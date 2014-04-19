@@ -14,7 +14,22 @@ all: usage
 
 .PHONY: usage
 usage:
-	@echo "USAGE: make <solution|clean|purge>"
+	@echo "USAGE: make <solution|usage|[...]>"
 
 .PHONY: solution
 solution:
+
+.PHONY: doc
+doc: $(ELDS)/doc/solution.pdf
+
+$(ELDS)/doc/solution.pdf: $(ELDS)/doc/solution.txt
+	@if [ -f "$(shell which a2x)" ]; then \
+		a2x -v -f pdf -L $(ELDS)/doc/solution.txt; \
+	else \
+		echo "***** AsciiDoc is NOT installed! *****"; \
+		exit 1; \
+	fi
+
+.PHONY: clean
+clean:
+	$(RM) $(ELDS)/doc/solution.pdf

@@ -1,0 +1,175 @@
+//
+// This is the documentation source file for 'solution'
+//
+// Copyright (C) 2014 Derald D. Woods
+//
+// This file is part of the solution project, and is made available
+// under the terms of the GNU General Public License version 2
+//
+
+= Solution
+
+==  Overview
+
+There are many embedded Linux build systems that have come into
+existence to serve computing needs of developers integrating operating
+systems into non-traditional areas computing.
+The http://elinux.org[Embedded Linux Wiki] details many development
+platforms and toolkits that aid in building a bootable system. There are
+many other resources available with varying degrees of detail and
+correctness. One only needs to run a web search on the topic of
+'Embedded Linux' to see a vast set of information is indeed available.
+Even with so much content available, there is still a sense of concern
+and even apprehension. This is more evident in the engineering
+departments of existing organizations. The engineers and developers, at
+such entities, try to integrate a technology that organically grew from
+non-conventional means. Working for such companies has given the author
+an engineer's perspective on the integration of embedded Linux into
+company culture. It is not easy by any measure. There is a human factor,
+that must be understood, to successfully introduce new and very
+different technology. The large set of information and mis-information
+about embedded Linux can make the discussions challenging, but the
+reward for staying the Linux course could prove to be great. Knowing
+that you can build a basic and bootable system is an important task.
+Whether by selection or construction the embedded Linux build system
+matters.
+
+The 'solution' mentioned throughout the remainder of this document is
+a Linux solution for a given embedded target board. The document will be
+purposefully generic and non-novel in nature. Honestly, 90-95% of a
+given embedded Linux solution is open source and community contributed
+work. This is a very good thing. You are left with the 5-10% of
+technical work that really matters to you. If you are a manager or
+leader of a group, this should grab your attention and keep it captive.
+The content within this document and project are just a few things that
+the author has found helpful over time. As the document and project grow,
+they should always favor simplicity and clarity over loftier constructs.
+
+<<<
+
+[appendix]
+
+==  Appendix
+
+=== Getting 'solution'
+
+Acquiring the project from GitHub.
+
+------------------------------------------------------------------------
+$ git clone https://github.com/woodsts/solution.git
+------------------------------------------------------------------------
+
+=== Hg-Git Mercurial Plugin
+
+A key piece to an embedded Linux solution, crosstool-ng, is published in
+a Mercurial repository. This mercurial tool allows simple tracking of
+the default branch of crosstool-ng. It is not perfect, in terms of
+branches, but it has consistently worked for this author's use case.
+
+- http://hg-git.github.com[Project Home]
+- https://bitbucket.org/durin42/hg-git[Git Primary]
+- https://github.com/schacon/hg-git[Git Mirror]
+
+==== Debian 7.x Installation
+
+The instructions below assume a Debian 7.x (Wheezy) Linux installation.
+
+.Instructions
+
+. Python Development Tools
++
+------------------------------------------------------------------------
+$ sudo apt-get install python-dev python-setuptools
+------------------------------------------------------------------------
+
+. Get python-fastimport from Debian repositories
++
+------------------------------------------------------------------------
+$ sudo apt-get install python-fastimport
+------------------------------------------------------------------------
+
+. Pull python-dulwich-0.9.5 (on Wheezy)
++
+------------------------------------------------------------------------
+$ wget http://http.us.debian.org/debian/pool/main/d/dulwich/python-dulwich_0.9.5-2_i386.deb
+$ sudo dpkg -i python-dulwich_0.9.5-2_i386.deb
+------------------------------------------------------------------------
+
+. Pull mercurial-0.4.2 (on Wheezy)
++
+------------------------------------------------------------------------
+$ wget http://http.us.debian.org/debian/pool/main/h/hg-git/mercurial-git_0.4.0-2_all.deb
+$ sudo dpkg -i mercurial-git_0.4.0-2_all.deb
+------------------------------------------------------------------------
+
+. Setup ~/.hgrc (Debian Version)
++
+------------------------------------------------------------------------
+[extensions]
+hgext.bookmarks =
+hgext.git =
+------------------------------------------------------------------------
+
+=== Crosstool-NG (with Git Mirror)
+
+Using Hg-Git, it is now possible to track the mainline crosstool-ng
+development in a convenient Git repository of your own.
+
+- http://crosstool-ng.org[Project Home]
+- http://crosstool-ng.org/hg/crosstool-ng[Mercurial Primary]
+- https://github.com/woodsts/crosstool-ng[Git Mirror]
+
+.Instructions
+
+. Mercurial Clone of crosstool-ng
++
+------------------------------------------------------------------------
+$ hg clone http://crosstool-ng.org/hg/crosstool-ng
+destination directory: crosstool-ng
+requesting all changes
+adding changesets
+adding manifests
+adding file changes
+added 3294 changesets with 9292 changes to 3353 files (+3 heads)
+updating to branch default
+1493 files updated, 0 files merged, 0 files removed, 0 files unresolved
+------------------------------------------------------------------------
+
+. Initialize empty Git repository 'crosstool-ng-git'
++
+------------------------------------------------------------------------
+$ mkdir crosstool-ng-git
+$ cd crosstool-ng-git
+$ git init --bare
+Initialized empty Git repository in /home/user/build/crosstool-ng-git/
+------------------------------------------------------------------------
+
+. Push to Git Repository
++
+------------------------------------------------------------------------
+$ cd crosstool-ng
+$ hg bookmarks master
+$ hg push ../crosstool-ng-git
+pushing to ../crosstool-ng-git
+searching for changes
+adding objects
+added 3212 commits with 11354 trees and 7448 blobs
+------------------------------------------------------------------------
+
+// 'a2x' Options
+//
+// [1] http://www.methods.co.nz/asciidoc
+// [2] http://powerman.name/doc/asciidoc
+//
+// a2x: --asciidoc-opts "-a toc -a toclevels=3"
+// a2x: --dblatex-opts "-P doc.publisher.show=0"
+// a2x: --dblatex-opts "-P latex.output.revhistory=0"
+// a2x: --dblatex-opts "--param toc.section.depth=3"
+// a2x: --xsltproc-opts "--stringparam callout.graphics 1"
+// a2x: --xsltproc-opts "--stringparam navig.graphics 1"
+// a2x: --xsltproc-opts "--stringparam admon.graphics 1"
+//
+// Vim Options
+//
+// vim: set syntax=asciidoc:
+// vim: set background=dark:
