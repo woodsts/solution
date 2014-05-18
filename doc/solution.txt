@@ -9,20 +9,20 @@
 
 = Solution
 
-==  Overview
+== Overview
 
 There are many embedded Linux build systems that have come into
-existence to serve computing needs of developers integrating operating
-systems into non-traditional areas computing.
-The http://elinux.org[Embedded Linux Wiki] details many development
-platforms and toolkits that aid in building a bootable system. There are
-many other resources available with varying degrees of detail and
-correctness. One only needs to run a web search on the topic of
-'Embedded Linux' to see a vast set of information is indeed available.
-Even with so much content available, there is still a sense of concern
-and even apprehension. This is more evident in the engineering
-departments of existing organizations. The engineers and developers, at
-such entities, try to integrate a technology that organically grew from
+existence. They serve the computing needs of embedded developers
+integrating multitasking operating systems into some non-traditional
+areas. The http://elinux.org[Embedded Linux Wiki] details many
+development platforms and toolkits that aid in building a bootable
+system. Other resources are available with varying degrees of detail
+and correctness. One only needs to run a web search, on the topic of
+'Embedded Linux', to see a vast set of information is available. Even
+with so much content available, there is still a sense of concern and
+apprehension. This is more evident in the engineering departments of
+some organizations. The engineers and developers, at such entities,
+try to integrate a technology that organically grew from
 non-conventional means. Working for such companies has given the author
 an engineer's perspective on the integration of embedded Linux into
 company culture. It is not easy by any measure. There is a human factor,
@@ -36,14 +36,87 @@ matters.
 
 The 'solution' mentioned throughout the remainder of this document is
 a Linux solution for a given embedded target board. The document will be
-purposefully generic and non-novel in nature. Honestly, 90-95% of a
-given embedded Linux solution is open source and community contributed
-work. This is a very good thing. You are left with the 5-10% of
-technical work that really matters to you. If you are a manager or
-leader of a group, this should grab your attention and keep it captive.
-The content within this document and project are just a few things that
-the author has found helpful over time. As the document and project grow,
-they should always favor simplicity and clarity over loftier constructs.
+purposefully generic and non-novel in nature. In general, most
+components of a given embedded Linux solution are open source and
+community contributed work. This is a very good thing. You are left with
+the smaller, more application specific, set of technical work that
+matters to you. If you are a manager or leader of a group, this should
+grab your attention and keep it captive. The content within this
+document and project are just a few things that the author has found
+helpful over time. Simplicity and clarity should be the guide for this
+work.
+
+=== Scope
+
+This 'solution' is a development environment that only presents
+high-level and brief information about components needed in building an
+embedded Linux system.
+
+=== Audience
+
+The usage case for this small project is hobbyist and experimental
+development with embedded Linux.
+
+== Target
+
+Having an embedded Linux target board is the foundational piece to
+developing your solution. A board can be obtained from DigiKey,
+AdaFruit, Sparkfun, etc. Usually these boards advertise Linux support
+and all you need to do is select the board with the peripherals that you
+desire to leverage. If there is no clear indication of Linux support for
+the board, you should investigate the SOC architecture and data sheets.
+You typically will want a SOC with a memory management unit and a
+dynamic RAM controller integrated into the chip.
+
+=== Experimenter Boards
+
+These area a few examples of embedded Linux experimenter boards. The key
+aspect of these sites is the information, tools, and resources that
+surrond the products. The speed at which you can get the board up and
+running can be greatly increased by using resources and support provided
+the originating company. They usually will have community pages and
+forums that allow you to interact with other users.
+
+- http://beagleboard.org/Products/BeagleBoard[BeagleBoard]
+- http://beagleboard.org/Products/BeagleBone%20Black[BeagleBone Black]
+- http://www.logicpd.com/products/system-on-modules/zoom-am3517[Zoom™ AM3517 eXperimenter Kit]
+- https://www.olimex.com/Products/OLinuXino/iMX233/iMX233-OLinuXino-MAXI[iMX233-OLinuXino-MAXI]
+
+=== Emulated Boards
+
+If you do not have access to real hardware, all is not lost. There are
+some emulated targets that can give you the opportunity to design Linux
+applications without physical hardaware. This is also a good way of
+checking your embedded toolchain and root filesystem functionality.
+http://wiki.qemu.org/Main_Page[QEMU] is one of the best known emulators
+of various CPU/board combinations.
+http://wiki.qemu.org/Links[QEMU Links]
+
+== Source
+
+Free and open source software
+
+=== Linux
+
+The OS kernel
+
+=== U-Boot
+
+The bootloader
+
+=== Crosstool-NG
+
+The toolchain builder
+
+=== Buildroot
+
+The root filesystem builder
+
+== Toolchain
+== Bootloader
+== Kernel
+== Root Filesystem
+== Solution
 
 <<<
 
