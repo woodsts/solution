@@ -23,8 +23,8 @@ solution:
 scm:
 	@if ! [ -f $(ELDS_SCM)/linux/.git ]; then \
 		$(MAKE) scm-init; \
+		$(MAKE) scm-update; \
 	fi
-	@$(MAKE) scm-update
 
 scm-%:
 	@git submodule $(*F)
@@ -38,6 +38,26 @@ $(ELDS)/doc/solution.pdf: $(ELDS)/doc/solution.txt
 	else \
 		echo "***** AsciiDoc is NOT installed! *****"; \
 		exit 1; \
+	fi
+
+.PHONY: toolchain-builder
+toolchain-builder: $(ELDS)/toolchain/builder/ct-ng
+
+$(ELDS)/toolchain/builder/ct-ng: scm
+	@if ! [ -d $(shell dirname $@) ]; then \
+		mkdir -p $(ELDS)/toolchain; \
+		cp -a $(ELDS_SCM)/crosstool-ng $(ELDS)/toolchain/builder; \
+		cd $(ELDS)/toolchain/builder; \
+		for f in $(shell ls $(ELDS_PATCHES)/crosstool-ng/*.patch); do \
+			patch -p1 < $$f; \
+		done; \
+		./bootstrap; \
+		./configure --enable-local; \
+		$(MAKE); \
+	fi
+	@if ! [ -f $@ ]; then \
+		echo "***** crosstool-NG build FAILED! *****"; \
+		exit 2; \
 	fi
 
 .PHONY: clean
