@@ -19,6 +19,16 @@ usage:
 .PHONY: solution
 solution:
 
+.PHONY: scm
+scm:
+	@if ! [ -f $(ELDS_SCM)/linux/.git ]; then \
+		$(MAKE) scm-init; \
+	fi
+	@$(MAKE) scm-update
+
+scm-%:
+	@git submodule $(*F)
+
 .PHONY: doc
 doc: $(ELDS)/doc/solution.pdf
 

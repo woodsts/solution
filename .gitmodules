@@ -1,0 +1,6 @@
+[submodule "scm/crosstool-ng"]
+	path = scm/crosstool-ng
+	url = git://github.com/woodsts/crosstool-ng.git
+[submodule "scm/linux"]
+	path = scm/linux
+	url = git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git
