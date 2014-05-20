@@ -57,6 +57,8 @@ embedded Linux system.
 The usage case for this small project is hobbyist and experimental
 development with embedded Linux.
 
+<<<
+
 == Target
 
 Having an embedded Linux target board is the foundational piece to
@@ -92,30 +94,99 @@ http://wiki.qemu.org/Main_Page[QEMU] is one of the best known emulators
 of various CPU/board combinations.
 http://wiki.qemu.org/Links[QEMU Links]
 
-== Source
+<<<
 
-Free and open source software
-
-=== Linux
-
-The OS kernel
-
-=== U-Boot
-
-The bootloader
-
-=== Crosstool-NG
-
-The toolchain builder
-
-=== Buildroot
-
-The root filesystem builder
-
+[[_toolchain_]]
 == Toolchain
+
+The set of tools used to build software, for a given CPU/SOC target,
+will be provided by http://crosstool-ng.org[crosstool-NG]. There is
+additional background information, on toolchains, provided at
+http://elinux.org/Toolchains[eLinux].
+
+=== crosstool-NG Source
+
+The crosstool-NG toolchain builder source code is obtained via Git on
+http://github.com/woodsts/crosstool-ng[GitHub].
+
+------------------------------------------------------------------------
+$ git clone git://github.com/woodsts/crosstool-ng.git
+------------------------------------------------------------------------
+
+[NOTE]
+The main repository is maintained using Mercurial as the version control
+system. A tool called <<_hggit_,Hg-Git>> is used to provide a Git mirror
+of Mercurial sources.
+
+=== Building crosstool-NG
+
+------------------------------------------------------------------------
+$ cd crosstool-ng
+$ ./bootstrap
+$ ./configure --enable-local
+$ make
+------------------------------------------------------------------------
+
+=== Building the Target Toolchain
+
+==== Target Configuration
+
+------------------------------------------------------------------------
+$ ./ct-ng menuconfig
+------------------------------------------------------------------------
+
+==== Target Build
+
+------------------------------------------------------------------------
+$ ./ct-ng build
+------------------------------------------------------------------------
+
+=== Using the Target Toolchain
+
+<<<
+
+[[_bootloader_]]
 == Bootloader
+
+=== U-Boot Source
+
+The U-Boot bootloader source code is obtained via Git on denx.de.
+
+------------------------------------------------------------------------
+$ git clone git://git.denx.de/u-boot.git
+------------------------------------------------------------------------
+
+<<<
+
+[[_kernel_]]
 == Kernel
+
+=== Linux Source
+
+The Linux kernel source code is obtained via Git on kernel.org.
+
+------------------------------------------------------------------------
+$ git clone git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git
+------------------------------------------------------------------------
+
+This will grab the latest Linux stable kernel and NOT Linus' tree.
+
+<<<
+
+[[_rootfs_]]
 == Root Filesystem
+
+=== Buildroot Source
+
+The Buildroot root filesystem builder source code is obtained via Git on
+buildroot.net.
+
+------------------------------------------------------------------------
+$ git clone git://github.com/woodsts/crosstool-ng.git
+------------------------------------------------------------------------
+
+<<<
+
 == Solution
 
 <<<
@@ -123,6 +194,8 @@ The root filesystem builder
 [appendix]
 
 ==  Appendix
+
+<<<
 
 === Getting 'solution'
 
@@ -132,6 +205,9 @@ Acquiring the project from GitHub.
 $ git clone https://github.com/woodsts/solution.git
 ------------------------------------------------------------------------
 
+<<<
+
+[[_hggit_]]
 === Hg-Git Mercurial Plugin
 
 A key piece to an embedded Linux solution, crosstool-ng, is published in
@@ -147,7 +223,7 @@ branches, but it has consistently worked for this author's use case.
 
 The instructions below assume a Debian 7.x (Wheezy) Linux installation.
 
-.Instructions
+.*INSTRUCTIONS*
 
 . Python Development Tools
 +
@@ -183,6 +259,8 @@ hgext.bookmarks =
 hgext.git =
 ------------------------------------------------------------------------
 
+<<<
+
 === Crosstool-NG (with Git Mirror)
 
 Using Hg-Git, it is now possible to track the mainline crosstool-ng
@@ -192,7 +270,7 @@ development in a convenient Git repository of your own.
 - http://crosstool-ng.org/hg/crosstool-ng[Mercurial Primary]
 - https://github.com/woodsts/crosstool-ng[Git Mirror]
 
-.Instructions
+.*INSTRUCTIONS*
 
 . Mercurial Clone of crosstool-ng
 +
