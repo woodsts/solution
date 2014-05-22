@@ -12,23 +12,37 @@
 #
 
 ELDS := $(shell readlink -e $(CURDIR))
+ELDS_BRANCH := $(shell git branch|grep '*'|cut -d ' ' -f 2)
 
-ELDS_ARCH ?= arm
-ELDS_VENDOR ?= -unknown
-ELDS_OS ?= linux
-ELDS_ABI ?= gnueabi
+# Directory Definitions
+ELDS_SCM := $(ELDS)/scm
+ELDS_PATCHES := $(ELDS)/patches
+ELDS_ARCHIVE ?= $(HOME)/Public
+
+# Read the Embedded Board Definitions
+ifeq ($(ELDS_BRANCH),master)
+ELDS_BOARD := versatile-pb
+else
+ELDS_BOARD := $(ELDS_BRANCH)
+endif
+include $(ELDS)/boards/$(ELDS_BOARD)/solution.mk
+
+# Toolchain Definitions
 ELDS_CROSS_TUPLE := $(ELDS_ARCH)$(ELDS_VENDOR)-$(ELDS_OS)-$(ELDS_ABI)
 ELDS_CROSS_COMPILE := $(ELDS_CROSS_TUPLE)-
 ELDS_CROSS_PARAMS := ARCH=$(ELDS_ARCH) CROSS_COMPILE=$(ELDS_CROSS_COMPILE)
-
-ELDS_SCM := $(ELDS)/scm
-ELDS_PATCHES := $(ELDS)/patches
-
 ELDS_TOOLCHAIN := $(ELDS)/toolchain/$(ELDS_CROSS_TUPLE)
 ELDS_TOOLCHAIN_BUILD := $(ELDS)/toolchain/build/$(ELDS_CROSS_TUPLE)
 ELDS_TOOLCHAIN_CONFIG := $(ELDS_TOOLCHAIN_BUILD)/.config
+ELDS_TOOLCHAIN_SOURCES := $(shell cat $(ELDS)/boards/$(ELDS_BOARD)/toolchain.txt)
 
+# Store build information
 CMD := $(shell echo $(ELDS) > $(ELDS)/.solution)
+CMD := $(shell echo $(ELDS_BOARD) > $(ELDS)/.board)
 CMD := $(shell echo $(ELDS_CROSS_TUPLE) > $(ELDS)/.cross-tuple)
 
+PATH := $(PATH):$(ELDS)/toolchain/builder:$(ELDS_TOOLCHAIN)/bin
+
 export ELDS
+export ELDS_BOARD
+export ELDS_CROSS_TUPLE
