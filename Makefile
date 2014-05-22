@@ -39,13 +39,13 @@ archive:
 
 .PHONY: scm
 scm:
-	@if ! [ -f $(ELDS_SCM)/linux/.git ]; then \
-		$(MAKE) scm-init; \
-		$(MAKE) scm-update; \
-	fi
+	@git submodule init
+	@git submodule update
 
-scm-%:
-	@git submodule $(*F)
+%-check:
+	@if ! [ -f $(ELDS_SCM)/$(*F)/.git ]; then \
+		$(MAKE) scm; \
+	fi
 
 .PHONY: doc
 doc: $(ELDS)/doc/solution.pdf
@@ -61,7 +61,7 @@ $(ELDS)/doc/solution.pdf: $(ELDS)/doc/solution.txt
 .PHONY: toolchain-builder
 toolchain-builder: $(ELDS)/toolchain/builder/ct-ng
 
-$(ELDS)/toolchain/builder/ct-ng: scm
+$(ELDS)/toolchain/builder/ct-ng: crosstool-ng-check
 	@if ! [ -d $(shell dirname $@) ]; then \
 		mkdir -p $(ELDS)/toolchain; \
 		cp -a $(ELDS_SCM)/crosstool-ng $(ELDS)/toolchain/builder; \
@@ -81,7 +81,7 @@ $(ELDS)/toolchain/builder/ct-ng: scm
 .PHONY: toolchain-config
 toolchain-config: $(ELDS_TOOLCHAIN_CONFIG)
 
-$(ELDS_TOOLCHAIN_CONFIG):
+$(ELDS_TOOLCHAIN_CONFIG): toolchain-builder
 	@mkdir -p $(ELDS_TOOLCHAIN_BUILD)
 	@if ! [ -f $(ELDS_TOOLCHAIN_CONFIG) ]; then \
 		rsync -a $(BOARD_TOOLCHAIN_CONFIG) $(ELDS_TOOLCHAIN_CONFIG); \
@@ -96,11 +96,11 @@ toolchain: $(ELDS_TOOLCHAIN)/bin/$(ELDS_CROSS_COMPILE)gcc \
 $(ELDS_TOOLCHAIN)/bin/$(ELDS_CROSS_COMPILE)gcc \
 $(ELDS_TOOLCHAIN)/bin/$(ELDS_CROSS_COMPILE)gdb \
 $(ELDS_TOOLCHAIN)/$(ELDS_CROSS_TUPLE)/debug-root/usr/bin/gdbserver \
-$(ELDS_TOOLCHAIN)/$(ELDS_CROSS_TUPLE)/debug-root/usr/bin/strace: restore toolchain-config
+$(ELDS_TOOLCHAIN)/$(ELDS_CROSS_TUPLE)/debug-root/usr/bin/strace:
 	@$(MAKE) toolchain-build
 	@$(MAKE) archive
 
-toolchain-%: toolchain-builder toolchain-config
+toolchain-%: restore toolchain-config
 	@cd $(ELDS_TOOLCHAIN_BUILD) && CT_ARCH=$(ELDS_ARCH) ct-ng $(*F)
 	@rsync -a $(ELDS_TOOLCHAIN_CONFIG) $(BOARD_TOOLCHAIN_CONFIG)
 
