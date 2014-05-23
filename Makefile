@@ -24,8 +24,9 @@ restore:
 	@mkdir -p $(ELDS)/toolchain/tarballs
 	@if [ -d $(ELDS_ARCHIVE)/toolchain/tarballs ]; then \
 		for f in $(ELDS_TOOLCHAIN_SOURCES); do \
-			if ! [ -f $(ELDS)/toolchain/tarballs/$$f ]; then \
-				rsync -a $(ELDS_ARCHIVE)/toolchain/tarballs/$$f $(ELDS)/toolchain/tarballs/; \
+			if [ -f $(ELDS_ARCHIVE)/toolchain/tarballs/$$f ]; then \
+				echo "***** Restoring $(ELDS)/toolchain/tarballs/$$f *****"; \
+				rsync -av $(ELDS_ARCHIVE)/toolchain/tarballs/$$f $(ELDS)/toolchain/tarballs/; \
 			fi; \
 		done; \
 	fi
@@ -34,7 +35,10 @@ restore:
 archive:
 	@mkdir -p $(ELDS_ARCHIVE)/toolchain
 	@if [ -d $(ELDS)/toolchain/tarballs ]; then \
-		rsync -a $(ELDS)/toolchain/tarballs $(ELDS_ARCHIVE)/toolchain/; \
+		for f in $(ELDS_TOOLCHAIN_SOURCES); do \
+			echo "***** Archiving $(ELDS_ARCHIVE)/toolchain/$$f *****"; \
+			rsync -av $(ELDS)/toolchain/tarballs/$$f $(ELDS_ARCHIVE)/toolchain/; \
+		done; \
 	fi
 
 .PHONY: scm
@@ -61,18 +65,22 @@ $(ELDS)/doc/solution.pdf: $(ELDS)/doc/solution.txt
 .PHONY: toolchain-builder
 toolchain-builder: $(ELDS)/toolchain/builder/ct-ng
 
-$(ELDS)/toolchain/builder/ct-ng: crosstool-ng-check
+$(ELDS)/toolchain/builder/ct-ng:
+	@$(MAKE) crosstool-ng-check
 	@if ! [ -d $(shell dirname $@) ]; then \
 		mkdir -p $(ELDS)/toolchain; \
 		cp -a $(ELDS_SCM)/crosstool-ng $(ELDS)/toolchain/builder; \
-		cd $(ELDS)/toolchain/builder; \
+	fi
+	@cd $(ELDS)/toolchain/builder; \
+	if ! [ -f .crosstool-ng-patched ]; then \
 		for f in $(shell ls $(ELDS_PATCHES)/crosstool-ng/*.patch); do \
 			patch -p1 < $$f; \
 		done; \
-		./bootstrap; \
-		./configure --enable-local; \
-		$(MAKE); \
-	fi
+		touch .crosstool-ng-patched; \
+	fi; \
+	./bootstrap; \
+	./configure --enable-local; \
+	$(MAKE)
 	@if ! [ -f $@ ]; then \
 		echo "***** crosstool-NG build FAILED! *****"; \
 		exit 2; \
@@ -81,26 +89,19 @@ $(ELDS)/toolchain/builder/ct-ng: crosstool-ng-check
 .PHONY: toolchain-config
 toolchain-config: $(ELDS_TOOLCHAIN_CONFIG)
 
-$(ELDS_TOOLCHAIN_CONFIG): toolchain-builder
+$(ELDS_TOOLCHAIN_CONFIG): $(BOARD_TOOLCHAIN_CONFIG)
 	@mkdir -p $(ELDS_TOOLCHAIN_BUILD)
-	@if ! [ -f $(ELDS_TOOLCHAIN_CONFIG) ]; then \
-		rsync -a $(BOARD_TOOLCHAIN_CONFIG) $(ELDS_TOOLCHAIN_CONFIG); \
-	fi
+	@rsync -a $(BOARD_TOOLCHAIN_CONFIG) $(ELDS_TOOLCHAIN_CONFIG)
 
 .PHONY: toolchain
-toolchain: $(ELDS_TOOLCHAIN)/bin/$(ELDS_CROSS_COMPILE)gcc \
-	$(ELDS_TOOLCHAIN)/bin/$(ELDS_CROSS_COMPILE)gdb \
-	$(ELDS_TOOLCHAIN)/$(ELDS_CROSS_TUPLE)/debug-root/usr/bin/gdbserver \
-	$(ELDS_TOOLCHAIN)/$(ELDS_CROSS_TUPLE)/debug-root/usr/bin/strace
+toolchain: $(ELDS_TOOLCHAIN_TARGETS)
 
-$(ELDS_TOOLCHAIN)/bin/$(ELDS_CROSS_COMPILE)gcc \
-$(ELDS_TOOLCHAIN)/bin/$(ELDS_CROSS_COMPILE)gdb \
-$(ELDS_TOOLCHAIN)/$(ELDS_CROSS_TUPLE)/debug-root/usr/bin/gdbserver \
-$(ELDS_TOOLCHAIN)/$(ELDS_CROSS_TUPLE)/debug-root/usr/bin/strace:
+$(ELDS_TOOLCHAIN_TARGETS): $(ELDS_TOOLCHAIN_CONFIG)
+	@$(MAKE) toolchain-builder
 	@$(MAKE) toolchain-build
 	@$(MAKE) archive
 
-toolchain-%: restore toolchain-config
+toolchain-%: restore $(ELDS_TOOLCHAIN_CONFIG)
 	@cd $(ELDS_TOOLCHAIN_BUILD) && CT_ARCH=$(ELDS_ARCH) ct-ng $(*F)
 	@rsync -a $(ELDS_TOOLCHAIN_CONFIG) $(BOARD_TOOLCHAIN_CONFIG)
 
