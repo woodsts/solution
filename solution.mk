@@ -35,6 +35,11 @@ ELDS_TOOLCHAIN := $(ELDS)/toolchain/$(ELDS_CROSS_TUPLE)
 ELDS_TOOLCHAIN_BUILD := $(ELDS)/toolchain/build/$(ELDS_CROSS_TUPLE)
 ELDS_TOOLCHAIN_CONFIG := $(ELDS_TOOLCHAIN_BUILD)/.config
 ELDS_TOOLCHAIN_SOURCES := $(shell cat $(ELDS)/boards/$(ELDS_BOARD)/toolchain.txt)
+ELDS_TOOLCHAIN_TARGETS := $(ELDS_TOOLCHAIN)/bin/$(ELDS_CROSS_COMPILE)gcc \
+	$(ELDS_TOOLCHAIN)/bin/$(ELDS_CROSS_COMPILE)gdb \
+	$(ELDS_TOOLCHAIN)/$(ELDS_CROSS_TUPLE)/debug-root/usr/bin/gdbserver \
+	$(ELDS_TOOLCHAIN)/$(ELDS_CROSS_TUPLE)/debug-root/usr/bin/strace
+
 
 # Store build information
 CMD := $(shell echo $(ELDS) > $(ELDS)/.solution)
