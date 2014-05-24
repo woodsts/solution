@@ -47,9 +47,7 @@ scm:
 	@git submodule update
 
 %-check:
-	@if ! [ -f $(ELDS_SCM)/$(*F)/.git ]; then \
-		$(MAKE) scm; \
-	fi
+	$(call scm-check)
 
 .PHONY: doc
 doc: $(ELDS)/doc/solution.pdf
@@ -97,6 +95,11 @@ $(ELDS_TOOLCHAIN_CONFIG): $(BOARD_TOOLCHAIN_CONFIG)
 toolchain: $(ELDS_TOOLCHAIN_TARGETS)
 
 $(ELDS_TOOLCHAIN_TARGETS): $(ELDS_TOOLCHAIN_CONFIG)
+	@$(MAKE) linux-check
+	@if ! [ "$(ELDS_KERNEL_VERSION)" = "$(ELDS_KERNEL_SCM_VERSION)" ]; then \
+		printf "***** WARNING KERNEL HAS DIFFERENT VERSION *****"; \
+		sleep 3; \
+	fi
 	@$(MAKE) toolchain-builder
 	@$(MAKE) toolchain-build
 	@$(MAKE) archive

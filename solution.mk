@@ -40,11 +40,25 @@ ELDS_TOOLCHAIN_TARGETS := $(ELDS_TOOLCHAIN)/bin/$(ELDS_CROSS_COMPILE)gcc \
 	$(ELDS_TOOLCHAIN)/$(ELDS_CROSS_TUPLE)/debug-root/usr/bin/gdbserver \
 	$(ELDS_TOOLCHAIN)/$(ELDS_CROSS_TUPLE)/debug-root/usr/bin/strace
 
+# Kernel Definitions
+ELDS_KERNEL_SCM := $(ELDS_SCM)/linux
+ELDS_KERNEL_SCM_VERSION := $(shell cd $(ELDS_KERNEL_SCM) && git describe --long 2>/dev/null)
+ELDS_KERNEL_VERSION := $(shell cat $(ELDS_SCM)/.linux 2>/dev/null)
 
 # Store build information
 CMD := $(shell printf $(ELDS) > $(ELDS)/.solution)
 CMD := $(shell printf $(ELDS_BOARD) > $(ELDS)/.board)
 CMD := $(shell printf $(ELDS_CROSS_TUPLE) > $(ELDS)/.cross-tuple)
+
+# Makefile functions
+define scm-check
+	@if ! [ -f $(ELDS_SCM)/$(*F)/.git ]; then \
+		printf "***** MISSING GIT SUBMODULES *****\n"; \
+		printf "*****     RUN 'make scm'     *****\n"; \
+		sleep 3; \
+		exit 2; \
+	fi
+endef
 
 PATH := $(PATH):$(ELDS)/toolchain/builder:$(ELDS_TOOLCHAIN)/bin
 
