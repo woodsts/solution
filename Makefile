@@ -14,7 +14,7 @@ all: usage
 
 .PHONY: usage
 usage:
-	@echo "USAGE: make <solution|usage|[...]>"
+	@printf "USAGE: make <solution|usage|[...]>\n"
 
 .PHONY: solution
 solution: toolchain
@@ -25,7 +25,7 @@ restore:
 	@if [ -d $(ELDS_ARCHIVE)/toolchain/tarballs ]; then \
 		for f in $(ELDS_TOOLCHAIN_SOURCES); do \
 			if [ -f $(ELDS_ARCHIVE)/toolchain/tarballs/$$f ]; then \
-				echo "***** Restoring $(ELDS)/toolchain/tarballs/$$f *****"; \
+				printf "***** Restoring $(ELDS)/toolchain/tarballs/$$f *****\n"; \
 				rsync -av $(ELDS_ARCHIVE)/toolchain/tarballs/$$f $(ELDS)/toolchain/tarballs/; \
 			fi; \
 		done; \
@@ -36,7 +36,7 @@ archive:
 	@mkdir -p $(ELDS_ARCHIVE)/toolchain
 	@if [ -d $(ELDS)/toolchain/tarballs ]; then \
 		for f in $(ELDS_TOOLCHAIN_SOURCES); do \
-			echo "***** Archiving $(ELDS_ARCHIVE)/toolchain/$$f *****"; \
+			printf "***** Archiving $(ELDS_ARCHIVE)/toolchain/$$f *****\n"; \
 			rsync -av $(ELDS)/toolchain/tarballs/$$f $(ELDS_ARCHIVE)/toolchain/; \
 		done; \
 	fi
@@ -58,7 +58,7 @@ $(ELDS)/doc/solution.pdf: $(ELDS)/doc/solution.txt
 	@if [ -f "$(shell which a2x)" ]; then \
 		a2x -v -f pdf -L $(ELDS)/doc/solution.txt; \
 	else \
-		echo "***** AsciiDoc is NOT installed! *****"; \
+		printf "***** AsciiDoc is NOT installed! *****\n"; \
 		exit 1; \
 	fi
 
@@ -82,7 +82,7 @@ $(ELDS)/toolchain/builder/ct-ng:
 	./configure --enable-local; \
 	$(MAKE)
 	@if ! [ -f $@ ]; then \
-		echo "***** crosstool-NG build FAILED! *****"; \
+		printf "***** crosstool-NG build FAILED! *****\n"; \
 		exit 2; \
 	fi
 

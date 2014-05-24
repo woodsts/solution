@@ -42,9 +42,9 @@ ELDS_TOOLCHAIN_TARGETS := $(ELDS_TOOLCHAIN)/bin/$(ELDS_CROSS_COMPILE)gcc \
 
 
 # Store build information
-CMD := $(shell echo $(ELDS) > $(ELDS)/.solution)
-CMD := $(shell echo $(ELDS_BOARD) > $(ELDS)/.board)
-CMD := $(shell echo $(ELDS_CROSS_TUPLE) > $(ELDS)/.cross-tuple)
+CMD := $(shell printf $(ELDS) > $(ELDS)/.solution)
+CMD := $(shell printf $(ELDS_BOARD) > $(ELDS)/.board)
+CMD := $(shell printf $(ELDS_CROSS_TUPLE) > $(ELDS)/.cross-tuple)
 
 PATH := $(PATH):$(ELDS)/toolchain/builder:$(ELDS_TOOLCHAIN)/bin
 
