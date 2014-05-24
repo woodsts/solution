@@ -25,8 +25,7 @@ restore:
 	@if [ -d $(ELDS_ARCHIVE)/toolchain/tarballs ]; then \
 		for f in $(ELDS_TOOLCHAIN_SOURCES); do \
 			if [ -f $(ELDS_ARCHIVE)/toolchain/tarballs/$$f ]; then \
-				printf "***** Restoring $(ELDS)/toolchain/tarballs/$$f *****\n"; \
-				rsync -av $(ELDS_ARCHIVE)/toolchain/tarballs/$$f $(ELDS)/toolchain/tarballs/; \
+				rsync -a $(ELDS_ARCHIVE)/toolchain/tarballs/$$f $(ELDS)/toolchain/tarballs/; \
 			fi; \
 		done; \
 	fi
@@ -36,8 +35,7 @@ archive:
 	@mkdir -p $(ELDS_ARCHIVE)/toolchain
 	@if [ -d $(ELDS)/toolchain/tarballs ]; then \
 		for f in $(ELDS_TOOLCHAIN_SOURCES); do \
-			printf "***** Archiving $(ELDS_ARCHIVE)/toolchain/$$f *****\n"; \
-			rsync -av $(ELDS)/toolchain/tarballs/$$f $(ELDS_ARCHIVE)/toolchain/; \
+			rsync -a $(ELDS)/toolchain/tarballs/$$f $(ELDS_ARCHIVE)/toolchain/; \
 		done; \
 	fi
 
