@@ -120,12 +120,40 @@ of Mercurial sources.
 
 === Building crosstool-NG
 
+The instructions for building crosstool-NG, in its cloned tree, is
+accomplished with these few commands.
+
 ------------------------------------------------------------------------
 $ cd crosstool-ng
 $ ./bootstrap
 $ ./configure --enable-local
 $ make
 ------------------------------------------------------------------------
+
+Configuration options can be passed to allow typical installation on the
+host system. For general development purposes, the 'local' option is a
+useful usage case. As changes and fixes are pushed to the main
+repository, those updates can be pulled at a meaningful pace. The
+resultant 'ct-ng' script is the toolchain build tool. A list of options
+for the tool can be seen by executing the following:
+
+------------------------------------------------------------------------
+$ ct-ng help
+------------------------------------------------------------------------
+
+The 'solution' project offers the following make target to build
+crosstool-NG.
+
+Solution::
++
+------------------------------------------------------------------------
+$ make toolchain-builder
+------------------------------------------------------------------------
+
+The 'solution' project can be obtained with instructions given
+<<_get_solution_,here>>.
+
+<<<
 
 === Building the Target Toolchain
 
@@ -197,12 +225,54 @@ $ git clone git://github.com/woodsts/crosstool-ng.git
 
 <<<
 
+[[_get_solution_]]
 === Getting 'solution'
+
+==== Git Clone
 
 Acquiring the project from GitHub.
 
 ------------------------------------------------------------------------
 $ git clone https://github.com/woodsts/solution.git
+------------------------------------------------------------------------
+
+==== Git Submodules
+
+Update the Git submodules needed by the project.
+
+------------------------------------------------------------------------
+$ cd solution
+$ make scm
+------------------------------------------------------------------------
+
+The 'scm' target initializes and pulls the necessary Git projects.
+
+==== Git Submodules (Alternative)
+
+Alternatively, the default 'scm' behavior can be overridden as follows:
+
+------------------------------------------------------------------------
+$ git init
+------------------------------------------------------------------------
+
+This Git command only registers the submodules. The local git submodules
+can be pointed to other repositories. This allows you to mirror Git
+projects at some faster or internal sites. The 'url' entries are the
+only lines you need to modify.
+
+.Edit Git Submodules in "solution/.git/config"
+------------------------------------------------------------------------
+[submodule "scm/crosstool-ng"]
+	url = git://<yoursite.com>/crosstool-ng.git
+[submodule "scm/linux"]
+	url = git://<yoursite.com>/linux-stable.git
+------------------------------------------------------------------------
+
+After the entries are changed, the following command will clone the
+submodules into the registered directory structure.
+
+------------------------------------------------------------------------
+$ git update
 ------------------------------------------------------------------------
 
 <<<
