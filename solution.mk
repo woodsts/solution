@@ -21,7 +21,7 @@ ELDS_ARCHIVE ?= $(HOME)/Public
 
 # Read the Embedded Board Definitions
 ifeq ($(ELDS_BRANCH),master)
-ELDS_BOARD := versatile-pb
+ELDS_BOARD ?= versatile-pb
 else
 ELDS_BOARD := $(ELDS_BRANCH)
 endif
