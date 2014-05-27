@@ -109,3 +109,8 @@ toolchain-%: restore $(ELDS_TOOLCHAIN_CONFIG)
 .PHONY: clean
 clean: archive
 	$(RM) $(ELDS)/doc/solution.pdf
+
+.PHONY: distclean
+distclean: clean
+	$(RM) $(ELDS)/toolchain/$(ELDS_CROSS_TUPLE)
+	$(RM) $(ELDS)/toolchain/build/$(ELDS_CROSS_TUPLE)
