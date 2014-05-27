@@ -17,5 +17,15 @@ ELDS_ABI ?= gnueabi
 
 BOARD_TOOLCHAIN_CONFIG := $(ELDS)/boards/$(ELDS_BOARD)/config/crosstool-ng/config
 
+define versatile-pb-env
+	@printf "ELDS_ARCH              : $(ELDS_ARCH)\n"
+	@printf "ELDS_VENDOR            : $(ELDS_VENDOR)\n"
+	@printf "ELDS_OS                : $(ELDS_OS)\n"
+	@printf "ELDS_ABI               : $(ELDS_ABI)\n"
+	@printf "ELDS_HOSTNAME          : $(ELDS_HOSTNAME)\n"
+	@printf "ELDS_GETTY_PORT        : $(ELDS_GETTY_PORT)\n"
+endef
+
 export ELDS_HOSTNAME
 export ELDS_GETTY_PORT
+

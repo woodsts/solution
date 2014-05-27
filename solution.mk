@@ -50,6 +50,9 @@ CMD := $(shell printf $(ELDS) > $(ELDS)/.solution)
 CMD := $(shell printf $(ELDS_BOARD) > $(ELDS)/.board)
 CMD := $(shell printf $(ELDS_CROSS_TUPLE) > $(ELDS)/.cross-tuple)
 
+# PATH Environment
+PATH := $(PATH):$(ELDS)/toolchain/builder:$(ELDS_TOOLCHAIN)/bin
+
 # Makefile functions
 define scm-check
 	@if ! [ -f $(ELDS_SCM)/$(*F)/.git ]; then \
@@ -60,8 +63,20 @@ define scm-check
 	fi
 endef
 
-PATH := $(PATH):$(ELDS)/toolchain/builder:$(ELDS_TOOLCHAIN)/bin
+define solution-env
+	@printf "ELDS                   : $(ELDS)\n"
+	@printf "ELDS_BRANCH            : $(ELDS_BRANCH)\n"
+	@printf "ELDS_BOARD             : $(ELDS_BOARD)\n"
+	$(call $(ELDS_BOARD)-env)
+	@printf "ELDS_CROSS_TUPLE       : $(ELDS_CROSS_TUPLE)\n"
+	@printf "ELDS_TOOLCHAIN         : $(ELDS_TOOLCHAIN)\n"
+	@printf "ELDS_TOOLCHAIN_BUILD   : $(ELDS_TOOLCHAIN_BUILD)\n"
+	@printf "ELDS_TOOLCHAIN_SOURCES : $(ELDS_TOOLCHAIN_SOURCES)\n"
+	@printf "ELDS_TOOLCHAIN_TARGETS : $(ELDS_TOOLCHAIN_TARGETS)\n"
+	@printf "PATH                   : $(PATH)\n"
+endef
 
 export ELDS
 export ELDS_BOARD
 export ELDS_CROSS_TUPLE
+
