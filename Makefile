@@ -18,7 +18,7 @@ usage:
 
 # Primary make target for 'solution'
 .PHONY: solution
-solution: doc toolchain
+solution: doc toolchain rootfs
 
 # Restore any downloaded files that have been previously archived
 .PHONY: restore
