@@ -17,6 +17,9 @@ ELDS_ABI ?= gnueabi
 
 BOARD_TOOLCHAIN_CONFIG := $(ELDS)/boards/$(ELDS_BOARD)/config/crosstool-ng/config
 BOARD_ROOTFS_CONFIG := $(ELDS)/boards/$(ELDS_BOARD)/config/buildroot/config
+BOARD_KERNEL_CONFIG := $(ELDS)/boards/$(ELDS_BOARD)/config/linux/config
+
+BOARD_KERNEL_DT := versatile-pb
 
 define versatile-pb-env
 	@printf "ELDS_ARCH              : $(ELDS_ARCH)\n"

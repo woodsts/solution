@@ -43,8 +43,9 @@ ELDS_TOOLCHAIN_TARGETS := $(ELDS_TOOLCHAIN)/bin/$(ELDS_CROSS_COMPILE)gcc \
 # Root Filesystem Definitions
 ELDS_ROOTFS := $(ELDS)/rootfs/$(ELDS_BOARD)/$(ELDS_CROSS_TUPLE)
 ELDS_ROOTFS_SCM := $(ELDS_SCM)/buildroot
-ELDS_ROOTFS_SCM_VERSION := $(shell cd $(ELDS_ROOTFS_SCM) && git describe --long 2>/dev/null)
-ELDS_ROOTFS_VERSION := $(shell cat $(ELDS_SCM)/.buildroot 2>/dev/null)
+ELDS_ROOTFS_SCM_VERSION := $(shell cat $(ELDS_SCM)/.buildroot 2>/dev/null)
+ELDS_ROOTFS_GIT_VERSION := $(shell cd $(ELDS_ROOTFS_SCM) && git describe --long 2>/dev/null)
+ELDS_ROOTFS_VERSION := $(shell cd $(ELDS_ROOTFS_SCM) && git describe 2>/dev/null)
 ELDS_ROOTFS_BUILD := $(ELDS_ROOTFS)
 ELDS_ROOTFS_CONFIG := $(ELDS_ROOTFS)/.config
 ELDS_ROOTFS_SOURCES := $(shell cat $(ELDS)/boards/$(ELDS_BOARD)/target.txt)
@@ -52,12 +53,22 @@ ELDS_ROOTFS_TARGETS := $(ELDS_ROOTFS)/images/rootfs.tar.xz \
 	$(ELDS_ROOTFS)/images/rootfs.cpio.xz
 
 # Kernel Definitions
+ELDS_KERNEL := $(ELDS_ROOTFS)/build/linux
 ELDS_KERNEL_SCM := $(ELDS_SCM)/linux
-ELDS_KERNEL_SCM_VERSION := $(shell cd $(ELDS_KERNEL_SCM) && git describe --long 2>/dev/null)
-ELDS_KERNEL_VERSION := $(shell cat $(ELDS_SCM)/.linux 2>/dev/null)
+ELDS_KERNEL_SCM_VERSION := $(shell cat $(ELDS_SCM)/.linux 2>/dev/null)
+ELDS_KERNEL_GIT_VERSION := $(shell cd $(ELDS_KERNEL_SCM) && git describe --long 2>/dev/null)
+ELDS_KERNEL_VERSION := $(shell cd $(ELDS_KERNEL_SCM) && git describe 2>/dev/null | cut -d v -f 2)
+ELDS_KERNEL_BUILD := $(ELDS_KERNEL)
+ELDS_KERNEL_BOOT := $(ELDS_KERNEL)/arch/$(ELDS_ARCH)/boot
+ELDS_KERNEL_DTB := $(ELDS_KERNEL_BOOT)/dts/$(BOARD_KERNEL_DT).dtb
+ELDS_KERNEL_CONFIG := $(ELDS_KERNEL)/.config
+ELDS_KERNEL_SYSMAP := $(ELDS_KERNEL)/System.map
+ELDS_KERNEL_TARGETS := $(ELDS_KERNEL_DTB) \
+	$(ELDS_KERNEL_BOOT)/Image \
+	$(ELDS_KERNEL_BOOT)/zImage
 
 # Misc.
-ELDS_ISSUE := "Solution [$(ELDS_BOARD)]"
+ELDS_ISSUE := $(shell printf "Solution [$(ELDS_BOARD)]")
 
 # Store build information
 CMD := $(shell printf $(ELDS) > $(ELDS)/.solution)
@@ -88,10 +99,17 @@ define solution-env
 	@printf "ELDS_TOOLCHAIN_BUILD   : $(ELDS_TOOLCHAIN_BUILD)\n"
 	@printf "ELDS_TOOLCHAIN_SOURCES : $(ELDS_TOOLCHAIN_SOURCES)\n"
 	@printf "ELDS_TOOLCHAIN_TARGETS : $(ELDS_TOOLCHAIN_TARGETS)\n"
+	@printf "ELDS_ROOTFS_VERSION    : $(ELDS_ROOTFS_VERSION)\n"
 	@printf "ELDS_ROOTFS            : $(ELDS_ROOTFS)\n"
 	@printf "ELDS_ROOTFS_BUILD      : $(ELDS_ROOTFS_BUILD)\n"
 	@printf "ELDS_ROOTFS_SOURCES    : $(ELDS_ROOTFS_SOURCES)\n"
 	@printf "ELDS_ROOTFS_TARGETS    : $(ELDS_ROOTFS_TARGETS)\n"
+	@printf "ELDS_KERNEL_VERSION    : $(ELDS_KERNEL_VERSION)\n"
+	@printf "ELDS_KERNEL            : $(ELDS_KERNEL)\n"
+	@printf "ELDS_KERNEL_BUILD      : $(ELDS_KERNEL_BUILD)\n"
+	@printf "ELDS_KERNEL_BOOT       : $(ELDS_KERNEL_BOOT)\n"
+	@printf "ELDS_KERNEL_DTB        : $(ELDS_KERNEL_DTB)\n"
+	@printf "ELDS_KERNEL_TARGETS    : $(ELDS_KERNEL_TARGETS)\n"
 	@printf "ELDS_ARCHIVE           : $(ELDS_ARCHIVE)\n"
 	@printf "PATH                   : $(PATH)\n"
 endef

@@ -109,7 +109,7 @@ toolchain-config: $(ELDS_TOOLCHAIN_CONFIG)
 
 $(ELDS_TOOLCHAIN_CONFIG): $(BOARD_TOOLCHAIN_CONFIG)
 	@mkdir -p $(ELDS_TOOLCHAIN_BUILD)
-	@rsync -a $(BOARD_TOOLCHAIN_CONFIG) $(ELDS_TOOLCHAIN_CONFIG)
+	@rsync -a $< $@
 
 # Build toolchain for embedded target board
 .PHONY: toolchain
@@ -117,19 +117,19 @@ toolchain: $(ELDS_TOOLCHAIN_TARGETS)
 
 $(ELDS_TOOLCHAIN_TARGETS):
 	@$(MAKE) linux-check
-	@if ! [ "$(ELDS_KERNEL_VERSION)" = "$(ELDS_KERNEL_SCM_VERSION)" ]; then \
+	@if ! [ "$(ELDS_KERNEL_SCM_VERSION)" = "$(ELDS_KERNEL_GIT_VERSION)" ]; then \
 		printf "***** WARNING 'Linux' HAS DIFFERENT VERSION *****"; \
 		sleep 3; \
 	fi
 	@$(MAKE) toolchain-builder
-	@$(MAKE) toolchain-build
+	$(MAKE) toolchain-build
 	@$(MAKE) archive
 
 # Run toolchain build tool (ct-ng) with options
 toolchain-%: $(ELDS_TOOLCHAIN_CONFIG)
 	@$(MAKE) restore
 	@cd $(ELDS_TOOLCHAIN_BUILD) && CT_ARCH=$(ELDS_ARCH) ct-ng $(*F)
-	@rsync -a $(ELDS_TOOLCHAIN_CONFIG) $(BOARD_TOOLCHAIN_CONFIG)
+	@rsync -a $< $(BOARD_TOOLCHAIN_CONFIG)
 
 # Restore existing rootfs configuration for embedded target board
 .PHONY: rootfs-config
@@ -137,7 +137,7 @@ rootfs-config: $(ELDS_ROOTFS_CONFIG)
 
 $(ELDS_ROOTFS_CONFIG): $(BOARD_ROOTFS_CONFIG)
 	@mkdir -p $(ELDS_ROOTFS_BUILD)
-	@rsync -a $(BOARD_ROOTFS_CONFIG) $(ELDS_ROOTFS_CONFIG)
+	@rsync -a $< $@
 
 # Build rootfs for embedded target board
 .PHONY: rootfs
@@ -147,7 +147,7 @@ $(ELDS_ROOTFS_TARGETS): $(ELDS_TOOLCHAIN_TARGETS)
 	@$(MAKE) restore
 	@$(MAKE) buildroot-check
 	@$(MAKE) rootfs-config
-	@if ! [ "$(ELDS_ROOTFS_VERSION)" = "$(ELDS_ROOTFS_SCM_VERSION)" ]; then \
+	@if ! [ "$(ELDS_ROOTFS_SCM_VERSION)" = "$(ELDS_ROOTFS_GIT_VERSION)" ]; then \
 		printf "***** WARNING 'buildroot' HAS DIFFERENT VERSION *****"; \
 		sleep 3; \
 	fi
@@ -158,7 +158,67 @@ $(ELDS_ROOTFS_TARGETS): $(ELDS_TOOLCHAIN_TARGETS)
 rootfs-%: $(ELDS_ROOTFS_CONFIG)
 	@$(MAKE) restore
 	$(MAKE) -C $(ELDS_SCM)/buildroot O=$(ELDS_ROOTFS_BUILD) $(*F)
-	@rsync -a $(ELDS_ROOTFS_CONFIG) $(BOARD_ROOTFS_CONFIG)
+	@rsync -a $< $(BOARD_ROOTFS_CONFIG)
+
+# Restore existing kernel configuration for embedded target board
+.PHONY: kernel-config
+kernel-config: $(ELDS_KERNEL_CONFIG)
+
+$(ELDS_KERNEL_CONFIG): $(BOARD_KERNEL_CONFIG)
+	@mkdir -p $(ELDS_KERNEL_BUILD)
+	@rsync -a $< $@
+
+# Build kernel for embedded target board
+.PHONY: kernel
+kernel: $(ELDS_KERNEL_TARGETS)
+
+$(ELDS_KERNEL_TARGETS): $(ELDS_TOOLCHAIN_TARGETS)
+	@$(MAKE) linux-check
+	@$(MAKE) kernel-config
+	@mkdir -p $(ELDS_KERNEL_BOOT)
+	@mkdir -p $(ELDS_ROOTFS)/target/boot
+	@if ! [ "$(ELDS_KERNEL_SCM_VERSION)" = "$(ELDS_KERNEL_GIT_VERSION)" ]; then \
+		printf "***** WARNING 'Linux' HAS DIFFERENT VERSION *****"; \
+		sleep 3; \
+	fi
+	$(MAKE) -j 2 -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) zImage
+	@if [ -f $(ELDS_KERNEL_BOOT)/zImage ]; then \
+		$(RM) $(ELDS_ROOTFS)/target/boot/zImage-*; \
+		$(RM) $(ELDS_ROOTFS)/target/boot/config-*; \
+		$(RM) $(ELDS_ROOTFS)/target/boot/System.map-*; \
+		cp -av $(ELDS_KERNEL_BOOT)/zImage $(ELDS_ROOTFS)/target/boot/zImage-$(ELDS_KERNEL_VERSION); \
+		cp -av $(ELDS_KERNEL_CONFIG) $(ELDS_ROOTFS)/target/boot/config-$(ELDS_KERNEL_VERSION); \
+	        cp -av $(ELDS_KERNEL_SYSMAP) $(ELDS_ROOTFS)/target/boot/System.map-$(ELDS_KERNEL_VERSION); \
+		cd $(ELDS_ROOTFS)/target/boot && \
+			ln -sf zImage-$(ELDS_KERNEL_VERSION) zImage && \
+			ln -sf System.map-$(ELDS_KERNEL_VERSION) System.map; \
+	else \
+		echo "***** Linux $(ELDS_KERNEL_VERSION) zImage build FAILED! *****"; \
+		exit 2; \
+	fi
+	$(MAKE) -j 2 -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) $(BOARD_KERNEL_DT).dtb
+	@if [ -f $(ELDS_KERNEL_DTB) ]; then \
+		$(RM) $(ELDS_ROOTFS)/target/boot/$(BOARD_KERNEL_DT)-*; \
+		cp -av $(ELDS_KERNEL_DTB) $(ELDS_ROOTFS)/target/boot/$(BOARD_KERNEL_DT)-$(ELDS_KERNEL_VERSION).dtb; \
+		cd $(ELDS_ROOTFS)/target/boot/ && \
+			ln -sf $(BOARD_KERNEL_DT)-$(ELDS_KERNEL_VERSION).dtb $(BOARD_KERNEL_DT).dtb; \
+	else \
+		echo "***** Linux $(ELDS_KERNEL_VERSION) $(LINUX_DT) build FAILED! *****"; \
+		exit 2; \
+	fi
+	$(MAKE) -j 2 -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) modules
+	@$(RM) -r $(ELDS_ROOTFS)/target/lib/modules/*
+	$(MAKE) -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) modules_install \
+		INSTALL_MOD_PATH=$(ELDS_ROOTFS)/target
+	$(MAKE) -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) headers_install \
+		INSTALL_HDR_PATH=$(ELDS_ROOTFS)/staging/usr/include
+	@find $(ELDS_ROOTFS)/target/lib/modules -type l -exec rm -f {} \;
+	@$(RM) $(ELDS_ROOTFS_TARGETS)
+
+# Run Linux kernel build with options
+kernel-%: $(ELDS_KERNEL_CONFIG)
+	$(MAKE) -j 2 -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) $(*F)
+	@rsync -a $< $(BOARD_KERNEL_CONFIG)
 
 # Selectively remove some solution artifacts
 .PHONY: clean
