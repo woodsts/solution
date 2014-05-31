@@ -16,6 +16,7 @@ ELDS_OS ?= linux
 ELDS_ABI ?= gnueabi
 
 BOARD_TOOLCHAIN_CONFIG := $(ELDS)/boards/$(ELDS_BOARD)/config/crosstool-ng/config
+BOARD_ROOTFS_CONFIG := $(ELDS)/boards/$(ELDS_BOARD)/config/buildroot/config
 
 define versatile-pb-env
 	@printf "ELDS_ARCH              : $(ELDS_ARCH)\n"

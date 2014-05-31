@@ -1,0 +1,8 @@
+#!/bin/bash
+
+TARGET=$1/../target
+
+if [ -d "${TARGET}-bare" ]; then
+	rm -rf ${TARGET}
+	mv ${TARGET}-bare ${TARGET}
+fi

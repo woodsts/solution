@@ -1,0 +1,12 @@
+#!/bin/bash
+
+TARGET=$1
+
+# Preserve target (Ideally the result of 'make solution')
+cp -a ${TARGET} ${TARGET}-bare
+
+# Update target file system
+rsync -av ${ELDS}/common/rootfs/* ${TARGET}/
+rsync -av ${ELDS}/boards/${ELDS_BOARD}/rootfs/* ${TARGET}/
+rsync -av ${ELDS}/toolchain/${ELDS_CROSS_TUPLE}/${ELDS_CROSS_TUPLE}/debug-root/* ${TARGET}/
+

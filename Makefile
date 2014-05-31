@@ -31,6 +31,14 @@ restore:
 			fi; \
 		done; \
 	fi
+	@mkdir -p $(ELDS)/rootfs/tarballs
+	@if [ -d $(ELDS_ARCHIVE)/rootfs/tarballs ]; then \
+		for f in $(ELDS_ROOTFS_SOURCES); do \
+			if [ -f $(ELDS_ARCHIVE)/rootfs/tarballs/$$f ]; then \
+				rsync -a $(ELDS_ARCHIVE)/rootfs/tarballs/$$f $(ELDS)/rootfs/tarballs/; \
+			fi; \
+		done; \
+	fi
 
 # Store any downloaded files
 .PHONY: archive
@@ -39,6 +47,12 @@ archive:
 	@if [ -d $(ELDS)/toolchain/tarballs ]; then \
 		for f in $(ELDS_TOOLCHAIN_SOURCES); do \
 			rsync -a $(ELDS)/toolchain/tarballs/$$f $(ELDS_ARCHIVE)/toolchain/; \
+		done; \
+	fi
+	@mkdir -p $(ELDS_ARCHIVE)/rootfs
+	@if [ -d $(ELDS)/rootfs/tarballs ]; then \
+		for f in $(ELDS_ROOTFS_SOURCES); do \
+			rsync -a $(ELDS)/rootfs/tarballs/$$f $(ELDS_ARCHIVE)/rootfs/; \
 		done; \
 	fi
 
@@ -104,7 +118,7 @@ toolchain: $(ELDS_TOOLCHAIN_TARGETS)
 $(ELDS_TOOLCHAIN_TARGETS):
 	@$(MAKE) linux-check
 	@if ! [ "$(ELDS_KERNEL_VERSION)" = "$(ELDS_KERNEL_SCM_VERSION)" ]; then \
-		printf "***** WARNING KERNEL HAS DIFFERENT VERSION *****"; \
+		printf "***** WARNING 'Linux' HAS DIFFERENT VERSION *****"; \
 		sleep 3; \
 	fi
 	@$(MAKE) toolchain-builder
@@ -112,9 +126,39 @@ $(ELDS_TOOLCHAIN_TARGETS):
 	@$(MAKE) archive
 
 # Run toolchain build tool (ct-ng) with options
-toolchain-%: restore $(ELDS_TOOLCHAIN_CONFIG)
+toolchain-%: $(ELDS_TOOLCHAIN_CONFIG)
+	@$(MAKE) restore
 	@cd $(ELDS_TOOLCHAIN_BUILD) && CT_ARCH=$(ELDS_ARCH) ct-ng $(*F)
 	@rsync -a $(ELDS_TOOLCHAIN_CONFIG) $(BOARD_TOOLCHAIN_CONFIG)
+
+# Restore existing rootfs configuration for embedded target board
+.PHONY: rootfs-config
+rootfs-config: $(ELDS_ROOTFS_CONFIG)
+
+$(ELDS_ROOTFS_CONFIG): $(BOARD_ROOTFS_CONFIG)
+	@mkdir -p $(ELDS_ROOTFS_BUILD)
+	@rsync -a $(BOARD_ROOTFS_CONFIG) $(ELDS_ROOTFS_CONFIG)
+
+# Build rootfs for embedded target board
+.PHONY: rootfs
+rootfs: $(ELDS_ROOTFS_TARGETS)
+
+$(ELDS_ROOTFS_TARGETS): $(ELDS_TOOLCHAIN_TARGETS)
+	@$(MAKE) restore
+	@$(MAKE) buildroot-check
+	@$(MAKE) rootfs-config
+	@if ! [ "$(ELDS_ROOTFS_VERSION)" = "$(ELDS_ROOTFS_SCM_VERSION)" ]; then \
+		printf "***** WARNING 'buildroot' HAS DIFFERENT VERSION *****"; \
+		sleep 3; \
+	fi
+	$(MAKE) -C $(ELDS_ROOTFS_SCM) O=$(ELDS_ROOTFS_BUILD)
+	@$(MAKE) archive
+
+# Run 'make buildroot' with options
+rootfs-%: $(ELDS_ROOTFS_CONFIG)
+	@$(MAKE) restore
+	$(MAKE) -C $(ELDS_SCM)/buildroot O=$(ELDS_ROOTFS_BUILD) $(*F)
+	@rsync -a $(ELDS_ROOTFS_CONFIG) $(BOARD_ROOTFS_CONFIG)
 
 # Selectively remove some solution artifacts
 .PHONY: clean
@@ -124,8 +168,9 @@ clean: archive
 # Nearly complete removal of solution artifacts
 .PHONY: distclean
 distclean: clean
-	$(RM) $(ELDS)/toolchain/$(ELDS_CROSS_TUPLE)
-	$(RM) $(ELDS)/toolchain/build/$(ELDS_CROSS_TUPLE)
+	$(RM) $(ELDS_ROOTFS)
+	$(RM) $(ELDS_TOOLCHAIN)
+	$(RM) $(ELDS_TOOLCHAIN_BUILD)
 
 # Print make environment and definitions
 .PHONY: env
