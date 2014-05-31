@@ -1,0 +1,16 @@
+#!/bin/bash
+
+dtb=rootfs/versatile-pb/arm-unknown-linux-gnueabi/target/boot/versatile-pb.dtb
+initrd=rootfs/versatile-pb/arm-unknown-linux-gnueabi/images/rootfs.cpio.xz
+kernel=rootfs/versatile-pb/arm-unknown-linux-gnueabi/target/boot/zImage
+
+qemu-system-arm \
+	-M versatilepb \
+	-m 256 \
+	-nographic \
+	-net nic \
+	-net user \
+	-dtb ${dtb} \
+	-initrd ${initrd} \
+	-kernel ${kernel} \
+	-append "earlyprintk console=ttyAMA0,115200 root=/dev/ram"
