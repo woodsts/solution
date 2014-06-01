@@ -46,13 +46,13 @@ archive:
 	@mkdir -p $(ELDS_ARCHIVE)/toolchain
 	@if [ -d $(ELDS)/toolchain/tarballs ]; then \
 		for f in $(ELDS_TOOLCHAIN_SOURCES); do \
-			rsync -a $(ELDS)/toolchain/tarballs/$$f $(ELDS_ARCHIVE)/toolchain/; \
+			rsync -a $(ELDS)/toolchain/tarballs/$$f $(ELDS_ARCHIVE)/toolchain/tarballs/; \
 		done; \
 	fi
 	@mkdir -p $(ELDS_ARCHIVE)/rootfs
 	@if [ -d $(ELDS)/rootfs/tarballs ]; then \
 		for f in $(ELDS_ROOTFS_SOURCES); do \
-			rsync -a $(ELDS)/rootfs/tarballs/$$f $(ELDS_ARCHIVE)/rootfs/; \
+			rsync -a $(ELDS)/rootfs/tarballs/$$f $(ELDS_ARCHIVE)/rootfs/tarballs/; \
 		done; \
 	fi
 
