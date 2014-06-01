@@ -18,7 +18,7 @@ usage:
 
 # Primary make target for 'solution'
 .PHONY: solution
-solution: doc toolchain rootfs kernel rootfs
+solution: doc toolchain rootfs kernel
 
 # Restore any downloaded files that have been previously archived
 .PHONY: restore
@@ -172,7 +172,7 @@ $(ELDS_KERNEL_CONFIG): $(BOARD_KERNEL_CONFIG)
 .PHONY: kernel
 kernel: $(ELDS_KERNEL_TARGETS)
 
-$(ELDS_KERNEL_TARGETS): $(ELDS_TOOLCHAIN_TARGETS)
+$(ELDS_KERNEL_TARGETS): $(ELDS_TOOLCHAIN_TARGETS) $(ELDS_ROOTFS_TARGETS)
 	@$(MAKE) linux-check
 	@$(MAKE) kernel-config
 	@mkdir -p $(ELDS_KERNEL_BOOT)
@@ -210,10 +210,15 @@ $(ELDS_KERNEL_TARGETS): $(ELDS_TOOLCHAIN_TARGETS)
 	@$(RM) -r $(ELDS_ROOTFS)/target/lib/modules/*
 	$(MAKE) -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) modules_install \
 		INSTALL_MOD_PATH=$(ELDS_ROOTFS)/target
+	@if ! [ -d $(ELDS_ROOTFS)/target/lib/modules/$(ELDS_KERNEL_VERSION) ]; then \
+		echo "***** Linux $(ELDS_KERNEL_VERSION) modules build FAILED! *****"; \
+		exit 2; \
+	fi
+	@find $(ELDS_ROOTFS)/target/lib/modules -type l -exec rm -f {} \;
 	$(MAKE) -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) headers_install \
 		INSTALL_HDR_PATH=$(ELDS_ROOTFS)/staging/usr/include
-	@find $(ELDS_ROOTFS)/target/lib/modules -type l -exec rm -f {} \;
 	@$(RM) $(ELDS_ROOTFS_TARGETS)
+	@$(MAKE) rootfs
 
 # Run Linux kernel build with options
 kernel-%: $(ELDS_KERNEL_CONFIG)
