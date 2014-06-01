@@ -46,7 +46,6 @@ m4-1.4.17.tar.xz
 mii-diag_2.11-3.diff.gz
 mii-diag_2.11.orig.tar.gz
 ncurses-5.9.tar.gz
-openssh-6.6p1.tar.gz
 openssl-1.0.1g.tar.gz
 pkgconf-0.8.9.tar.bz2
 popt-1.16.tar.gz
