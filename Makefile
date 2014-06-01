@@ -228,9 +228,9 @@ clean: archive
 # Nearly complete removal of solution artifacts
 .PHONY: distclean
 distclean: clean
-	$(RM) $(ELDS_ROOTFS)
-	$(RM) $(ELDS_TOOLCHAIN)
-	$(RM) $(ELDS_TOOLCHAIN_BUILD)
+	$(RM) -r $(ELDS_ROOTFS)
+	$(RM) -r $(ELDS_TOOLCHAIN)
+	$(RM) -r $(ELDS_TOOLCHAIN_BUILD)
 
 # Print make environment and definitions
 .PHONY: env
