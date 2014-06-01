@@ -48,7 +48,7 @@ ELDS_ROOTFS_GIT_VERSION := $(shell cd $(ELDS_ROOTFS_SCM) && git describe --long 
 ELDS_ROOTFS_VERSION := $(shell cd $(ELDS_ROOTFS_SCM) && git describe 2>/dev/null)
 ELDS_ROOTFS_BUILD := $(ELDS_ROOTFS)
 ELDS_ROOTFS_CONFIG := $(ELDS_ROOTFS)/.config
-ELDS_ROOTFS_SOURCES := $(shell cat $(ELDS)/boards/$(ELDS_BOARD)/target.txt)
+ELDS_ROOTFS_SOURCES := $(shell cat $(ELDS)/boards/$(ELDS_BOARD)/rootfs.txt)
 ELDS_ROOTFS_TARGETS := $(ELDS_ROOTFS)/images/rootfs.tar.xz \
 	$(ELDS_ROOTFS)/images/rootfs.cpio.xz
 

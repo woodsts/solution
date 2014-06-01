@@ -10,3 +10,6 @@ rsync -av ${ELDS}/common/rootfs/* ${TARGET}/ 2>/dev/null
 rsync -av ${ELDS}/boards/${ELDS_BOARD}/rootfs/* ${TARGET}/ 2>/dev/null
 rsync -av ${ELDS}/toolchain/${ELDS_CROSS_TUPLE}/${ELDS_CROSS_TUPLE}/debug-root/* ${TARGET}/ 2>/dev/null
 printf "\n`cat ${TARGET}/etc/issue`\n\n" > ${TARGET}/etc/issue
+
+# Perform Misc. Operations
+${ELDS}/scripts/fixup
