@@ -7,3 +7,6 @@
 [submodule "scm/buildroot"]
 	path = scm/buildroot
 	url = https://github.com/woodsts/buildroot.git
+[submodule "scm/u-boot"]
+	path = scm/u-boot
+	url = http://github.com/woodsts/u-boot.git

@@ -78,6 +78,28 @@ $(ELDS)/doc/solution.pdf: $(ELDS)/doc/solution.txt
 		exit 1; \
 	fi
 
+# Create bootloader configuration for embedded target board
+.PHONY: bootloader-config
+bootloader-config: $(BOARD_BOOTLOADER_CONFIG)
+
+$(BOARD_BOOTLOADER_CONFIG):
+	$(call $(ELDS_BOARD)-bootloader-config)
+
+# Build bootloader for embedded target board
+.PHONY: bootloader
+bootloader: $(BOARD_BOOTLOADER_TARGETS)
+
+$(BOARD_BOOTLOADER_TARGETS): $(ELDS_TOOLCHAIN_TARGETS) $(ELDS_ROOTFS_TARGETS)
+	@$(MAKE) u-boot-check
+	@$(MAKE) bootloader-config
+	$(call $(ELDS_BOARD)-bootloader)
+	@$(RM) $(ELDS_ROOTFS_TARGETS)
+	@$(MAKE) rootfs
+
+# Run 'make bootloader' with options
+bootloader-%: $(BOARD_BOOTLOADER_CONFIG)
+	$(call $(ELDS_BOARD)-bootloader)
+
 # Toolchain build tool (ct-ng) via crostool-NG
 .PHONY: toolchain-builder
 toolchain-builder: $(ELDS)/toolchain/builder/ct-ng
@@ -118,7 +140,7 @@ toolchain: $(ELDS_TOOLCHAIN_TARGETS)
 $(ELDS_TOOLCHAIN_TARGETS):
 	@$(MAKE) linux-check
 	@if ! [ "$(ELDS_KERNEL_SCM_VERSION)" = "$(ELDS_KERNEL_GIT_VERSION)" ]; then \
-		printf "***** WARNING 'Linux' HAS DIFFERENT VERSION *****"; \
+		printf "***** WARNING 'Linux' HAS DIFFERENT VERSION *****\n"; \
 		sleep 3; \
 	fi
 	@$(MAKE) toolchain-builder
@@ -148,13 +170,13 @@ $(ELDS_ROOTFS_TARGETS): $(ELDS_TOOLCHAIN_TARGETS)
 	@$(MAKE) buildroot-check
 	@$(MAKE) rootfs-config
 	@if ! [ "$(ELDS_ROOTFS_SCM_VERSION)" = "$(ELDS_ROOTFS_GIT_VERSION)" ]; then \
-		printf "***** WARNING 'buildroot' HAS DIFFERENT VERSION *****"; \
+		printf "***** WARNING 'buildroot' HAS DIFFERENT VERSION *****\n"; \
 		sleep 3; \
 	fi
 	$(MAKE) -C $(ELDS_ROOTFS_SCM) O=$(ELDS_ROOTFS_BUILD)
 	@$(MAKE) archive
 
-# Run 'make buildroot' with options
+# Run 'make rootfs' with options
 rootfs-%: $(ELDS_ROOTFS_CONFIG)
 	@$(MAKE) restore
 	$(MAKE) -C $(ELDS_SCM)/buildroot O=$(ELDS_ROOTFS_BUILD) $(*F)
@@ -178,7 +200,7 @@ $(ELDS_KERNEL_TARGETS): $(ELDS_TOOLCHAIN_TARGETS) $(ELDS_ROOTFS_TARGETS)
 	@mkdir -p $(ELDS_KERNEL_BOOT)
 	@mkdir -p $(ELDS_ROOTFS)/target/boot
 	@if ! [ "$(ELDS_KERNEL_SCM_VERSION)" = "$(ELDS_KERNEL_GIT_VERSION)" ]; then \
-		printf "***** WARNING 'Linux' HAS DIFFERENT VERSION *****"; \
+		printf "***** WARNING 'Linux' HAS DIFFERENT VERSION *****\n"; \
 		sleep 3; \
 	fi
 	$(MAKE) -j 2 -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) zImage
@@ -193,7 +215,7 @@ $(ELDS_KERNEL_TARGETS): $(ELDS_TOOLCHAIN_TARGETS) $(ELDS_ROOTFS_TARGETS)
 			ln -sf zImage-$(ELDS_KERNEL_VERSION) zImage && \
 			ln -sf System.map-$(ELDS_KERNEL_VERSION) System.map; \
 	else \
-		echo "***** Linux $(ELDS_KERNEL_VERSION) zImage build FAILED! *****"; \
+		printf "***** Linux $(ELDS_KERNEL_VERSION) zImage build FAILED! *****\n"; \
 		exit 2; \
 	fi
 	$(MAKE) -j 2 -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) $(BOARD_KERNEL_DT).dtb
@@ -203,7 +225,7 @@ $(ELDS_KERNEL_TARGETS): $(ELDS_TOOLCHAIN_TARGETS) $(ELDS_ROOTFS_TARGETS)
 		cd $(ELDS_ROOTFS)/target/boot/ && \
 			ln -sf $(BOARD_KERNEL_DT)-$(ELDS_KERNEL_VERSION).dtb $(BOARD_KERNEL_DT).dtb; \
 	else \
-		echo "***** Linux $(ELDS_KERNEL_VERSION) $(LINUX_DT) build FAILED! *****"; \
+		printf "***** Linux $(ELDS_KERNEL_VERSION) $(LINUX_DT) build FAILED! *****\n"; \
 		exit 2; \
 	fi
 	$(MAKE) -j 2 -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) modules
@@ -211,7 +233,7 @@ $(ELDS_KERNEL_TARGETS): $(ELDS_TOOLCHAIN_TARGETS) $(ELDS_ROOTFS_TARGETS)
 	$(MAKE) -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) modules_install \
 		INSTALL_MOD_PATH=$(ELDS_ROOTFS)/target
 	@if ! [ -d $(ELDS_ROOTFS)/target/lib/modules/$(ELDS_KERNEL_VERSION) ]; then \
-		echo "***** Linux $(ELDS_KERNEL_VERSION) modules build FAILED! *****"; \
+		printf "***** Linux $(ELDS_KERNEL_VERSION) modules build FAILED! *****\n"; \
 		exit 2; \
 	fi
 	@find $(ELDS_ROOTFS)/target/lib/modules -type l -exec rm -f {} \;
