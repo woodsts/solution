@@ -27,42 +27,49 @@ ELDS_BOARD := $(ELDS_BRANCH)
 endif
 include $(ELDS)/boards/$(ELDS_BOARD)/solution.mk
 
-# Toolchain Definitions
-ELDS_CROSS_TUPLE := $(ELDS_ARCH)$(ELDS_VENDOR)-$(ELDS_OS)-$(ELDS_ABI)
+# Cross-Compilation Definitions
+ELDS_CROSS_TUPLE := $(BOARD_ARCH)$(BOARD_VENDOR)-$(BOARD_OS)-$(BOARD_ABI)
 ELDS_CROSS_COMPILE := $(ELDS_CROSS_TUPLE)-
-ELDS_CROSS_PARAMS := ARCH=$(ELDS_ARCH) CROSS_COMPILE=$(ELDS_CROSS_COMPILE)
-ELDS_TOOLCHAIN := $(ELDS)/toolchain/$(ELDS_CROSS_TUPLE)
+ELDS_CROSS_PARAMS := ARCH=$(BOARD_ARCH) CROSS_COMPILE=$(ELDS_CROSS_COMPILE)
+
+# Toolchain Definitions
+ELDS_TOOLCHAIN := crosstool-NG
+ELDS_TOOLCHAIN_SCM := $(ELDS_SCM)/crosstool-ng
+ELDS_TOOLCHAIN_SCM_VERSION := $(shell cat $(ELDS_SCM)/.crosstool-ng 2>/dev/null)
+ELDS_TOOLCHAIN_GIT_VERSION := $(shell cd $(ELDS_TOOLCHAIN_SCM) && git describe --long 2>/dev/null)
+ELDS_TOOLCHAIN_VERSION := $(shell cd $(ELDS_TOOLCHAIN_SCM) && git describe 2>/dev/null)
+ELDS_TOOLCHAIN_PATH := $(ELDS)/toolchain/$(ELDS_CROSS_TUPLE)
 ELDS_TOOLCHAIN_BUILD := $(ELDS)/toolchain/build/$(ELDS_CROSS_TUPLE)
 ELDS_TOOLCHAIN_CONFIG := $(ELDS_TOOLCHAIN_BUILD)/.config
 ELDS_TOOLCHAIN_SOURCES := $(shell cat $(ELDS)/common/toolchain.txt)
-ELDS_TOOLCHAIN_TARGETS := $(ELDS_TOOLCHAIN)/bin/$(ELDS_CROSS_COMPILE)gcc \
-	$(ELDS_TOOLCHAIN)/bin/$(ELDS_CROSS_COMPILE)gdb \
-	$(ELDS_TOOLCHAIN)/$(ELDS_CROSS_TUPLE)/debug-root/usr/bin/gdbserver \
-	$(ELDS_TOOLCHAIN)/$(ELDS_CROSS_TUPLE)/debug-root/usr/bin/strace
+ELDS_TOOLCHAIN_TARGETS := $(ELDS_TOOLCHAIN_PATH)/bin/$(ELDS_CROSS_COMPILE)gcc \
+	$(ELDS_TOOLCHAIN_PATH)/bin/$(ELDS_CROSS_COMPILE)gdb \
+	$(ELDS_TOOLCHAIN_PATH)/$(ELDS_CROSS_TUPLE)/debug-root/usr/bin/gdbserver \
+	$(ELDS_TOOLCHAIN_PATH)/$(ELDS_CROSS_TUPLE)/debug-root/usr/bin/strace
 
 # Root Filesystem Definitions
-ELDS_ROOTFS := $(ELDS)/rootfs/$(ELDS_BOARD)/$(ELDS_CROSS_TUPLE)
+ELDS_ROOTFS := Buildroot
 ELDS_ROOTFS_SCM := $(ELDS_SCM)/buildroot
 ELDS_ROOTFS_SCM_VERSION := $(shell cat $(ELDS_SCM)/.buildroot 2>/dev/null)
 ELDS_ROOTFS_GIT_VERSION := $(shell cd $(ELDS_ROOTFS_SCM) && git describe --long 2>/dev/null)
 ELDS_ROOTFS_VERSION := $(shell cd $(ELDS_ROOTFS_SCM) && git describe 2>/dev/null)
-ELDS_ROOTFS_BUILD := $(ELDS_ROOTFS)
-ELDS_ROOTFS_CONFIG := $(ELDS_ROOTFS)/.config
+ELDS_ROOTFS_BUILD := $(ELDS)/rootfs/$(ELDS_BOARD)/$(ELDS_CROSS_TUPLE)
+ELDS_ROOTFS_CONFIG := $(ELDS_ROOTFS_BUILD)/.config
 ELDS_ROOTFS_SOURCES := $(shell cat $(ELDS)/boards/$(ELDS_BOARD)/rootfs.txt)
-ELDS_ROOTFS_TARGETS := $(ELDS_ROOTFS)/images/rootfs.tar.xz \
-	$(ELDS_ROOTFS)/images/rootfs.cpio.xz
+ELDS_ROOTFS_TARGETS := $(ELDS_ROOTFS_BUILD)/images/rootfs.tar.xz \
+	$(ELDS_ROOTFS_BUILD)/images/rootfs.cpio.xz
 
 # Kernel Definitions
-ELDS_KERNEL := $(ELDS_ROOTFS)/build/linux
+ELDS_KERNEL := Linux
+ELDS_KERNEL_BUILD := $(ELDS_ROOTFS_BUILD)/build/linux
 ELDS_KERNEL_SCM := $(ELDS_SCM)/linux
 ELDS_KERNEL_SCM_VERSION := $(shell cat $(ELDS_SCM)/.linux 2>/dev/null)
 ELDS_KERNEL_GIT_VERSION := $(shell cd $(ELDS_KERNEL_SCM) && git describe --long 2>/dev/null)
 ELDS_KERNEL_VERSION := $(shell cd $(ELDS_KERNEL_SCM) && git describe 2>/dev/null | cut -d v -f 2)
-ELDS_KERNEL_BUILD := $(ELDS_KERNEL)
-ELDS_KERNEL_BOOT := $(ELDS_KERNEL)/arch/$(ELDS_ARCH)/boot
+ELDS_KERNEL_CONFIG := $(ELDS_KERNEL_BUILD)/.config
+ELDS_KERNEL_SYSMAP := $(ELDS_KERNEL_BUILD)/System.map
+ELDS_KERNEL_BOOT := $(ELDS_KERNEL_BUILD)/arch/$(BOARD_ARCH)/boot
 ELDS_KERNEL_DTB := $(ELDS_KERNEL_BOOT)/dts/$(BOARD_KERNEL_DT).dtb
-ELDS_KERNEL_CONFIG := $(ELDS_KERNEL)/.config
-ELDS_KERNEL_SYSMAP := $(ELDS_KERNEL)/System.map
 ELDS_KERNEL_TARGETS := $(ELDS_KERNEL_DTB) \
 	$(ELDS_KERNEL_BOOT)/Image \
 	$(ELDS_KERNEL_BOOT)/zImage
@@ -76,7 +83,7 @@ CMD := $(shell printf $(ELDS_BOARD) > $(ELDS)/.board)
 CMD := $(shell printf $(ELDS_CROSS_TUPLE) > $(ELDS)/.cross-tuple)
 
 # PATH Environment
-PATH := $(PATH):$(ELDS)/toolchain/builder:$(ELDS_TOOLCHAIN)/bin
+PATH := $(PATH):$(ELDS)/toolchain/builder:$(ELDS_TOOLCHAIN_PATH)/bin
 
 # Makefile functions
 define scm-check
@@ -89,29 +96,37 @@ define scm-check
 endef
 
 define solution-env
+	@printf "========================================================================\n"
 	@printf "ELDS                        : $(ELDS)\n"
 	@printf "ELDS_ISSUE                  : $(ELDS_ISSUE)\n"
 	@printf "ELDS_BRANCH                 : $(ELDS_BRANCH)\n"
 	@printf "ELDS_BOARD                  : $(ELDS_BOARD)\n"
+	@printf "========================================================================\n"
 	$(call $(ELDS_BOARD)-env)
-	@printf "ELDS_CROSS_TUPLE            : $(ELDS_CROSS_TUPLE)\n"
+	@printf "========================================================================\n"
 	@printf "ELDS_TOOLCHAIN              : $(ELDS_TOOLCHAIN)\n"
+	@printf "ELDS_TOOLCHAIN_VERSION      : $(ELDS_TOOLCHAIN_VERSION)\n"
+	@printf "ELDS_TOOLCHAIN_PATH         : $(ELDS_TOOLCHAIN_PATH)\n"
 	@printf "ELDS_TOOLCHAIN_BUILD        : $(ELDS_TOOLCHAIN_BUILD)\n"
 	@printf "ELDS_TOOLCHAIN_SOURCES      : $(ELDS_TOOLCHAIN_SOURCES)\n"
 	@printf "ELDS_TOOLCHAIN_TARGETS      : $(ELDS_TOOLCHAIN_TARGETS)\n"
-	@printf "ELDS_ROOTFS_VERSION         : $(ELDS_ROOTFS_VERSION)\n"
+	@printf "========================================================================\n"
 	@printf "ELDS_ROOTFS                 : $(ELDS_ROOTFS)\n"
+	@printf "ELDS_ROOTFS_VERSION         : $(ELDS_ROOTFS_VERSION)\n"
 	@printf "ELDS_ROOTFS_BUILD           : $(ELDS_ROOTFS_BUILD)\n"
 	@printf "ELDS_ROOTFS_SOURCES         : $(ELDS_ROOTFS_SOURCES)\n"
 	@printf "ELDS_ROOTFS_TARGETS         : $(ELDS_ROOTFS_TARGETS)\n"
-	@printf "ELDS_KERNEL_VERSION         : $(ELDS_KERNEL_VERSION)\n"
+	@printf "========================================================================\n"
 	@printf "ELDS_KERNEL                 : $(ELDS_KERNEL)\n"
+	@printf "ELDS_KERNEL_VERSION         : $(ELDS_KERNEL_VERSION)\n"
 	@printf "ELDS_KERNEL_BUILD           : $(ELDS_KERNEL_BUILD)\n"
 	@printf "ELDS_KERNEL_BOOT            : $(ELDS_KERNEL_BOOT)\n"
 	@printf "ELDS_KERNEL_DTB             : $(ELDS_KERNEL_DTB)\n"
 	@printf "ELDS_KERNEL_TARGETS         : $(ELDS_KERNEL_TARGETS)\n"
+	@printf "========================================================================\n"
 	@printf "ELDS_ARCHIVE                : $(ELDS_ARCHIVE)\n"
 	@printf "PATH                        : $(PATH)\n"
+	@printf "========================================================================\n"
 endef
 
 export ELDS

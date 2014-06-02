@@ -18,7 +18,7 @@ usage:
 
 # Primary make target for 'solution'
 .PHONY: solution
-solution: doc toolchain rootfs kernel bootloader
+solution: toolchain rootfs kernel bootloader
 
 # Restore any downloaded files that have been previously archived
 .PHONY: restore
@@ -150,7 +150,7 @@ $(ELDS_TOOLCHAIN_TARGETS):
 # Run toolchain build tool (ct-ng) with options
 toolchain-%: $(ELDS_TOOLCHAIN_CONFIG)
 	@$(MAKE) restore
-	@cd $(ELDS_TOOLCHAIN_BUILD) && CT_ARCH=$(ELDS_ARCH) ct-ng $(*F)
+	@cd $(ELDS_TOOLCHAIN_BUILD) && CT_ARCH=$(BOARD_ARCH) ct-ng $(*F)
 	@rsync -a $< $(BOARD_TOOLCHAIN_CONFIG)
 
 # Restore existing rootfs configuration for embedded target board
@@ -198,20 +198,20 @@ $(ELDS_KERNEL_TARGETS): $(ELDS_TOOLCHAIN_TARGETS) $(ELDS_ROOTFS_TARGETS)
 	@$(MAKE) linux-check
 	@$(MAKE) kernel-config
 	@mkdir -p $(ELDS_KERNEL_BOOT)
-	@mkdir -p $(ELDS_ROOTFS)/target/boot
+	@mkdir -p $(ELDS_ROOTFS_BUILD)/target/boot
 	@if ! [ "$(ELDS_KERNEL_SCM_VERSION)" = "$(ELDS_KERNEL_GIT_VERSION)" ]; then \
 		printf "***** WARNING 'Linux' HAS DIFFERENT VERSION *****\n"; \
 		sleep 3; \
 	fi
 	$(MAKE) -j 2 -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) zImage
 	@if [ -f $(ELDS_KERNEL_BOOT)/zImage ]; then \
-		$(RM) $(ELDS_ROOTFS)/target/boot/zImage-*; \
-		$(RM) $(ELDS_ROOTFS)/target/boot/config-*; \
-		$(RM) $(ELDS_ROOTFS)/target/boot/System.map-*; \
-		cp -av $(ELDS_KERNEL_BOOT)/zImage $(ELDS_ROOTFS)/target/boot/zImage-$(ELDS_KERNEL_VERSION); \
-		cp -av $(ELDS_KERNEL_CONFIG) $(ELDS_ROOTFS)/target/boot/config-$(ELDS_KERNEL_VERSION); \
-	        cp -av $(ELDS_KERNEL_SYSMAP) $(ELDS_ROOTFS)/target/boot/System.map-$(ELDS_KERNEL_VERSION); \
-		cd $(ELDS_ROOTFS)/target/boot && \
+		$(RM) $(ELDS_ROOTFS_BUILD)/target/boot/zImage-*; \
+		$(RM) $(ELDS_ROOTFS_BUILD)/target/boot/config-*; \
+		$(RM) $(ELDS_ROOTFS_BUILD)/target/boot/System.map-*; \
+		cp -av $(ELDS_KERNEL_BOOT)/zImage $(ELDS_ROOTFS_BUILD)/target/boot/zImage-$(ELDS_KERNEL_VERSION); \
+		cp -av $(ELDS_KERNEL_CONFIG) $(ELDS_ROOTFS_BUILD)/target/boot/config-$(ELDS_KERNEL_VERSION); \
+	        cp -av $(ELDS_KERNEL_SYSMAP) $(ELDS_ROOTFS_BUILD)/target/boot/System.map-$(ELDS_KERNEL_VERSION); \
+		cd $(ELDS_ROOTFS_BUILD)/target/boot && \
 			ln -sf zImage-$(ELDS_KERNEL_VERSION) zImage && \
 			ln -sf System.map-$(ELDS_KERNEL_VERSION) System.map; \
 	else \
@@ -220,25 +220,25 @@ $(ELDS_KERNEL_TARGETS): $(ELDS_TOOLCHAIN_TARGETS) $(ELDS_ROOTFS_TARGETS)
 	fi
 	$(MAKE) -j 2 -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) $(BOARD_KERNEL_DT).dtb
 	@if [ -f $(ELDS_KERNEL_DTB) ]; then \
-		$(RM) $(ELDS_ROOTFS)/target/boot/$(BOARD_KERNEL_DT)-*; \
-		cp -av $(ELDS_KERNEL_DTB) $(ELDS_ROOTFS)/target/boot/$(BOARD_KERNEL_DT)-$(ELDS_KERNEL_VERSION).dtb; \
-		cd $(ELDS_ROOTFS)/target/boot/ && \
+		$(RM) $(ELDS_ROOTFS_BUILD)/target/boot/$(BOARD_KERNEL_DT)-*; \
+		cp -av $(ELDS_KERNEL_DTB) $(ELDS_ROOTFS_BUILD)/target/boot/$(BOARD_KERNEL_DT)-$(ELDS_KERNEL_VERSION).dtb; \
+		cd $(ELDS_ROOTFS_BUILD)/target/boot/ && \
 			ln -sf $(BOARD_KERNEL_DT)-$(ELDS_KERNEL_VERSION).dtb $(BOARD_KERNEL_DT).dtb; \
 	else \
 		printf "***** Linux $(ELDS_KERNEL_VERSION) $(LINUX_DT) build FAILED! *****\n"; \
 		exit 2; \
 	fi
 	$(MAKE) -j 2 -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) modules
-	@$(RM) -r $(ELDS_ROOTFS)/target/lib/modules/*
+	@$(RM) -r $(ELDS_ROOTFS_BUILD)/target/lib/modules/*
 	$(MAKE) -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) modules_install \
-		INSTALL_MOD_PATH=$(ELDS_ROOTFS)/target
-	@if ! [ -d $(ELDS_ROOTFS)/target/lib/modules/$(ELDS_KERNEL_VERSION) ]; then \
+		INSTALL_MOD_PATH=$(ELDS_ROOTFS_BUILD)/target
+	@if ! [ -d $(ELDS_ROOTFS_BUILD)/target/lib/modules/$(ELDS_KERNEL_VERSION) ]; then \
 		printf "***** Linux $(ELDS_KERNEL_VERSION) modules build FAILED! *****\n"; \
 		exit 2; \
 	fi
-	@find $(ELDS_ROOTFS)/target/lib/modules -type l -exec rm -f {} \;
+	@find $(ELDS_ROOTFS_BUILD)/target/lib/modules -type l -exec rm -f {} \;
 	$(MAKE) -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) headers_install \
-		INSTALL_HDR_PATH=$(ELDS_ROOTFS)/staging/usr/include
+		INSTALL_HDR_PATH=$(ELDS_ROOTFS_BUILD)/staging/usr/include
 	@$(RM) $(ELDS_ROOTFS_TARGETS)
 	@$(MAKE) rootfs
 
@@ -255,8 +255,8 @@ clean: archive
 # Nearly complete removal of solution artifacts
 .PHONY: distclean
 distclean: clean
-	$(RM) -r $(ELDS_ROOTFS)
-	$(RM) -r $(ELDS_TOOLCHAIN)
+	$(RM) -r $(ELDS_ROOTFS_BUILD)
+	$(RM) -r $(ELDS_TOOLCHAIN_PATH)
 	$(RM) -r $(ELDS_TOOLCHAIN_BUILD)
 
 # Print make environment and definitions
