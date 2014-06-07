@@ -69,10 +69,11 @@ ELDS_KERNEL_VERSION := $(shell cd $(ELDS_KERNEL_SCM) && git describe 2>/dev/null
 ELDS_KERNEL_CONFIG := $(ELDS_KERNEL_BUILD)/.config
 ELDS_KERNEL_SYSMAP := $(ELDS_KERNEL_BUILD)/System.map
 ELDS_KERNEL_BOOT := $(ELDS_KERNEL_BUILD)/arch/$(BOARD_ARCH)/boot
+ifdef BOARD_KERNEL_DT
 ELDS_KERNEL_DTB := $(ELDS_KERNEL_BOOT)/dts/$(BOARD_KERNEL_DT).dtb
-ELDS_KERNEL_TARGETS := $(ELDS_KERNEL_DTB) \
-	$(ELDS_KERNEL_BOOT)/Image \
-	$(ELDS_KERNEL_BOOT)/zImage
+ELDS_KERNEL_TARGETS := $(ELDS_KERNEL_DTB)
+endif
+ELDS_KERNEL_TARGETS += $(ELDS_KERNEL_BOOT)/Image $(ELDS_KERNEL_BOOT)/zImage
 
 # Misc.
 ELDS_ISSUE := $(shell printf "Solution @ $(shell git log -1|grep commit|cut -d ' ' -f 2)")
@@ -121,7 +122,6 @@ define solution-env
 	@printf "ELDS_KERNEL_VERSION         : $(ELDS_KERNEL_VERSION)\n"
 	@printf "ELDS_KERNEL_BUILD           : $(ELDS_KERNEL_BUILD)\n"
 	@printf "ELDS_KERNEL_BOOT            : $(ELDS_KERNEL_BOOT)\n"
-	@printf "ELDS_KERNEL_DTB             : $(ELDS_KERNEL_DTB)\n"
 	@printf "ELDS_KERNEL_TARGETS         : $(ELDS_KERNEL_TARGETS)\n"
 	@printf "========================================================================\n"
 	@printf "ELDS_ARCHIVE                : $(ELDS_ARCHIVE)\n"

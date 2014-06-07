@@ -218,6 +218,7 @@ $(ELDS_KERNEL_TARGETS): $(ELDS_TOOLCHAIN_TARGETS) $(ELDS_ROOTFS_TARGETS)
 		printf "***** Linux $(ELDS_KERNEL_VERSION) zImage build FAILED! *****\n"; \
 		exit 2; \
 	fi
+ifdef BOARD_KERNEL_DT
 	$(MAKE) -j 2 -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) $(BOARD_KERNEL_DT).dtb
 	@if [ -f $(ELDS_KERNEL_DTB) ]; then \
 		$(RM) $(ELDS_ROOTFS_BUILD)/target/boot/$(BOARD_KERNEL_DT)-*; \
@@ -228,6 +229,7 @@ $(ELDS_KERNEL_TARGETS): $(ELDS_TOOLCHAIN_TARGETS) $(ELDS_ROOTFS_TARGETS)
 		printf "***** Linux $(ELDS_KERNEL_VERSION) $(LINUX_DT) build FAILED! *****\n"; \
 		exit 2; \
 	fi
+endif
 	$(MAKE) -j 2 -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) modules
 	@$(RM) -r $(ELDS_ROOTFS_BUILD)/target/lib/modules/*
 	$(MAKE) -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) modules_install \
