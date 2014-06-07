@@ -1,0 +1,18 @@
+#!/bin/bash
+#
+# http://spremi.wordpress.com/2013/04/03/qemu-arm-with-ramdisk-on-fedora-18/
+# http://infocenter.arm.com/help/topic/com.arm.doc.dui0411d/DUI0411D_realview_platform_baseboard_ug.pdf
+
+initrd=rootfs/realview-pb/arm-unknown-linux-gnueabihf/images/rootfs.cpio.xz
+kernel=rootfs/realview-pb/arm-unknown-linux-gnueabihf/target/boot/zImage
+
+qemu-system-arm \
+	-M realview-pb-a8 \
+	-cpu cortex-a8 \
+	-m 256 \
+	-nographic \
+	-net nic \
+	-net user \
+	-initrd ${initrd} \
+	-kernel ${kernel} \
+	-append "mem=256 earlyprintk console=ttyAMA0,115200 root=/dev/ram rw ramdisk_size=32768"
