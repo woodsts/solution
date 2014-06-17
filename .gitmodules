@@ -3,7 +3,7 @@
 	url = git://github.com/woodsts/crosstool-ng.git
 [submodule "scm/linux"]
 	path = scm/linux
-	url = git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git
+	url = ssh://woodsts.org/opensource/linux-stable.git
 [submodule "scm/buildroot"]
 	path = scm/buildroot
 	url = https://github.com/woodsts/buildroot.git
