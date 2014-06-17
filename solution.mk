@@ -66,6 +66,10 @@ ELDS_KERNEL_SCM := $(ELDS_SCM)/linux
 ELDS_KERNEL_SCM_VERSION := $(shell cat $(ELDS_SCM)/.linux 2>/dev/null)
 ELDS_KERNEL_GIT_VERSION := $(shell cd $(ELDS_KERNEL_SCM) && git describe --long 2>/dev/null)
 ELDS_KERNEL_VERSION := $(shell cd $(ELDS_KERNEL_SCM) && git describe 2>/dev/null | cut -d v -f 2)
+ELDS_KERNEL_LOCALVERSION := -$(shell printf "$(ELDS_KERNEL_VERSION)" | cut -d '-' -f 2-3)
+ifeq ($(ELDS_KERNEL_LOCALVERSION),-$(ELDS_KERNEL_VERSION))
+ELDS_KERNEL_LOCALVERSION :=
+endif
 ELDS_KERNEL_CONFIG := $(ELDS_KERNEL_BUILD)/.config
 ELDS_KERNEL_SYSMAP := $(ELDS_KERNEL_BUILD)/System.map
 ELDS_KERNEL_BOOT := $(ELDS_KERNEL_BUILD)/arch/$(BOARD_ARCH)/boot
@@ -120,6 +124,7 @@ define solution-env
 	@printf "========================================================================\n"
 	@printf "ELDS_KERNEL                 : $(ELDS_KERNEL)\n"
 	@printf "ELDS_KERNEL_VERSION         : $(ELDS_KERNEL_VERSION)\n"
+	@printf "ELDS_KERNEL_LOCALVERSION    : $(ELDS_KERNEL_LOCALVERSION)\n"
 	@printf "ELDS_KERNEL_BUILD           : $(ELDS_KERNEL_BUILD)\n"
 	@printf "ELDS_KERNEL_BOOT            : $(ELDS_KERNEL_BOOT)\n"
 	@printf "ELDS_KERNEL_TARGETS         : $(ELDS_KERNEL_TARGETS)\n"
