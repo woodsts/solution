@@ -15,16 +15,21 @@ BOARD_VENDOR ?= -unknown
 BOARD_OS ?= linux
 BOARD_ABI ?= gnueabi
 
+BOARD_BUILD := $(ELDS)/rootfs/$(ELDS_BOARD)/$(BOARD_ARCH)$(BOARD_VENDOR)-$(BOARD_OS)-$(BOARD_ABI)/build
+BOARD_ROOTFS := $(ELDS)/rootfs/$(ELDS_BOARD)/$(BOARD_ARCH)$(BOARD_VENDOR)-$(BOARD_OS)-$(BOARD_ABI)/target
+
 BOARD_TOOLCHAIN_CONFIG := $(ELDS)/boards/$(ELDS_BOARD)/config/crosstool-ng/config
 BOARD_ROOTFS_CONFIG := $(ELDS)/boards/$(ELDS_BOARD)/config/buildroot/config
 BOARD_KERNEL_CONFIG := $(ELDS)/boards/$(ELDS_BOARD)/config/linux/config
 
 BOARD_KERNEL_DT := versatile-pb
 
+BOARD_ROOTFS_TARGETS := $(ELDS_ROOTFS_BUILD)/images/rootfs.cpio.xz
+
 # Bootloader Definitions
 BOARD_BOOTLOADER := U-Boot
-BOARD_BOOTLOADER_BUILD := $(ELDS)/rootfs/$(ELDS_BOARD)/$(BOARD_ARCH)$(BOARD_VENDOR)-$(BOARD_OS)-$(BOARD_ABI)/build/u-boot
-BOARD_BOOTLOADER_ROOTFS := $(ELDS)/rootfs/$(ELDS_BOARD)/$(BOARD_ARCH)$(BOARD_VENDOR)-$(BOARD_OS)-$(BOARD_ABI)/target/boot
+BOARD_BOOTLOADER_BUILD := $(BOARD_BUILD)/u-boot
+BOARD_BOOTLOADER_ROOTFS := $(BOARD_ROOTFS)/boot
 BOARD_BOOTLOADER_SCM := $(ELDS_SCM)/u-boot
 BOARD_BOOTLOADER_SCM_VERSION := $(shell cat $(ELDS_SCM)/.u-boot 2>/dev/null)
 BOARD_BOOTLOADER_GIT_VERSION := $(shell cd $(BOARD_BOOTLOADER_SCM) && git describe --long 2>/dev/null)
@@ -56,6 +61,7 @@ define versatile-pb-bootloader
 			cd $(BOARD_BOOTLOADER_ROOTFS) && ln -sf u-boot-$(BOARD_BOOTLOADER_VERSION).bin u-boot.bin; \
 		fi; \
 	else \
+		printf "***** U-Boot $(BOARD_BOOTLOADER_VERSION) 'make $(*F)' *****\n"; \
 		$(MAKE) -j 2 -C $(BOARD_BOOTLOADER_SCM) O=$(BOARD_BOOTLOADER_BUILD) $(ELDS_CROSS_PARAMS) $(*F); \
 	fi
 endef

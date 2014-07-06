@@ -56,8 +56,7 @@ ELDS_ROOTFS_VERSION := $(shell cd $(ELDS_ROOTFS_SCM) && git describe 2>/dev/null
 ELDS_ROOTFS_BUILD := $(ELDS)/rootfs/$(ELDS_BOARD)/$(ELDS_CROSS_TUPLE)
 ELDS_ROOTFS_CONFIG := $(ELDS_ROOTFS_BUILD)/.config
 ELDS_ROOTFS_SOURCES := $(shell cat $(ELDS)/boards/$(ELDS_BOARD)/rootfs.txt)
-ELDS_ROOTFS_TARGETS := $(ELDS_ROOTFS_BUILD)/images/rootfs.tar.xz \
-	$(ELDS_ROOTFS_BUILD)/images/rootfs.cpio.xz
+ELDS_ROOTFS_TARGETS := $(BOARD_ROOTFS_TARGETS) $(ELDS_ROOTFS_BUILD)/images/rootfs.tar.xz
 
 # Kernel Definitions
 ELDS_KERNEL := Linux
