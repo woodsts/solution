@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
-# crosstool-NG hg+unknown-20140521.225010 Configuration
-# Wed May 21 22:58:19 2014
+# crosstool-NG git+022dc5e Configuration
+# Thu Jul 24 23:34:47 2014
 #
 CT_CONFIGURE_has_xz=y
 CT_CONFIGURE_has_cvs=y
@@ -18,12 +18,7 @@ CT_MODULES=y
 # CT_OBSOLETE is not set
 CT_EXPERIMENTAL=y
 # CT_ALLOW_BUILD_AS_ROOT is not set
-CT_DEBUG_CT=y
-# CT_DEBUG_PAUSE_STEPS is not set
-CT_DEBUG_CT_SAVE_STEPS=y
-# CT_DEBUG_CT_SAVE_STEPS_GZIP is not set
-# CT_NO_OVERIDE_LC_MESSAGES is not set
-CT_DEBUG_INTERACTIVE=y
+# CT_DEBUG_CT is not set
 
 #
 # Paths
@@ -124,30 +119,30 @@ CT_ARCH_FLOAT_HW=y
 # CT_ARCH_FLOAT_SW is not set
 CT_TARGET_CFLAGS=""
 CT_TARGET_LDFLAGS=""
+# CT_ARCH_alpha is not set
 CT_ARCH_arm=y
-# CT_ARCH_x86 is not set
-# CT_ARCH_sh is not set
 # CT_ARCH_avr32 is not set
+# CT_ARCH_blackfin is not set
+# CT_ARCH_m68k is not set
+# CT_ARCH_microblaze is not set
 # CT_ARCH_mips is not set
-# CT_ARCH_sparc is not set
 # CT_ARCH_powerpc is not set
 # CT_ARCH_s390 is not set
-# CT_ARCH_m68k is not set
-# CT_ARCH_alpha is not set
-# CT_ARCH_microblaze is not set
-# CT_ARCH_blackfin is not set
+# CT_ARCH_sh is not set
+# CT_ARCH_sparc is not set
+# CT_ARCH_x86 is not set
+CT_ARCH_alpha_AVAILABLE=y
 CT_ARCH_arm_AVAILABLE=y
-CT_ARCH_x86_AVAILABLE=y
-CT_ARCH_sh_AVAILABLE=y
 CT_ARCH_avr32_AVAILABLE=y
+CT_ARCH_blackfin_AVAILABLE=y
+CT_ARCH_m68k_AVAILABLE=y
+CT_ARCH_microblaze_AVAILABLE=y
 CT_ARCH_mips_AVAILABLE=y
-CT_ARCH_sparc_AVAILABLE=y
 CT_ARCH_powerpc_AVAILABLE=y
 CT_ARCH_s390_AVAILABLE=y
-CT_ARCH_m68k_AVAILABLE=y
-CT_ARCH_alpha_AVAILABLE=y
-CT_ARCH_microblaze_AVAILABLE=y
-CT_ARCH_blackfin_AVAILABLE=y
+CT_ARCH_sh_AVAILABLE=y
+CT_ARCH_sparc_AVAILABLE=y
+CT_ARCH_x86_AVAILABLE=y
 CT_ARCH_SUFFIX=""
 
 #
@@ -228,8 +223,9 @@ CT_KERNEL_VERSION="custom"
 # CT_KERNEL_bare_metal is not set
 CT_KERNEL_linux=y
 CT_KERNEL_bare_metal_AVAILABLE=y
-CT_KERNEL_windows_AVAILABLE=y
 CT_KERNEL_linux_AVAILABLE=y
+# CT_KERNEL_V_3_15 is not set
+# CT_KERNEL_V_3_14 is not set
 # CT_KERNEL_V_3_13 is not set
 # CT_KERNEL_V_3_12 is not set
 # CT_KERNEL_V_3_11 is not set
@@ -254,6 +250,7 @@ CT_KERNEL_linux_AVAILABLE=y
 # CT_KERNEL_V_2_6_27 is not set
 CT_KERNEL_LINUX_CUSTOM=y
 CT_KERNEL_LINUX_CUSTOM_LOCATION="${CT_TOP_DIR}/../../../scm/linux"
+CT_KERNEL_windows_AVAILABLE=y
 
 #
 # Common kernel options
@@ -323,11 +320,10 @@ CT_BINUTILS_FOR_TARGET_BFD=y
 #
 CT_LIBC="glibc"
 CT_LIBC_VERSION="2.19"
+# CT_LIBC_eglibc is not set
 CT_LIBC_glibc=y
 # CT_LIBC_uClibc is not set
-# CT_LIBC_eglibc is not set
-CT_LIBC_none_AVAILABLE=y
-CT_LIBC_mingw_AVAILABLE=y
+CT_LIBC_eglibc_AVAILABLE=y
 CT_LIBC_glibc_AVAILABLE=y
 CT_LIBC_GLIBC_V_2_19=y
 # CT_LIBC_GLIBC_V_2_18 is not set
@@ -344,9 +340,10 @@ CT_LIBC_GLIBC_V_2_19=y
 # CT_LIBC_GLIBC_V_2_10_1 is not set
 # CT_LIBC_GLIBC_V_2_9 is not set
 # CT_LIBC_GLIBC_V_2_8 is not set
+CT_LIBC_mingw_AVAILABLE=y
 CT_LIBC_newlib_AVAILABLE=y
+CT_LIBC_none_AVAILABLE=y
 CT_LIBC_uClibc_AVAILABLE=y
-CT_LIBC_eglibc_AVAILABLE=y
 CT_LIBC_SUPPORT_THREADS_ANY=y
 CT_LIBC_SUPPORT_NPTL=y
 CT_THREADS="nptl"
@@ -356,10 +353,6 @@ CT_THREADS="nptl"
 #
 CT_THREADS_NPTL=y
 CT_LIBC_XLDD=y
-
-#
-# glibc other options
-#
 # CT_LIBC_GLIBC_PORTS_EXTERNAL is not set
 CT_LIBC_GLIBC_MAY_FORCE_PORTS=y
 CT_LIBC_glibc_familly=y
@@ -373,6 +366,15 @@ CT_LIBC_OLDEST_ABI=""
 CT_LIBC_GLIBC_FORCE_UNWIND=y
 CT_LIBC_GLIBC_USE_PORTS=y
 CT_LIBC_ADDONS_LIST="libidn"
+CT_LIBC_LOCALES=y
+# CT_LIBC_GLIBC_KERNEL_VERSION_NONE is not set
+CT_LIBC_GLIBC_KERNEL_VERSION_AS_HEADERS=y
+# CT_LIBC_GLIBC_KERNEL_VERSION_CHOSEN is not set
+CT_LIBC_GLIBC_MIN_KERNEL="custom"
+
+#
+# glibc other options
+#
 
 #
 # WARNING !!!                                            
@@ -393,7 +395,6 @@ CT_LIBC_ADDONS_LIST="libidn"
 #
 #   or try again later... :-(                            
 #
-CT_LIBC_LOCALES=y
 
 #
 # WARNING!                                                     
@@ -418,25 +419,24 @@ CT_LIBC_LOCALES=y
 #
 #   You will have to check by yourself (for now).              
 #
-# CT_LIBC_GLIBC_KERNEL_VERSION_NONE is not set
-CT_LIBC_GLIBC_KERNEL_VERSION_AS_HEADERS=y
-# CT_LIBC_GLIBC_KERNEL_VERSION_CHOSEN is not set
-CT_LIBC_GLIBC_MIN_KERNEL="custom"
 
 #
 # C compiler
 #
 CT_CC="gcc"
-CT_CC_VERSION="4.9.0"
+CT_CC_VERSION="4.9.1"
 CT_CC_CORE_PASSES_NEEDED=y
 CT_CC_CORE_PASS_1_NEEDED=y
 CT_CC_CORE_PASS_2_NEEDED=y
 CT_CC_gcc=y
 # CT_CC_GCC_SHOW_LINARO is not set
-CT_CC_V_4_9_0=y
+CT_CC_V_4_9_1=y
+# CT_CC_V_4_9_0 is not set
+# CT_CC_V_4_8_3 is not set
 # CT_CC_V_4_8_2 is not set
 # CT_CC_V_4_8_1 is not set
 # CT_CC_V_4_8_0 is not set
+# CT_CC_V_4_7_4 is not set
 # CT_CC_V_4_7_3 is not set
 # CT_CC_V_4_7_2 is not set
 # CT_CC_V_4_7_1 is not set
@@ -550,11 +550,8 @@ CT_CC_GCC_DEC_FLOAT_AUTO=y
 #
 # Debug facilities
 #
-CT_DEBUG_ltrace=y
-CT_LTRACE_V_0_7_3=y
-# CT_LTRACE_V_0_5_3 is not set
-# CT_LTRACE_V_0_5_2 is not set
-CT_LTRACE_VERSION="0.7.3"
+# CT_DEBUG_dmalloc is not set
+# CT_DEBUG_duma is not set
 CT_DEBUG_gdb=y
 CT_GDB_CROSS=y
 CT_GDB_CROSS_STATIC=y
@@ -569,7 +566,8 @@ CT_GDB_GDBSERVER_STATIC=y
 # gdb version
 #
 # CT_DEBUG_GDB_SHOW_LINARO is not set
-CT_GDB_V_7_7=y
+CT_GDB_V_7_7_1=y
+# CT_GDB_V_7_7 is not set
 # CT_GDB_V_7_6_1 is not set
 # CT_GDB_V_7_5_1 is not set
 # CT_GDB_V_7_4_1 is not set
@@ -586,9 +584,12 @@ CT_GDB_7_2_or_later=y
 CT_GDB_7_0_or_later=y
 CT_GDB_HAS_PKGVERSION_BUGURL=y
 CT_GDB_INSTALL_GDBINIT=y
-CT_GDB_VERSION="7.7"
-# CT_DEBUG_duma is not set
-# CT_DEBUG_dmalloc is not set
+CT_GDB_VERSION="7.7.1"
+CT_DEBUG_ltrace=y
+CT_LTRACE_V_0_7_3=y
+# CT_LTRACE_V_0_5_3 is not set
+# CT_LTRACE_V_0_5_2 is not set
+CT_LTRACE_VERSION="0.7.3"
 CT_DEBUG_strace=y
 CT_STRACE_V_4_8=y
 # CT_STRACE_V_4_7 is not set

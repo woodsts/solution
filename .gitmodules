@@ -1,6 +1,6 @@
 [submodule "scm/crosstool-ng"]
 	path = scm/crosstool-ng
-	url = git://github.com/woodsts/crosstool-ng.git
+	url = ssh://woodsts.org/opensource/crosstool-ng.git
 [submodule "scm/linux"]
 	path = scm/linux
 	url = ssh://woodsts.org/opensource/linux-stable.git
@@ -9,4 +9,4 @@
 	url = https://github.com/woodsts/buildroot.git
 [submodule "scm/u-boot"]
 	path = scm/u-boot
-	url = http://github.com/woodsts/u-boot.git
+	url = https://github.com/woodsts/u-boot.git

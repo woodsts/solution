@@ -36,8 +36,8 @@ ELDS_CROSS_PARAMS := ARCH=$(BOARD_ARCH) CROSS_COMPILE=$(ELDS_CROSS_COMPILE)
 ELDS_TOOLCHAIN := crosstool-NG
 ELDS_TOOLCHAIN_SCM := $(ELDS_SCM)/crosstool-ng
 ELDS_TOOLCHAIN_SCM_VERSION := $(shell cat $(ELDS_SCM)/.crosstool-ng 2>/dev/null)
-ELDS_TOOLCHAIN_GIT_VERSION := $(shell cd $(ELDS_TOOLCHAIN_SCM) && git describe --long 2>/dev/null)
-ELDS_TOOLCHAIN_VERSION := $(shell cd $(ELDS_TOOLCHAIN_SCM) && git describe 2>/dev/null)
+ELDS_TOOLCHAIN_GIT_VERSION := $(shell cd $(ELDS_TOOLCHAIN_SCM) && git describe --tags --long 2>/dev/null)
+ELDS_TOOLCHAIN_VERSION := $(shell cd $(ELDS_TOOLCHAIN_SCM) && git describe --tags 2>/dev/null)
 ELDS_TOOLCHAIN_PATH := $(ELDS)/toolchain/$(ELDS_CROSS_TUPLE)
 ELDS_TOOLCHAIN_BUILD := $(ELDS)/toolchain/build/$(ELDS_CROSS_TUPLE)
 ELDS_TOOLCHAIN_CONFIG := $(ELDS_TOOLCHAIN_BUILD)/.config
