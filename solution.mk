@@ -12,7 +12,7 @@
 #
 
 ELDS := $(shell readlink -e $(CURDIR))
-ELDS_BRANCH := $(shell git branch|grep '*'|cut -d ' ' -f 2)
+ELDS_BOARD ?= versatile-pb
 
 # Directory Definitions
 ELDS_SCM := $(ELDS)/scm
@@ -20,11 +20,6 @@ ELDS_PATCHES := $(ELDS)/patches
 ELDS_ARCHIVE ?= $(HOME)/Public
 
 # Read the Embedded Board Definitions
-ifeq ($(ELDS_BRANCH),master)
-ELDS_BOARD ?= versatile-pb
-else
-ELDS_BOARD := $(ELDS_BRANCH)
-endif
 include $(ELDS)/boards/$(ELDS_BOARD)/solution.mk
 
 # Cross-Compilation Definitions
@@ -103,7 +98,6 @@ define solution-env
 	@printf "========================================================================\n"
 	@printf "ELDS                        : $(ELDS)\n"
 	@printf "ELDS_ISSUE                  : $(ELDS_ISSUE)\n"
-	@printf "ELDS_BRANCH                 : $(ELDS_BRANCH)\n"
 	@printf "ELDS_BOARD                  : $(ELDS_BOARD)\n"
 	@printf "========================================================================\n"
 	$(call $(ELDS_BOARD)-env)
