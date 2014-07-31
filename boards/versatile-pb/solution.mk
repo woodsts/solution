@@ -70,17 +70,19 @@ define versatile-pb-bootloader
 endef
 
 define versatile-pb-env
-	@printf "BOARD_ARCH                  : $(BOARD_ARCH)\n"
-	@printf "BOARD_VENDOR                : $(BOARD_VENDOR)\n"
-	@printf "BOARD_OS                    : $(BOARD_OS)\n"
-	@printf "BOARD_ABI                   : $(BOARD_ABI)\n"
-	@printf "BOARD_HOSTNAME              : $(BOARD_HOSTNAME)\n"
-	@printf "BOARD_GETTY_PORT            : $(BOARD_GETTY_PORT)\n"
+	@printf "BOARD_ARCH                   : $(BOARD_ARCH)\n"
+	@printf "BOARD_VENDOR                 : $(BOARD_VENDOR)\n"
+	@printf "BOARD_OS                     : $(BOARD_OS)\n"
+	@printf "BOARD_ABI                    : $(BOARD_ABI)\n"
+	@printf "BOARD_HOSTNAME               : $(BOARD_HOSTNAME)\n"
+	@printf "BOARD_GETTY_PORT             : $(BOARD_GETTY_PORT)\n"
 	@printf "========================================================================\n"
-	@printf "BOARD_BOOTLOADER            : $(BOARD_BOOTLOADER)\n"
-	@printf "BOARD_BOOTLOADER_VERSION    : $(BOARD_BOOTLOADER_VERSION)\n"
-	@printf "BOARD_BOOTLOADER_BUILD      : $(BOARD_BOOTLOADER_BUILD)\n"
-	@printf "BOARD_BOOTLOADER_TARGETS    : $(BOARD_BOOTLOADER_TARGETS)\n"
+	@printf "BOARD_BOOTLOADER             : $(BOARD_BOOTLOADER)\n"
+	@printf "BOARD_BOOTLOADER_VERSION     : $(BOARD_BOOTLOADER_VERSION)\n"
+	@printf "BOARD_BOOTLOADER_SCM_VERSION : $(BOARD_BOOTLOADER_SCM_VERSION)\n"
+	@printf "BOARD_BOOTLOADER_GIT_VERSION : $(BOARD_BOOTLOADER_GIT_VERSION)\n"
+	@printf "BOARD_BOOTLOADER_BUILD       : $(BOARD_BOOTLOADER_BUILD)\n"
+	@printf "BOARD_BOOTLOADER_TARGETS     : $(BOARD_BOOTLOADER_TARGETS)\n"
 endef
 
 export BOARD_HOSTNAME
