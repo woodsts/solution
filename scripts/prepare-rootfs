@@ -11,5 +11,24 @@ rsync -av ${ELDS}/boards/${ELDS_BOARD}/rootfs/* ${TARGET}/ 2>/dev/null
 rsync -av ${ELDS}/toolchain/${ELDS_CROSS_TUPLE}/${ELDS_CROSS_TUPLE}/debug-root/* ${TARGET}/ 2>/dev/null
 printf "\n`cat ${TARGET}/etc/issue`\n\n" > ${TARGET}/etc/issue
 
-# Perform Misc. Operations
+# Board Specific Modifications
+case "${ELDS_BOARD}" in
+	olinuxino-maxi)
+		# ttyAMA0 is not working on my board (for now)
+		printf "ttyAPP0\n" >> ${TARGET}/etc/securetty
+		printf "console=ttyAPP0\n" > ${TARGET}/boot/uEnv.txt
+		printf "\nttyAPP0::respawn:/sbin/getty -L ttyAPP0 115200 vt102\n" >> ${TARGET}/etc/inittab
+		;;
+	beagle-c4)
+		;;
+	versatile-pb)
+		;;
+	realview-pb)
+		;;
+	*)
+		;;
+esac
+
+# Perform Misc. Development Host Operations
 ${ELDS}/scripts/fixup
+
