@@ -234,11 +234,9 @@ endif
 	@$(RM) -r $(ELDS_ROOTFS_BUILD)/target/lib/modules/*
 	$(MAKE) -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) modules_install LOCALVERSION=$(ELDS_KERNEL_LOCALVERSION) \
 		INSTALL_MOD_PATH=$(ELDS_ROOTFS_BUILD)/target
-	@if ! [ -d $(ELDS_ROOTFS_BUILD)/target/lib/modules/$(ELDS_KERNEL_VERSION) ]; then \
-		printf "***** Linux $(ELDS_KERNEL_VERSION) modules build FAILED! *****\n"; \
-		exit 2; \
+	@if [ -d $(ELDS_ROOTFS_BUILD)/target/lib/modules ]; then \
+		find $(ELDS_ROOTFS_BUILD)/target/lib/modules -type l -exec rm -f {} \; ; \
 	fi
-	@find $(ELDS_ROOTFS_BUILD)/target/lib/modules -type l -exec rm -f {} \;
 	$(MAKE) -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) headers_install \
 		INSTALL_HDR_PATH=$(ELDS_ROOTFS_BUILD)/staging/usr/include LOCALVERSION=$(ELDS_KERNEL_LOCALVERSION)
 	@$(RM) $(ELDS_ROOTFS_TARGETS)
