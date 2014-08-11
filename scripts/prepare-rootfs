@@ -17,7 +17,7 @@ case "${ELDS_BOARD}" in
 		# ttyAMA0 is not working on my board (for now)
 		printf "ttyAPP0\n" >> ${TARGET}/etc/securetty
 		printf "console=ttyAPP0\n" > ${TARGET}/boot/uEnv.txt
-		printf "\nttyAPP0::respawn:/sbin/getty -L ttyAPP0 115200 vt102\n" >> ${TARGET}/etc/inittab
+		printf "ttyAPP0::respawn:/sbin/getty -L ttyAPP0 115200 vt102\n" >> ${TARGET}/etc/inittab
 		;;
 	beagle-c4)
 		;;

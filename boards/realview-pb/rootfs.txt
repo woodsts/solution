@@ -9,7 +9,7 @@ ccache-3.1.8.tar.xz
 cjson-58.tar.gz
 curl-7.37.1.tar.bz2
 dosfstools-3.0.26.tar.xz
-dropbear-2014.64.tar.bz2
+dropbear-2014.65.tar.bz2
 e2fsprogs-1.42.11.tar.gz
 ethtool-3.15.tar.xz
 expat-2.1.0.tar.gz
@@ -24,13 +24,13 @@ joystick_20051019.orig.tar.gz
 kexec-tools-2.0.7.tar.xz
 kmod-18.tar.xz
 libaio_0.3.109.orig.tar.gz
-libarchive-3.0.4.tar.gz
+libarchive-3.1.2.tar.gz
 libcap2_2.22.orig.tar.gz
 libcap-ng-0.7.4.tar.gz
 libcgroup-0.41.tar.bz2
 libelf-0.8.12.tar.gz
 libev-4.15.tar.gz
-libevdev-1.2.1.tar.gz
+libevdev-1.2.2.tar.xz
 liblockfile_1.08-4.debian.tar.bz2
 liblockfile_1.08.orig.tar.gz
 libnl-3.2.25.tar.gz
@@ -46,7 +46,7 @@ m4-1.4.17.tar.xz
 mii-diag_2.11-3.diff.gz
 mii-diag_2.11.orig.tar.gz
 ncurses-5.9.tar.gz
-openssl-1.0.1h.tar.gz
+openssl-1.0.1i.tar.gz
 pkgconf-0.8.9.tar.bz2
 popt-1.16.tar.gz
 Python-2.7.8.tar.xz
