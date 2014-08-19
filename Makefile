@@ -119,6 +119,7 @@ $(ELDS)/toolchain/builder/ct-ng:
 	fi; \
 	./bootstrap; \
 	./configure --enable-local; \
+	sed -i s,-dirty,, $(ELDS)/toolchain/builder/Makefile; \
 	$(MAKE)
 	@if ! [ -f $@ ]; then \
 		printf "***** crosstool-NG build FAILED! *****\n"; \
