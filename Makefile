@@ -251,6 +251,9 @@ kernel-%: $(ELDS_KERNEL_CONFIG)
 # Selectively remove some solution artifacts
 .PHONY: clean
 clean: archive
+	$(RM) $(ELDS_ROOTFS_TARGETS)
+	$(RM) $(ELDS_KERNEL_TARGETS)
+	$(RM) $(BOARD_BOOTLOADER_TARGETS)
 	$(RM) $(ELDS)/doc/solution.pdf
 
 # Nearly complete removal of solution artifacts
@@ -259,6 +262,7 @@ distclean: clean
 	$(RM) -r $(ELDS_ROOTFS_BUILD)
 	$(RM) -r $(ELDS_TOOLCHAIN_PATH)
 	$(RM) -r $(ELDS_TOOLCHAIN_BUILD)
+	$(RM) -r $(ELDS_TOOLCHAIN_BUILDER)
 
 # Print make environment and definitions
 .PHONY: env
