@@ -1,7 +1,7 @@
 #
 # Automatically generated make config: don't edit
-# crosstool-NG git+022dc5e Configuration
-# Thu Jul 24 23:34:23 2014
+# crosstool-NG git+52260cc Configuration
+# Tue Aug 19 19:51:53 2014
 #
 CT_CONFIGURE_has_xz=y
 CT_CONFIGURE_has_cvs=y
@@ -17,6 +17,7 @@ CT_MODULES=y
 #
 # CT_OBSOLETE is not set
 CT_EXPERIMENTAL=y
+# CT_EXPERIMENTAL_PATCHES is not set
 # CT_ALLOW_BUILD_AS_ROOT is not set
 # CT_DEBUG_CT is not set
 
@@ -321,8 +322,10 @@ CT_LIBC="glibc"
 CT_LIBC_VERSION="2.19"
 # CT_LIBC_eglibc is not set
 CT_LIBC_glibc=y
+# CT_LIBC_musl is not set
 # CT_LIBC_uClibc is not set
 CT_LIBC_eglibc_AVAILABLE=y
+CT_THREADS="nptl"
 CT_LIBC_glibc_AVAILABLE=y
 CT_LIBC_GLIBC_V_2_19=y
 # CT_LIBC_GLIBC_V_2_18 is not set
@@ -340,17 +343,17 @@ CT_LIBC_GLIBC_V_2_19=y
 # CT_LIBC_GLIBC_V_2_9 is not set
 # CT_LIBC_GLIBC_V_2_8 is not set
 CT_LIBC_mingw_AVAILABLE=y
+CT_LIBC_musl_AVAILABLE=y
 CT_LIBC_newlib_AVAILABLE=y
 CT_LIBC_none_AVAILABLE=y
 CT_LIBC_uClibc_AVAILABLE=y
 CT_LIBC_SUPPORT_THREADS_ANY=y
-CT_LIBC_SUPPORT_NPTL=y
-CT_THREADS="nptl"
+CT_LIBC_SUPPORT_THREADS_NATIVE=y
 
 #
 # Common C library options
 #
-CT_THREADS_NPTL=y
+CT_THREADS_NATIVE=y
 CT_LIBC_XLDD=y
 # CT_LIBC_GLIBC_PORTS_EXTERNAL is not set
 CT_LIBC_GLIBC_MAY_FORCE_PORTS=y
