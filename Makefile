@@ -179,6 +179,7 @@ $(ELDS_ROOTFS_TARGETS): $(ELDS_TOOLCHAIN_TARGETS)
 		sleep 3; \
 	fi
 	$(MAKE) -C $(ELDS_ROOTFS_SCM) O=$(ELDS_ROOTFS_BUILD)
+	$(call $(ELDS_BOARD)-rootfs-finalize)
 	@$(MAKE) archive
 
 # Run 'make rootfs' with options
@@ -210,11 +211,8 @@ $(ELDS_KERNEL_TARGETS): $(ELDS_TOOLCHAIN_TARGETS)
 	fi
 	$(MAKE) -j 2 -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) zImage LOCALVERSION=$(ELDS_KERNEL_LOCALVERSION)
 	@if [ -f $(ELDS_KERNEL_BOOT)/zImage ]; then \
-		$(RM) $(ELDS_ROOTFS_BUILD)/target/boot/zImage-*; \
-		$(RM) $(ELDS_ROOTFS_BUILD)/target/boot/config-*; \
-		$(RM) $(ELDS_ROOTFS_BUILD)/target/boot/System.map-*; \
+		$(RM) $(ELDS_ROOTFS_BUILD)/target/boot/*; \
 		cp -av $(ELDS_KERNEL_BOOT)/zImage $(ELDS_ROOTFS_BUILD)/target/boot/zImage-$(ELDS_KERNEL_VERSION); \
-		cp -av $(ELDS_KERNEL_CONFIG) $(ELDS_ROOTFS_BUILD)/target/boot/config-$(ELDS_KERNEL_VERSION); \
 	        cp -av $(ELDS_KERNEL_SYSMAP) $(ELDS_ROOTFS_BUILD)/target/boot/System.map-$(ELDS_KERNEL_VERSION); \
 		cd $(ELDS_ROOTFS_BUILD)/target/boot && \
 			ln -sf zImage-$(ELDS_KERNEL_VERSION) zImage && \
@@ -226,7 +224,6 @@ $(ELDS_KERNEL_TARGETS): $(ELDS_TOOLCHAIN_TARGETS)
 ifdef BOARD_KERNEL_DT
 	$(MAKE) -j 2 -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) $(BOARD_KERNEL_DT).dtb LOCALVERSION=$(ELDS_KERNEL_LOCALVERSION)
 	@if [ -f $(ELDS_KERNEL_DTB) ]; then \
-		$(RM) $(ELDS_ROOTFS_BUILD)/target/boot/$(BOARD_KERNEL_DT)-*; \
 		cp -av $(ELDS_KERNEL_DTB) $(ELDS_ROOTFS_BUILD)/target/boot/$(BOARD_KERNEL_DT)-$(ELDS_KERNEL_VERSION).dtb; \
 		cd $(ELDS_ROOTFS_BUILD)/target/boot/ && \
 			ln -sf $(BOARD_KERNEL_DT)-$(ELDS_KERNEL_VERSION).dtb $(BOARD_KERNEL_DT).dtb; \

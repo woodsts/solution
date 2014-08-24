@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if ! [ -f ${ELDS}/rootfs/${ELDS_BOARD}/${ELDS_CROSS_TUPLE}/host/usr/bin/xz ]; then
+if ! [ -f ${ELDS}/rootfs/${BOARD_TYPE}/${ELDS_CROSS_TUPLE}/host/usr/bin/xz ]; then
 	printf "***** FIX MISSING HOST 'xz' *****\n"
-	ln -s /usr/bin/xz ${ELDS}/rootfs/${ELDS_BOARD}/${ELDS_CROSS_TUPLE}/host/usr/bin/xz
+	ln -s /usr/bin/xz ${ELDS}/rootfs/${BOARD_TYPE}/${ELDS_CROSS_TUPLE}/host/usr/bin/xz
 fi

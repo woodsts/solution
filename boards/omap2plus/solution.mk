@@ -7,15 +7,12 @@
 # under the terms of the GNU General Public License version 2
 #
 
-BOARD_TYPE := $(ELDS_BOARD)
-
-BOARD_HOSTNAME := olinuxino-maxi
-BOARD_GETTY_PORT := ttyAMA0
+BOARD_TYPE := omap2plus
 
 BOARD_ARCH ?= arm
 BOARD_VENDOR ?= -unknown
 BOARD_OS ?= linux
-BOARD_ABI ?= gnueabi
+BOARD_ABI ?= gnueabihf
 
 BOARD_CONFIG := $(ELDS)/boards/$(BOARD_TYPE)/config
 BOARD_TOOLCHAIN_CONFIG := $(BOARD_CONFIG)/crosstool-ng/config
@@ -29,8 +26,6 @@ BOARD_TARGET := $(BOARD_ROOTFS)/target
 
 BOARD_ROOTFS_TARGETS := $(BOARD_IMAGES)/rootfs.tar.xz
 
-BOARD_KERNEL_DT := imx23-olinuxino
-
 # Bootloader Definitions
 BOARD_BOOTLOADER := U-Boot
 BOARD_BOOTLOADER_BUILD := $(BOARD_BUILD)/u-boot
@@ -41,31 +36,28 @@ BOARD_BOOTLOADER_GIT_VERSION := $(shell cd $(BOARD_BOOTLOADER_SCM) && git descri
 BOARD_BOOTLOADER_VERSION := $(shell cd $(BOARD_BOOTLOADER_SCM) && git describe 2>/dev/null | cut -d v -f 2)
 BOARD_BOOTLOADER_CONFIG := $(BOARD_BOOTLOADER_BUILD)/include/config.mk
 BOARD_BOOTLOADER_SYSMAP := $(BOARD_BOOTLOADER_BUILD)/System.map
-BOARD_BOOTLOADER_BINARY := $(BOARD_BOOTLOADER_BUILD)/u-boot.sd
+BOARD_BOOTLOADER_BINARY := $(BOARD_BOOTLOADER_BUILD)/u-boot.img
 BOARD_BOOTLOADER_TARGETS := $(BOARD_BOOTLOADER_BINARY)
 
-define olinuxino-maxi-bootloader-config
-	@mkdir -p $(BOARD_BOOTLOADER_BUILD)
-	$(MAKE) -C $(BOARD_BOOTLOADER_SCM) O=$(BOARD_BOOTLOADER_BUILD) $(ELDS_CROSS_PARAMS) mx23_olinuxino_config
-endef
-
-define olinuxino-maxi-bootloader
+define omap2plus-bootloader
 	@if ! [ "$(BOARD_BOOTLOADER_SCM_VERSION)" = "$(BOARD_BOOTLOADER_GIT_VERSION)" ]; then \
 		printf "***** WARNING 'U-Boot' HAS DIFFERENT VERSION *****\n"; \
 		sleep 3; \
 	fi
 	@if [ "$@" = "$(BOARD_BOOTLOADER_TARGETS)" ]; then \
 		$(MAKE) -j 2 -C $(BOARD_BOOTLOADER_SCM) O=$(BOARD_BOOTLOADER_BUILD) $(ELDS_CROSS_PARAMS); \
-		$(MAKE) -j 2 -C $(BOARD_BOOTLOADER_SCM) O=$(BOARD_BOOTLOADER_BUILD) $(ELDS_CROSS_PARAMS) u-boot.sb; \
-		if ! [ -f $(BOARD_BOOTLOADER_BUILD)/u-boot.sb ]; then \
+		if ! [ -f $(BOARD_BOOTLOADER_BINARY) ]; then \
 			printf "***** U-Boot $(BOARD_BOOTLOADER_VERSION) build FAILED! *****\n"; \
 			exit 2; \
 		else \
 			mkdir -p $(BOARD_BOOTLOADER_TARGET); \
 			$(RM) $(BOARD_BOOTLOADER_TARGET)/u-boot-*; \
-			$(BOARD_BOOTLOADER_BUILD)/tools/mxsboot sd $(BOARD_BOOTLOADER_BUILD)/u-boot.sb $(BOARD_BOOTLOADER_BINARY); \
-			cp -av $(BOARD_BOOTLOADER_BUILD)/u-boot.sd $(BOARD_BOOTLOADER_TARGET)/u-boot-$(BOARD_BOOTLOADER_VERSION).sd; \
-			cd $(BOARD_BOOTLOADER_TARGET) && ln -sf u-boot-$(BOARD_BOOTLOADER_VERSION).sd u-boot.sd; \
+			$(RM) $(BOARD_BOOTLOADER_TARGET)/MLO-*; \
+			cp -av $(BOARD_BOOTLOADER_BINARY) $(BOARD_BOOTLOADER_TARGET)/u-boot-$(BOARD_BOOTLOADER_VERSION).img; \
+			cp -av $(BOARD_BOOTLOADER_BUILD)/MLO $(BOARD_BOOTLOADER_TARGET)/MLO-$(BOARD_BOOTLOADER_VERSION); \
+			cd $(BOARD_BOOTLOADER_TARGET) && \
+				ln -sf u-boot-$(BOARD_BOOTLOADER_VERSION).img u-boot.img && \
+				ln -sf MLO-$(BOARD_BOOTLOADER_VERSION) MLO; \
 		fi; \
 	else \
 		printf "***** U-Boot $(BOARD_BOOTLOADER_VERSION) 'make $(*F)' *****\n"; \
@@ -73,7 +65,8 @@ define olinuxino-maxi-bootloader
 	fi
 endef
 
-define olinuxino-maxi-env
+define omap2plus-env
+	@printf "BOARD_TYPE                   : $(BOARD_TYPE)\n"
 	@printf "BOARD_ARCH                   : $(BOARD_ARCH)\n"
 	@printf "BOARD_VENDOR                 : $(BOARD_VENDOR)\n"
 	@printf "BOARD_OS                     : $(BOARD_OS)\n"
@@ -89,6 +82,5 @@ define olinuxino-maxi-env
 	@printf "BOARD_BOOTLOADER_TARGETS     : $(BOARD_BOOTLOADER_TARGETS)\n"
 endef
 
-export BOARD_HOSTNAME
-export BOARD_GETTY_PORT
+export BOARD_TYPE
 

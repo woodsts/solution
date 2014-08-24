@@ -47,11 +47,11 @@ ELDS_TOOLCHAIN_TARGETS := $(ELDS_TOOLCHAIN_PATH)/bin/$(ELDS_CROSS_COMPILE)gcc \
 ELDS_ROOTFS := Buildroot
 ELDS_ROOTFS_SCM := $(ELDS_SCM)/buildroot
 ELDS_ROOTFS_SCM_VERSION := $(shell cat $(ELDS_SCM)/.buildroot 2>/dev/null)
-ELDS_ROOTFS_GIT_VERSION := $(shell cd $(ELDS_ROOTFS_SCM) && make print-version 2>/dev/null)
+ELDS_ROOTFS_GIT_VERSION := $(shell make --quiet -C $(ELDS_ROOTFS_SCM) print-version 2>/dev/null)
 ELDS_ROOTFS_VERSION := $(shell cd $(ELDS_ROOTFS_SCM) && make print-version 2>/dev/null)
-ELDS_ROOTFS_BUILD := $(ELDS)/rootfs/$(ELDS_BOARD)/$(ELDS_CROSS_TUPLE)
+ELDS_ROOTFS_BUILD := $(ELDS)/rootfs/$(BOARD_TYPE)/$(ELDS_CROSS_TUPLE)
 ELDS_ROOTFS_CONFIG := $(ELDS_ROOTFS_BUILD)/.config
-ELDS_ROOTFS_SOURCES := $(shell cat $(ELDS)/boards/$(ELDS_BOARD)/rootfs.txt)
+ELDS_ROOTFS_SOURCES := $(shell cat $(ELDS)/boards/$(BOARD_TYPE)/rootfs.txt)
 ELDS_ROOTFS_TARGETS := $(BOARD_ROOTFS_TARGETS)
 
 # Kernel Definitions

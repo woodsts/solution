@@ -7,6 +7,8 @@
 # under the terms of the GNU General Public License version 2
 #
 
+BOARD_TYPE := $(ELDS_BOARD)
+
 BOARD_HOSTNAME := versatile-pb
 BOARD_GETTY_PORT := ttyAMA0
 
@@ -15,12 +17,12 @@ BOARD_VENDOR ?= -unknown
 BOARD_OS ?= linux
 BOARD_ABI ?= gnueabi
 
-BOARD_CONFIG := $(ELDS)/boards/$(ELDS_BOARD)/config
+BOARD_CONFIG := $(ELDS)/boards/$(BOARD_TYPE)/config
 BOARD_TOOLCHAIN_CONFIG := $(BOARD_CONFIG)/crosstool-ng/config
 BOARD_ROOTFS_CONFIG := $(BOARD_CONFIG)/buildroot/config
 BOARD_KERNEL_CONFIG := $(BOARD_CONFIG)/linux/config
 
-BOARD_ROOTFS := $(ELDS)/rootfs/$(ELDS_BOARD)/$(BOARD_ARCH)$(BOARD_VENDOR)-$(BOARD_OS)-$(BOARD_ABI)
+BOARD_ROOTFS := $(ELDS)/rootfs/$(BOARD_TYPE)/$(BOARD_ARCH)$(BOARD_VENDOR)-$(BOARD_OS)-$(BOARD_ABI)
 BOARD_BUILD := $(BOARD_ROOTFS)/build
 BOARD_IMAGES := $(BOARD_ROOTFS)/images
 BOARD_TARGET := $(BOARD_ROOTFS)/target
