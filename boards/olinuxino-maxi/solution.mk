@@ -89,6 +89,7 @@ define olinuxino-maxi-env
 	@printf "BOARD_BOOTLOADER_TARGETS     : $(BOARD_BOOTLOADER_TARGETS)\n"
 endef
 
+export BOARD_TYPE
 export BOARD_HOSTNAME
 export BOARD_GETTY_PORT
 

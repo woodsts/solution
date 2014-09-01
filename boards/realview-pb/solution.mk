@@ -38,6 +38,7 @@ define realview-pb-env
 	@printf "BOARD_GETTY_PORT            : $(BOARD_GETTY_PORT)\n"
 endef
 
+export BOARD_TYPE
 export BOARD_HOSTNAME
 export BOARD_GETTY_PORT
 
