@@ -209,12 +209,17 @@ $(ELDS_KERNEL_TARGETS): $(ELDS_TOOLCHAIN_TARGETS)
 		printf "***** WARNING 'Linux' HAS DIFFERENT VERSION *****\n"; \
 		sleep 3; \
 	fi
-	$(MAKE) -j 2 -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) zImage LOCALVERSION=$(ELDS_KERNEL_LOCALVERSION)
+	$(MAKE) -j 2 -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) zImage \
+		LOCALVERSION=$(ELDS_KERNEL_LOCALVERSION)
 	@if [ -f $(ELDS_KERNEL_BOOT)/zImage ]; then \
-		$(RM) $(ELDS_ROOTFS_BUILD)/target/boot/*; \
+		$(RM) $(ELDS_ROOTFS_BUILD)/target/boot/zImage-*; \
+		$(RM) $(ELDS_ROOTFS_BUILD)/target/boot/System.map-*; \
 		cp -av $(ELDS_KERNEL_BOOT)/zImage $(ELDS_ROOTFS_BUILD)/target/boot/zImage-$(ELDS_KERNEL_VERSION); \
 	        cp -av $(ELDS_KERNEL_SYSMAP) $(ELDS_ROOTFS_BUILD)/target/boot/System.map-$(ELDS_KERNEL_VERSION); \
+		mkimage -A arm -O linux -T kernel -C none -a 0x80008000 -e 0x80008000 -n "Linux Kernel $(ELDS_KERNEL_VERSION)" \
+			-d $(ELDS_KERNEL_BOOT)/zImage $(ELDS_ROOTFS_BUILD)/target/boot/uImage-$(ELDS_KERNEL_VERSION); \
 		cd $(ELDS_ROOTFS_BUILD)/target/boot && \
+			ln -sf uImage-$(ELDS_KERNEL_VERSION) uImage && \
 			ln -sf zImage-$(ELDS_KERNEL_VERSION) zImage && \
 			ln -sf System.map-$(ELDS_KERNEL_VERSION) System.map; \
 	else \
@@ -222,7 +227,8 @@ $(ELDS_KERNEL_TARGETS): $(ELDS_TOOLCHAIN_TARGETS)
 		exit 2; \
 	fi
 ifdef BOARD_KERNEL_DT
-	$(MAKE) -j 2 -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) $(BOARD_KERNEL_DT).dtb LOCALVERSION=$(ELDS_KERNEL_LOCALVERSION)
+	$(MAKE) -j 2 -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) $(BOARD_KERNEL_DT).dtb \
+		LOCALVERSION=$(ELDS_KERNEL_LOCALVERSION)
 	@if [ -f $(ELDS_KERNEL_DTB) ]; then \
 		cp -av $(ELDS_KERNEL_DTB) $(ELDS_ROOTFS_BUILD)/target/boot/$(BOARD_KERNEL_DT)-$(ELDS_KERNEL_VERSION).dtb; \
 		cd $(ELDS_ROOTFS_BUILD)/target/boot/ && \
@@ -233,15 +239,18 @@ ifdef BOARD_KERNEL_DT
 	fi
 	$(call $(ELDS_BOARD)-kernel-append-dtb)
 endif
-	$(MAKE) -j 2 -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) modules LOCALVERSION=$(ELDS_KERNEL_LOCALVERSION)
+	$(MAKE) -j 2 -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) modules \
+		LOCALVERSION=$(ELDS_KERNEL_LOCALVERSION)
 	@$(RM) -r $(ELDS_ROOTFS_BUILD)/target/lib/modules/*
-	$(MAKE) -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) modules_install LOCALVERSION=$(ELDS_KERNEL_LOCALVERSION) \
+	$(MAKE) -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) modules_install \
+		LOCALVERSION=$(ELDS_KERNEL_LOCALVERSION) \
 		INSTALL_MOD_PATH=$(ELDS_ROOTFS_BUILD)/target
 	@if [ -d $(ELDS_ROOTFS_BUILD)/target/lib/modules ]; then \
 		find $(ELDS_ROOTFS_BUILD)/target/lib/modules -type l -exec rm -f {} \; ; \
 	fi
 	$(MAKE) -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) headers_install \
-		INSTALL_HDR_PATH=$(ELDS_ROOTFS_BUILD)/staging/usr/include LOCALVERSION=$(ELDS_KERNEL_LOCALVERSION)
+		LOCALVERSION=$(ELDS_KERNEL_LOCALVERSION) \
+		INSTALL_HDR_PATH=$(ELDS_ROOTFS_BUILD)/staging/usr/include
 	@$(RM) $(ELDS_ROOTFS_TARGETS)
 	@$(MAKE) rootfs
 
