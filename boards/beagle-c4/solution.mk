@@ -28,12 +28,7 @@ define beagle-c4-env
 endef
 
 define beagle-c4-rootfs-finalize
-	@mkdir -p $(ELDS)/rootfs/$(ELDS_BOARD)/$(ELDS_CROSS_TUPLE)/images
-	@for f in $(ELDS_ROOTFS_TARGETS); do \
-		if [ -f $$f ]; then \
-			rsync $$f $(ELDS)/rootfs/$(ELDS_BOARD)/$(ELDS_CROSS_TUPLE)/images/; \
-		fi; \
-	done
+	$(call omap2plus-rootfs-finalize)
 endef
 
 export BOARD_HOSTNAME

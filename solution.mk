@@ -72,7 +72,8 @@ ifdef BOARD_KERNEL_DT
 ELDS_KERNEL_DTB := $(ELDS_KERNEL_BOOT)/dts/$(BOARD_KERNEL_DT).dtb
 ELDS_KERNEL_TARGETS := $(ELDS_KERNEL_DTB)
 endif
-ELDS_KERNEL_TARGETS += $(ELDS_KERNEL_BOOT)/Image $(ELDS_KERNEL_BOOT)/zImage
+ELDS_KERNEL_TARGETS += $(ELDS_KERNEL_BOOT)/Image $(ELDS_KERNEL_BOOT)/zImage \
+		       $(ELDS)/rootfs/$(ELDS_BOARD)/$(ELDS_CROSS_TUPLE)/target/boot/zImage
 
 # Misc.
 ELDS_ISSUE := $(shell printf "Solution @ $(shell git log -1|grep commit|cut -d ' ' -f 2)")

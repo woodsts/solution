@@ -65,6 +65,21 @@ define omap2plus-bootloader
 	fi
 endef
 
+define omap2plus-rootfs-finalize
+	@mkdir -p $(ELDS)/rootfs/$(ELDS_BOARD)/$(ELDS_CROSS_TUPLE)/images
+	@for f in $(ELDS_ROOTFS_TARGETS); do \
+		if [ -f $$f ]; then \
+			rsync $$f $(ELDS)/rootfs/$(ELDS_BOARD)/$(ELDS_CROSS_TUPLE)/images/; \
+		fi; \
+	done
+	@$(RM) -r $(ELDS)/rootfs/$(ELDS_BOARD)/$(ELDS_CROSS_TUPLE)/target
+	@mkdir -p $(ELDS)/rootfs/$(ELDS_BOARD)/$(ELDS_CROSS_TUPLE)/target/lib
+	@rsync -aP $(ELDS)/rootfs/omap2plus/$(ELDS_CROSS_TUPLE)/target/boot \
+		$(ELDS)/rootfs/$(ELDS_BOARD)/$(ELDS_CROSS_TUPLE)/target/
+	@rsync -aP $(ELDS)/rootfs/omap2plus/$(ELDS_CROSS_TUPLE)/target/lib/modules \
+		$(ELDS)/rootfs/$(ELDS_BOARD)/$(ELDS_CROSS_TUPLE)/target/lib/
+endef
+
 define omap2plus-env
 	@printf "BOARD_TYPE                   : $(BOARD_TYPE)\n"
 	@printf "BOARD_ARCH                   : $(BOARD_ARCH)\n"
