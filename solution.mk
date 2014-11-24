@@ -76,7 +76,7 @@ ELDS_KERNEL_TARGETS += $(ELDS_KERNEL_BOOT)/Image $(ELDS_KERNEL_BOOT)/zImage \
 		       $(ELDS)/rootfs/$(ELDS_BOARD)/$(ELDS_CROSS_TUPLE)/target/boot/zImage
 
 # Misc.
-ELDS_ISSUE := $(shell printf "Solution @ $(shell git log -1|grep commit|cut -d ' ' -f 2)")
+ELDS_ISSUE := $(shell printf "$(ELDS_BOARD) Solution @ $(shell git describe --always)")
 
 # Store build information
 CMD := $(shell printf $(ELDS) > $(ELDS)/.solution)

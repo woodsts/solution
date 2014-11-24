@@ -24,7 +24,10 @@ BOARD_BUILD := $(BOARD_ROOTFS)/build
 BOARD_IMAGES := $(BOARD_ROOTFS)/images
 BOARD_TARGET := $(BOARD_ROOTFS)/target
 
-BOARD_ROOTFS_TARGETS := $(BOARD_IMAGES)/rootfs.tar.xz
+BOARD_ROOTFS_FINAL := $(ELDS)/rootfs/$(ELDS_BOARD)/$(BOARD_ARCH)$(BOARD_VENDOR)-$(BOARD_OS)-$(BOARD_ABI)
+
+BOARD_ROOTFS_TARGETS := $(BOARD_IMAGES)/rootfs.tar.xz \
+			$(BOARD_ROOTFS_FINAL)/images/rootfs.tar.xz
 
 # Bootloader Definitions
 BOARD_BOOTLOADER := U-Boot
@@ -66,18 +69,22 @@ define omap2plus-bootloader
 endef
 
 define omap2plus-rootfs-finalize
-	@mkdir -p $(ELDS)/rootfs/$(ELDS_BOARD)/$(ELDS_CROSS_TUPLE)/images
+	@mkdir -p $(BOARD_ROOTFS_FINAL)/images
 	@for f in $(ELDS_ROOTFS_TARGETS); do \
 		if [ -f $$f ]; then \
-			rsync $$f $(ELDS)/rootfs/$(ELDS_BOARD)/$(ELDS_CROSS_TUPLE)/images/; \
+			rsync $$f $(BOARD_ROOTFS_FINAL)/images/; \
 		fi; \
 	done
-	@$(RM) -r $(ELDS)/rootfs/$(ELDS_BOARD)/$(ELDS_CROSS_TUPLE)/target
-	@mkdir -p $(ELDS)/rootfs/$(ELDS_BOARD)/$(ELDS_CROSS_TUPLE)/target/lib
-	@rsync -aP $(ELDS)/rootfs/omap2plus/$(ELDS_CROSS_TUPLE)/target/boot \
-		$(ELDS)/rootfs/$(ELDS_BOARD)/$(ELDS_CROSS_TUPLE)/target/
-	@rsync -aP $(ELDS)/rootfs/omap2plus/$(ELDS_CROSS_TUPLE)/target/lib/modules \
-		$(ELDS)/rootfs/$(ELDS_BOARD)/$(ELDS_CROSS_TUPLE)/target/lib/
+	@$(RM) -r $(BOARD_ROOTFS_FINAL)/target
+	@mkdir -p $(BOARD_ROOTFS_FINAL)/target/lib
+	@if [ -d $(BOARD_ROOTFS)/target/boot ]; then \
+		rsync -aP $(BOARD_ROOTFS)/target/boot \
+			$(BOARD_ROOTFS_FINAL)/target/; \
+	fi
+	@if [ -d $(BOARD_ROOTFS)/target/lib/modules ]; then \
+		rsync -aP $(BOARD_ROOTFS)/target/lib/modules \
+			$(BOARD_ROOTFS_FINAL)/target/lib/; \
+	fi
 endef
 
 define omap2plus-env
