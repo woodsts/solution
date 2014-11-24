@@ -26,8 +26,10 @@ BOARD_TARGET := $(BOARD_ROOTFS)/target
 
 BOARD_ROOTFS_FINAL := $(ELDS)/rootfs/$(ELDS_BOARD)/$(BOARD_ARCH)$(BOARD_VENDOR)-$(BOARD_OS)-$(BOARD_ABI)
 
-BOARD_ROOTFS_TARGETS := $(BOARD_IMAGES)/rootfs.tar.xz \
-			$(BOARD_ROOTFS_FINAL)/images/rootfs.tar.xz
+BOARD_ROOTFS_TARGETS := $(BOARD_IMAGES)/rootfs.tar.xz
+ifneq ($(ELDS_BOARD),$(BOARD_TYPE))
+BOARD_ROOTFS_TARGETS += $(BOARD_ROOTFS_FINAL)/images/rootfs.tar.xz
+endif
 
 # Bootloader Definitions
 BOARD_BOOTLOADER := U-Boot
