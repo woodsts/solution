@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Buildroot 2014.11-rc2-00029-g7c00cd1 Configuration
+# Buildroot 2014.11 Configuration
 #
 BR2_HAVE_DOT_CONFIG=y
 BR2_HOSTARCH_NEEDS_IA32_COMPILER=y
