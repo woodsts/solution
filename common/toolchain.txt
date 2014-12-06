@@ -1,9 +1,9 @@
 binutils-2.24.tar.bz2
 cloog-0.18.1.tar.gz
-gcc-4.9.1.tar.bz2
-gdb-7.8.tar.xz
+gcc-4.9.2.tar.bz2
+gdb-7.8.1.tar.xz
 glibc-2.19.tar.xz
-gmp-5.1.3.tar.xz
+gmp-6.0.0a.tar.xz
 isl-0.12.2.tar.bz2
 libelf-0.8.13.tar.gz
 ltrace_0.7.3.orig.tar

@@ -1,9 +1,8 @@
 #
 # Automatically generated make config: don't edit
 # crosstool-NG 1.20.0 Configuration
-# Mon Nov 24 17:20:49 2014
+# Fri Dec  5 21:00:32 2014
 #
-CT_CONFIGURE_has_make381=y
 CT_CONFIGURE_has_xz=y
 CT_CONFIGURE_has_cvs=y
 CT_CONFIGURE_has_svn=y
@@ -225,6 +224,8 @@ CT_KERNEL_VERSION="custom"
 CT_KERNEL_linux=y
 CT_KERNEL_bare_metal_AVAILABLE=y
 CT_KERNEL_linux_AVAILABLE=y
+# CT_KERNEL_V_3_17 is not set
+# CT_KERNEL_V_3_16 is not set
 # CT_KERNEL_V_3_15 is not set
 # CT_KERNEL_V_3_14 is not set
 # CT_KERNEL_V_3_13 is not set
@@ -431,13 +432,14 @@ CT_LIBC_GLIBC_MIN_KERNEL="custom"
 # C compiler
 #
 CT_CC="gcc"
-CT_CC_VERSION="4.9.1"
+CT_CC_VERSION="4.9.2"
 CT_CC_CORE_PASSES_NEEDED=y
 CT_CC_CORE_PASS_1_NEEDED=y
 CT_CC_CORE_PASS_2_NEEDED=y
 CT_CC_gcc=y
 # CT_CC_GCC_SHOW_LINARO is not set
-CT_CC_V_4_9_1=y
+CT_CC_V_4_9_2=y
+# CT_CC_V_4_9_1 is not set
 # CT_CC_V_4_9_0 is not set
 # CT_CC_V_4_8_3 is not set
 # CT_CC_V_4_8_2 is not set
@@ -576,7 +578,8 @@ CT_GDB_GDBSERVER_STATIC=y
 # gdb version
 #
 # CT_DEBUG_GDB_SHOW_LINARO is not set
-CT_GDB_V_7_8=y
+CT_GDB_V_7_8_1=y
+# CT_GDB_V_7_8 is not set
 # CT_GDB_V_7_7_1 is not set
 # CT_GDB_V_7_7 is not set
 # CT_GDB_V_7_6_1 is not set
@@ -596,7 +599,7 @@ CT_GDB_7_0_or_later=y
 CT_GDB_HAS_PKGVERSION_BUGURL=y
 CT_GDB_HAS_PYTHON=y
 CT_GDB_INSTALL_GDBINIT=y
-CT_GDB_VERSION="7.8"
+CT_GDB_VERSION="7.8.1"
 CT_DEBUG_ltrace=y
 CT_LTRACE_V_0_7_3=y
 # CT_LTRACE_V_0_5_3 is not set
@@ -627,14 +630,15 @@ CT_ISL=y
 CT_CLOOG=y
 CT_MPC=y
 CT_LIBELF_TARGET=y
-CT_GMP_V_5_1_3=y
+CT_GMP_V_6_0_0=y
+# CT_GMP_V_5_1_3 is not set
 # CT_GMP_V_5_1_1 is not set
 # CT_GMP_V_5_0_2 is not set
 # CT_GMP_V_5_0_1 is not set
 # CT_GMP_V_4_3_2 is not set
 # CT_GMP_V_4_3_1 is not set
 # CT_GMP_V_4_3_0 is not set
-CT_GMP_VERSION="5.1.3"
+CT_GMP_VERSION="6.0.0a"
 CT_MPFR_V_3_1_2=y
 # CT_MPFR_V_3_1_0 is not set
 # CT_MPFR_V_3_0_1 is not set
