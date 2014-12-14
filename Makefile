@@ -66,6 +66,10 @@ scm:
 	@git submodule init
 	@git submodule update
 
+# Run 'git submodule' with option
+scm-%:
+	@git submodule $(*F)
+
 # Test for Git Submodule's existence
 %-check:
 	$(call scm-check)
