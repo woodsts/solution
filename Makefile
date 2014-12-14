@@ -140,7 +140,7 @@ toolchain-config: $(ELDS_TOOLCHAIN_CONFIG)
 
 $(ELDS_TOOLCHAIN_CONFIG): $(BOARD_TOOLCHAIN_CONFIG)
 	@mkdir -p $(ELDS_TOOLCHAIN_BUILD)
-	@rsync -a $< $@
+	@cat $< > $@
 
 # Build toolchain for embedded target board
 .PHONY: toolchain
@@ -160,7 +160,7 @@ $(ELDS_TOOLCHAIN_TARGETS):
 toolchain-%: $(ELDS_TOOLCHAIN_CONFIG)
 	@$(MAKE) restore
 	@cd $(ELDS_TOOLCHAIN_BUILD) && CT_ARCH=$(BOARD_ARCH) ct-ng $(*F)
-	@rsync -a $< $(BOARD_TOOLCHAIN_CONFIG)
+	@cat $< > $(BOARD_TOOLCHAIN_CONFIG)
 
 # Restore existing rootfs configuration for embedded target board
 .PHONY: rootfs-config
@@ -168,7 +168,7 @@ rootfs-config: $(ELDS_ROOTFS_CONFIG)
 
 $(ELDS_ROOTFS_CONFIG): $(BOARD_ROOTFS_CONFIG)
 	@mkdir -p $(ELDS_ROOTFS_BUILD)
-	@rsync -a $< $@
+	@cat $< > $@
 
 # Build rootfs for embedded target board
 .PHONY: rootfs
@@ -190,7 +190,7 @@ $(ELDS_ROOTFS_TARGETS): $(ELDS_TOOLCHAIN_TARGETS)
 rootfs-%: $(ELDS_ROOTFS_CONFIG)
 	@$(MAKE) restore
 	$(MAKE) -C $(ELDS_SCM)/buildroot O=$(ELDS_ROOTFS_BUILD) $(*F)
-	@rsync -a $< $(BOARD_ROOTFS_CONFIG)
+	@cat $< > $(BOARD_ROOTFS_CONFIG)
 
 # Restore existing kernel configuration for embedded target board
 .PHONY: kernel-config
@@ -198,7 +198,7 @@ kernel-config: $(ELDS_KERNEL_CONFIG)
 
 $(ELDS_KERNEL_CONFIG): $(BOARD_KERNEL_CONFIG)
 	@mkdir -p $(ELDS_KERNEL_BUILD)
-	@rsync -a $< $@
+	@cat $< > $@
 
 # Build kernel for embedded target board
 .PHONY: kernel
@@ -263,7 +263,7 @@ endif
 # Run Linux kernel build with options
 kernel-%: $(ELDS_KERNEL_CONFIG)
 	$(MAKE) -j 2 -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) $(*F)
-	@rsync -a $< $(BOARD_KERNEL_CONFIG)
+	@cat $< > $(BOARD_KERNEL_CONFIG)
 
 # Selectively remove some solution artifacts
 .PHONY: clean
