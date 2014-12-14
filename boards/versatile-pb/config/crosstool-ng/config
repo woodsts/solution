@@ -1,8 +1,9 @@
 #
 # Automatically generated make config: don't edit
 # crosstool-NG 1.20.0 Configuration
-# Fri Dec  5 21:00:32 2014
+# Sat Dec 13 14:34:56 2014
 #
+CT_CONFIGURE_has_make381=y
 CT_CONFIGURE_has_xz=y
 CT_CONFIGURE_has_cvs=y
 CT_CONFIGURE_has_svn=y
@@ -325,7 +326,7 @@ CT_BINUTILS_FOR_TARGET_BFD=y
 # C-library
 #
 CT_LIBC="glibc"
-CT_LIBC_VERSION="2.19"
+CT_LIBC_VERSION="2.20"
 # CT_LIBC_eglibc is not set
 CT_LIBC_glibc=y
 # CT_LIBC_musl is not set
@@ -333,7 +334,8 @@ CT_LIBC_glibc=y
 CT_LIBC_eglibc_AVAILABLE=y
 CT_THREADS="nptl"
 CT_LIBC_glibc_AVAILABLE=y
-CT_LIBC_GLIBC_V_2_19=y
+CT_LIBC_GLIBC_V_2_20=y
+# CT_LIBC_GLIBC_V_2_19 is not set
 # CT_LIBC_GLIBC_V_2_18 is not set
 # CT_LIBC_GLIBC_V_2_17 is not set
 # CT_LIBC_GLIBC_V_2_16_0 is not set
@@ -348,6 +350,7 @@ CT_LIBC_GLIBC_V_2_19=y
 # CT_LIBC_GLIBC_V_2_10_1 is not set
 # CT_LIBC_GLIBC_V_2_9 is not set
 # CT_LIBC_GLIBC_V_2_8 is not set
+CT_LIBC_GLIBC_2_20_or_later=y
 CT_LIBC_mingw_AVAILABLE=y
 CT_LIBC_musl_AVAILABLE=y
 CT_LIBC_newlib_AVAILABLE=y
@@ -362,7 +365,6 @@ CT_LIBC_SUPPORT_THREADS_NATIVE=y
 CT_THREADS_NATIVE=y
 CT_LIBC_XLDD=y
 # CT_LIBC_GLIBC_PORTS_EXTERNAL is not set
-CT_LIBC_GLIBC_MAY_FORCE_PORTS=y
 CT_LIBC_glibc_familly=y
 CT_LIBC_GLIBC_EXTRA_CONFIG_ARRAY="--disable-multi-arch"
 CT_LIBC_GLIBC_CONFIGPARMS=""
@@ -372,7 +374,6 @@ CT_LIBC_EXTRA_CC_ARGS=""
 # CT_LIBC_DISABLE_VERSIONING is not set
 CT_LIBC_OLDEST_ABI=""
 CT_LIBC_GLIBC_FORCE_UNWIND=y
-CT_LIBC_GLIBC_USE_PORTS=y
 CT_LIBC_ADDONS_LIST="libidn"
 CT_LIBC_LOCALES=y
 # CT_LIBC_GLIBC_KERNEL_VERSION_NONE is not set
