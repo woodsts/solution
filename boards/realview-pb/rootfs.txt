@@ -22,6 +22,7 @@ elfutils-0.155.tar.bz2
 elfutils-portability.patch
 elfutils-robustify.patch
 ethtool-3.16.tar.xz
+eudev-1.9.tar.gz
 expat-2.1.0.tar.gz
 fakeroot_1.18.4.orig.tar.bz2
 fbgrab-1.2.tar.gz
@@ -32,6 +33,7 @@ ftop-1.0.tar.gz
 gadgetfs-test.tar.bz2
 gettext-0.19.3.tar.xz
 gnupg-1.4.18.tar.bz2
+gperf-3.0.4.tar.gz
 gpgme-1.5.1.tar.bz2
 hostapd-2.2.tar.gz
 htop-1.0.3.tar.gz
@@ -50,7 +52,6 @@ libaio_0.3.109.orig.tar.gz
 libarchive-3.1.2.tar.gz
 libassuan-2.1.2.tar.bz2
 libcap-2.24.tar.xz
-libcap-ng-0.7.4.tar.gz
 libcgroup-0.41.tar.bz2
 libdrm-2.4.58.tar.bz2
 liberation-fonts-ttf-1.06.0.20100721.tar.gz
@@ -63,16 +64,18 @@ liblockfile_1.08-4.debian.tar.bz2
 liblockfile_1.08.orig.tar.gz
 libnl-3.2.25.tar.gz
 libpcap-1.6.2.tar.gz
-libpng-1.6.12.tar.xz
+libpng-1.6.15.tar.xz
 libpthread-stubs-0.3.tar.bz2
 libtirpc-0.2.4.tar.bz2
 libtool-2.4.2.tar.xz
+libunistring-0.9.4.tar.gz
 libusb-1.0.19.tar.bz2
 libwebp-0.3.1.tar.gz
 libwebsockets-v1.3-chrome37-firefox30.tar.xz
 libxml2-2.9.2.tar.gz
 lighttpd-1.4.35.tar.xz
 links-2.7.tar.gz
+lockfile-progs_0.1.17.tar.gz
 lrzsz-0.12.20.tar.gz
 lsuio-0.2.0.tar.gz
 LuaJIT-2.0.3.tar.gz
@@ -91,7 +94,6 @@ mtd-utils-1.5.1.tar.bz2
 mtools-4.0.18.tar.bz2
 ncurses-5.9.tar.gz
 openssl-1.0.1j.tar.gz
-opkg-v0.2.2.tar.gz
 pcre-8.35.tar.gz
 pkgconf-0.8.9.tar.bz2
 popt-1.16.tar.gz
@@ -117,6 +119,7 @@ ti-utils-06dbdb2727354b5f3ad7c723897f40051fddee49.tar.gz
 tree-1.6.0.tgz
 usb-modeswitch-2.2.0.tar.bz2
 usb-modeswitch-data-20140529.tar.bz2
+usbmount_0.0.22.tar.gz
 usbutils-007.tar.xz
 util-linux-2.25.2.tar.xz
 v4l-utils-1.6.0.tar.bz2
