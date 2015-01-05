@@ -16,7 +16,8 @@ BOARD_KERNEL_DT := omap3-beagle
 
 define beagle-c4-bootloader-config
 	@mkdir -p $(BOARD_BOOTLOADER_BUILD)
-	$(MAKE) -C $(BOARD_BOOTLOADER_SCM) O=$(BOARD_BOOTLOADER_BUILD) $(ELDS_CROSS_PARAMS) omap3_beagle_config
+	$(MAKE) -C $(BOARD_BOOTLOADER_SCM) O=$(BOARD_BOOTLOADER_BUILD) $(ELDS_CROSS_PARAMS) distclean
+	$(MAKE) -C $(BOARD_BOOTLOADER_SCM) O=$(BOARD_BOOTLOADER_BUILD) $(ELDS_CROSS_PARAMS) omap3_beagle_defconfig
 endef
 
 define beagle-c4-bootloader
