@@ -101,12 +101,15 @@ $(BOARD_BOOTLOADER_TARGETS): $(ELDS_TOOLCHAIN_TARGETS)
 	@$(MAKE) u-boot-check
 	@$(MAKE) bootloader-config
 	$(call $(ELDS_BOARD)-bootloader)
-	@$(RM) $(ELDS_ROOTFS_TARGETS)
-	@$(MAKE) rootfs
 
 # Run 'make bootloader' with options
 bootloader-%: $(BOARD_BOOTLOADER_CONFIG)
 	$(call $(ELDS_BOARD)-bootloader)
+
+# Remove targets
+.PHONY: bootloader-rm
+bootloader-rm:
+	$(RM) $(BOARD_BOOTLOADER_TARGETS)
 
 # Toolchain build tool (ct-ng) via crostool-NG
 .PHONY: toolchain-builder
@@ -221,7 +224,7 @@ $(ELDS_KERNEL_TARGETS): $(ELDS_TOOLCHAIN_TARGETS)
 		$(RM) $(ELDS_ROOTFS_BUILD)/target/boot/System.map-*; \
 		cp -av $(ELDS_KERNEL_BOOT)/zImage $(ELDS_ROOTFS_BUILD)/target/boot/zImage-$(ELDS_KERNEL_VERSION); \
 	        cp -av $(ELDS_KERNEL_SYSMAP) $(ELDS_ROOTFS_BUILD)/target/boot/System.map-$(ELDS_KERNEL_VERSION); \
-		mkimage -A arm -O linux -T kernel -C none -a 0x80008000 -e 0x80008000 -n "Linux Kernel $(ELDS_KERNEL_VERSION)" \
+		mkimage -A arm -O linux -T kernel -C none -a 0x80008000 -e 0x80008000 -n "Linux $(ELDS_KERNEL_VERSION)" \
 			-d $(ELDS_KERNEL_BOOT)/zImage $(ELDS_ROOTFS_BUILD)/target/boot/uImage-$(ELDS_KERNEL_VERSION); \
 		cd $(ELDS_ROOTFS_BUILD)/target/boot && \
 			ln -sf uImage-$(ELDS_KERNEL_VERSION) uImage && \
@@ -257,13 +260,16 @@ endif
 	$(MAKE) -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) headers_install \
 		LOCALVERSION=$(ELDS_KERNEL_LOCALVERSION) \
 		INSTALL_HDR_PATH=$(ELDS_ROOTFS_BUILD)/staging/usr/include
-	@$(RM) $(ELDS_ROOTFS_TARGETS)
-	@$(MAKE) rootfs
 
 # Run Linux kernel build with options
 kernel-%: $(ELDS_KERNEL_CONFIG)
 	$(MAKE) -j 2 -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) $(*F)
 	@cat $< > $(BOARD_KERNEL_CONFIG)
+
+# Remove kernel targets
+.PHONY: kernel-rm
+kernel-rm:
+	$(RM) $(ELDS_KERNEL_TARGETS)
 
 # Selectively remove some solution artifacts
 .PHONY: clean
