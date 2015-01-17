@@ -195,6 +195,11 @@ rootfs-%: $(ELDS_ROOTFS_CONFIG)
 	$(MAKE) -C $(ELDS_SCM)/buildroot O=$(ELDS_ROOTFS_BUILD) $(*F)
 	@cat $< > $(BOARD_ROOTFS_CONFIG)
 
+# Remove rootfs targets
+.PHONY: rootfs-rm
+rootfs-rm:
+	$(RM) $(ELDS_ROOTFS_TARGETS)
+
 # Restore existing kernel configuration for embedded target board
 .PHONY: kernel-config
 kernel-config: $(ELDS_KERNEL_CONFIG)
