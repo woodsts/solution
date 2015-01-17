@@ -18,7 +18,7 @@ usage:
 
 # Primary make target for 'solution'
 .PHONY: solution
-solution: toolchain rootfs kernel bootloader
+solution: toolchain kernel bootloader rootfs
 
 # Restore any downloaded files that have been previously archived
 .PHONY: restore
