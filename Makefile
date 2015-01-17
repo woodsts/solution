@@ -144,6 +144,7 @@ toolchain-config: $(ELDS_TOOLCHAIN_CONFIG)
 $(ELDS_TOOLCHAIN_CONFIG): $(BOARD_TOOLCHAIN_CONFIG)
 	@mkdir -p $(ELDS_TOOLCHAIN_BUILD)
 	@cat $< > $@
+	@$(MAKE) toolchain-builder
 
 # Build toolchain for embedded target board
 .PHONY: toolchain
@@ -155,7 +156,6 @@ $(ELDS_TOOLCHAIN_TARGETS):
 		printf "***** WARNING 'Linux' HAS DIFFERENT VERSION *****\n"; \
 		sleep 3; \
 	fi
-	@$(MAKE) toolchain-builder
 	$(MAKE) toolchain-build
 	@$(MAKE) archive
 
