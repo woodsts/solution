@@ -1,0 +1,42 @@
+#!/bin/bash
+
+usage()
+{
+	printf "USAGE: push <target-dir> mmc\n"
+	printf "       push <target-dir> net <ip-address>\n"
+}
+
+if [ "x${2}" = "x" ]; then
+	printf "Missing transfer type!\n"
+	usage
+	exit 1
+fi
+transfer_type=${2}
+
+if [ "x${1}" = "x" ]; then
+	printf "Missing target directory!\n"
+	usage
+	exit 1
+fi
+target_dir=${1}
+
+case "${transfer_type}" in
+	mmc)
+		sudo rsync -aP ${target_dir}/boot /media/rootfs/ && \
+		sudo rsync -aP ${target_dir}/lib/modules /media/rootfs/lib/ && \
+		sudo sync
+		;;
+	net)
+		if [ "x${3}" = "x" ]; then
+			printf "Missing IP address!\n"
+			usage
+			exit 1
+		fi
+		rsync -aP ${target_dir}/boot root@${3}:/
+		rsync -aP ${target_dir}/lib/modules root@${3}:/lib/
+		;;
+	*)
+		printf "Transfer type [${transfer_type}] not implemented.\n"
+		usage
+		exit 1
+esac
