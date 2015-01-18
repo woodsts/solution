@@ -13,17 +13,27 @@ printf "\n`cat ${TARGET}/etc/issue`\n\n" > ${TARGET}/etc/issue
 
 # Board Specific Modifications
 case "${ELDS_BOARD}" in
+	am3517-evm)
+		mkdir ${TARGET}/BOOT
+		printf "/dev/mmcblk0p1 /BOOT auto errors=remount-ro 0 1\n" >> ${TARGET}/etc/fstab
+		;;
+	beagle-c4)
+		mkdir ${TARGET}/BOOT
+		printf "/dev/mmcblk0p1 /BOOT auto errors=remount-ro 0 1\n" >> ${TARGET}/etc/fstab
+		;;
 	olinuxino-maxi)
 		# ttyAMA0 is not working on my board (for now)
 		printf "ttyAPP0\n" >> ${TARGET}/etc/securetty
 		printf "console=ttyAPP0\n" > ${TARGET}/boot/uEnv.txt
 		printf "ttyAPP0::respawn:/sbin/getty -L ttyAPP0 115200 vt102\n" >> ${TARGET}/etc/inittab
 		;;
-	beagle-c4)
+	realview-pb)
+		;;
+	sama5d3-xpld)
+		mkdir ${TARGET}/BOOT
+		printf "/dev/mmcblk0p1 /BOOT auto errors=remount-ro 0 1\n" >> ${TARGET}/etc/fstab
 		;;
 	versatile-pb)
-		;;
-	realview-pb)
 		;;
 	*)
 		;;

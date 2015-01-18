@@ -1,0 +1,7 @@
+optargs=earlyprintk debug
+
+## Reference from U-Boot default environment
+#ethact=macb0,gmacb0
+#ethprime=gmacb0
+#ethaddr=da:b6:37:3b:52:57
+#etha1ddr=92:8d:50:0f:13:56
