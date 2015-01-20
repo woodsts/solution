@@ -1,13 +1,13 @@
 #!/bin/sh
 #
-# Mounting debugfs...
+# Mounting configfs....
 #
 
 case "$1" in
   start)
-	echo "Mounting debugfs..."
-	mount -t debugfs debugfs /sys/kernel/debug
-	cat /sys/kernel/debug/gpio
+	echo "Mounting configfs...."
+	mount -t configfs configfs /sys/kernel/config
+	ls /sys/kernel/config
 	;;
   stop)
 	;;
