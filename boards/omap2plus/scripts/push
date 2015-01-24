@@ -1,0 +1,57 @@
+#!/bin/bash
+
+usage()
+{
+	printf "USAGE: push <target-dir> <device-tree> mmc\n"
+	printf "       push <target-dir> <device-tree> net <ip-address>\n"
+}
+
+if [ "x${3}" = "x" ]; then
+	printf "Missing transfer type!\n"
+	usage
+	exit 1
+fi
+transfer_type=${3}
+
+if [ "x${2}" = "x" ]; then
+	printf "Missing device tree name!\n"
+	usage
+	exit 1
+fi
+device_tree=${2}
+
+if [ "x${1}" = "x" ]; then
+	printf "Missing target directory!\n"
+	usage
+	exit 1
+fi
+target_dir=${1}
+
+case "${transfer_type}" in
+	mmc)
+		sudo rsync -aP ${target_dir}/boot /media/rootfs/ && \
+		sudo rsync -aP ${target_dir}/lib/modules /media/rootfs/lib/ && \
+		sudo cp -v ${target_dir}/boot/MLO-* /media/BOOT/MLO && \
+		sudo cp -v ${target_dir}/boot/u-boot-*.img /media/BOOT/u-boot.img && \
+		sudo cp -v ${target_dir}/boot/zImage-* /media/BOOT/zImage && \
+		sudo cp -v ${target_dir}/boot/${device_tree}-*.dtb /media/BOOT/${device_tree}.dtb && \
+		sudo sync
+		;;
+	net)
+		if [ "x${4}" = "x" ]; then
+			printf "Missing IP address!\n"
+			usage
+			exit 1
+		fi
+		rsync -aP ${target_dir}/boot root@${4}:/
+		rsync -aP ${target_dir}/lib/modules root@${4}:/lib/
+		rsync -P ${target_dir}/boot/MLO-* root@${4}:/BOOT/MLO
+		rsync -P ${target_dir}/boot/u-boot-*.img root@${4}:/BOOT/u-boot.img
+		rsync -P ${target_dir}/boot/zImage-* root@${4}:/BOOT/zImage
+		rsync -P ${target_dir}/boot/${device_tree}-*.dtb root@${4}:/BOOT/${device_tree}.dtb
+		;;
+	*)
+		printf "Transfer type [${transfer_type}] not implemented.\n"
+		usage
+		exit 1
+esac
