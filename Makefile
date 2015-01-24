@@ -110,6 +110,10 @@ bootloader-%: $(BOARD_BOOTLOADER_CONFIG)
 .PHONY: bootloader-rm
 bootloader-rm:
 	$(RM) $(BOARD_BOOTLOADER_TARGETS)
+	$(RM) $(BOARD_ROOTFS_FINAL)/target/boot/*.img
+	$(RM) $(BOARD_ROOTFS_FINAL)/target/boot/*.bin
+	$(RM) $(BOARD_ROOTFS_FINAL)/target/boot/*.sd
+	$(RM) $(BOARD_ROOTFS_FINAL)/target/boot/MLO*
 
 # Toolchain build tool (ct-ng) via crostool-NG
 .PHONY: toolchain-builder
@@ -199,6 +203,7 @@ rootfs-%: $(ELDS_ROOTFS_CONFIG)
 .PHONY: rootfs-rm
 rootfs-rm:
 	$(RM) $(ELDS_ROOTFS_TARGETS)
+	$(RM) $(BOARD_ROOTFS_FINAL)/images/rootfs.*
 
 # Restore existing kernel configuration for embedded target board
 .PHONY: kernel-config
@@ -275,6 +280,10 @@ kernel-%: $(ELDS_KERNEL_CONFIG)
 .PHONY: kernel-rm
 kernel-rm:
 	$(RM) $(ELDS_KERNEL_TARGETS)
+	$(RM) $(BOARD_ROOTFS_FINAL)/target/boot/System.map*
+	$(RM) $(BOARD_ROOTFS_FINAL)/target/boot/uImage*
+	$(RM) $(BOARD_ROOTFS_FINAL)/target/boot/zImage*
+	$(RM) $(BOARD_ROOTFS_FINAL)/target/boot/*.dtb
 
 # Selectively remove some solution artifacts
 .PHONY: clean
