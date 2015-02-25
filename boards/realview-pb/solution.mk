@@ -13,7 +13,7 @@ BOARD_HOSTNAME := realview-pb
 BOARD_GETTY_PORT := ttyAMA0
 
 BOARD_ARCH ?= arm
-BOARD_VENDOR ?= -unknown
+BOARD_VENDOR ?= -cortexa8
 BOARD_OS ?= linux
 BOARD_ABI ?= gnueabihf
 

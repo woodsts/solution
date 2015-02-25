@@ -10,7 +10,7 @@
 BOARD_TYPE := omap2plus
 
 BOARD_ARCH ?= arm
-BOARD_VENDOR ?= -unknown
+BOARD_VENDOR ?= -cortexa8
 BOARD_OS ?= linux
 BOARD_ABI ?= gnueabihf
 
