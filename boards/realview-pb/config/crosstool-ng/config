@@ -1,9 +1,8 @@
 #
 # Automatically generated make config: don't edit
 # crosstool-NG 1.20.0 Configuration
-# Mon Feb 23 18:49:32 2015
+# Fri Apr  3 19:14:04 2015
 #
-CT_CONFIGURE_has_make381=y
 CT_CONFIGURE_has_xz=y
 CT_CONFIGURE_has_cvs=y
 CT_CONFIGURE_has_svn=y
