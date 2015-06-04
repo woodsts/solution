@@ -1,12 +1,14 @@
 binutils-2.25.tar.bz2
 cloog-0.18.1.tar.gz
+dmalloc-5.5.2.tgz
+duma_2_5_15.tar.gz
 gcc-4.9.2.tar.bz2
-gdb-7.8.1.tar.xz
-glibc-2.20.tar.xz
+gdb-7.9.1.tar.xz
+glibc-2.21.tar.xz
 gmp-6.0.0a.tar.xz
 isl-0.12.2.tar.bz2
 libelf-0.8.13.tar.gz
 ltrace_0.7.3.orig.tar
 mpc-1.0.2.tar.gz
 mpfr-3.1.2.tar.xz
-strace-4.8.tar.xz
+strace-4.10.tar.xz
