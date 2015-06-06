@@ -27,7 +27,7 @@ BOARD_BUILD := $(BOARD_ROOTFS)/build
 BOARD_IMAGES := $(BOARD_ROOTFS)/images
 BOARD_TARGET := $(BOARD_ROOTFS)/target
 
-BOARD_ROOTFS_TARGETS := $(BOARD_IMAGES)/rootfs.tar.xz $(BOARD_IMAGES)/rootfs.cpio.xz
+BOARD_ROOTFS_TARGETS := $(BOARD_IMAGES)/rootfs.tar $(BOARD_IMAGES)/rootfs.cpio.xz
 
 BOARD_KERNEL_DT := versatile-pb
 
