@@ -11,6 +11,7 @@ if [ "x${2}" = "x" ]; then
 	usage
 	exit 1
 fi
+
 transfer_type=${2}
 
 if [ "x${1}" = "x" ]; then
@@ -18,15 +19,17 @@ if [ "x${1}" = "x" ]; then
 	usage
 	exit 1
 fi
+
 target_dir=${1}
 
 case "${transfer_type}" in
 	mmc)
-		sudo rsync -aP ${target_dir}/boot /media/rootfs/ && \
-		sudo rsync -aP ${target_dir}/lib/modules /media/rootfs/lib/ && \
-		sudo cp -v ${target_dir}/boot/at91-sama5d3_xplained-*.dtb /media/BOOT/at91-sama5d3_xplained.dtb && \
-		sudo cp -v ${target_dir}/boot/boot-*.bin /media/BOOT/BOOT.BIN && \
-		sudo cp -v ${target_dir}/boot/zImage-* /media/BOOT/zImage && \
+		sudo rsync -aP ${target_dir}/boot /media/$USER/rootfs/ && \
+		sudo rsync -aP ${target_dir}/lib/modules /media/$USER/rootfs/lib/ && \
+		sudo cp -v ${target_dir}/boot/boot-*.bin /media/$USER/BOOT/BOOT.BIN && \
+		sudo cp -v ${target_dir}/boot/u-boot-*.img /media/$USER/BOOT/u-boot.img && \
+		sudo cp -v ${target_dir}/boot/zImage-* /media/$USER/BOOT/zImage && \
+		sudo cp -v ${target_dir}/boot/at91-sama5d3_xplained-*.dtb /media/$USER/BOOT/at91-sama5d3_xplained.dtb && \
 		sudo sync
 		;;
 	net)
@@ -37,8 +40,10 @@ case "${transfer_type}" in
 		fi
 		rsync -aP ${target_dir}/boot root@${3}:/
 		rsync -aP ${target_dir}/lib/modules root@${3}:/lib/
-		rsync -P ${target_dir}/boot/boot.bin root@${3}:/BOOT/BOOT.BIN
-		rsync -P ${target_dir}/boot/zImage root@${3}:/BOOT/zImage
+		rsync -P ${target_dir}/boot/boot-*.bin root@${3}:/BOOT/BOOT.BIN
+		rsync -P ${target_dir}/boot/u-boot-*.img root@${3}:/BOOT/u-boot.img
+		rsync -P ${target_dir}/boot/zImage-* root@${3}:/BOOT/zImage
+		rsync -P ${target_dir}/boot/at91-sama5d3_xplained-*.dtb root@${3}:/BOOT/at91-sama5d3_xplained.dtb
 		;;
 	*)
 		printf "Transfer type [${transfer_type}] not implemented.\n"

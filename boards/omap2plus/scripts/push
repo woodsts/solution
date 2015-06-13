@@ -11,6 +11,7 @@ if [ "x${3}" = "x" ]; then
 	usage
 	exit 1
 fi
+
 transfer_type=${3}
 
 if [ "x${2}" = "x" ]; then
@@ -18,6 +19,7 @@ if [ "x${2}" = "x" ]; then
 	usage
 	exit 1
 fi
+
 device_tree=${2}
 
 if [ "x${1}" = "x" ]; then
@@ -25,16 +27,18 @@ if [ "x${1}" = "x" ]; then
 	usage
 	exit 1
 fi
+
 target_dir=${1}
 
 case "${transfer_type}" in
 	mmc)
-		sudo rsync -aP ${target_dir}/boot /media/rootfs/ && \
-		sudo rsync -aP ${target_dir}/lib/modules /media/rootfs/lib/ && \
-		sudo cp -v ${target_dir}/boot/MLO-* /media/BOOT/MLO && \
-		sudo cp -v ${target_dir}/boot/u-boot-*.img /media/BOOT/u-boot.img && \
-		sudo cp -v ${target_dir}/boot/zImage-* /media/BOOT/zImage && \
-		sudo cp -v ${target_dir}/boot/${device_tree}-*.dtb /media/BOOT/${device_tree}.dtb && \
+		sudo rsync -aP ${target_dir}/boot /media/$USER/rootfs/ && \
+		sudo rsync -aP ${target_dir}/lib/modules /media/$USER/rootfs/lib/ && \
+		sudo cp -v ${target_dir}/boot/MLO-* /media/$USER/BOOT/MLO && \
+		sudo cp -v ${target_dir}/boot/u-boot-*.img /media/$USER/BOOT/u-boot.img && \
+		sudo cp -v ${target_dir}/boot/uImage-* /media/$USER/BOOT/uImage && \
+		sudo cp -v ${target_dir}/boot/zImage-* /media/$USER/BOOT/zImage && \
+		sudo cp -v ${target_dir}/boot/${device_tree}-*.dtb /media/$USER/BOOT/${device_tree}.dtb && \
 		sudo sync
 		;;
 	net)
@@ -47,6 +51,7 @@ case "${transfer_type}" in
 		rsync -aP ${target_dir}/lib/modules root@${4}:/lib/
 		rsync -P ${target_dir}/boot/MLO-* root@${4}:/BOOT/MLO
 		rsync -P ${target_dir}/boot/u-boot-*.img root@${4}:/BOOT/u-boot.img
+		rsync -P ${target_dir}/boot/uImage-* root@${4}:/BOOT/uImage
 		rsync -P ${target_dir}/boot/zImage-* root@${4}:/BOOT/zImage
 		rsync -P ${target_dir}/boot/${device_tree}-*.dtb root@${4}:/BOOT/${device_tree}.dtb
 		;;

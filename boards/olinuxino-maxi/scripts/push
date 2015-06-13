@@ -11,6 +11,7 @@ if [ "x${2}" = "x" ]; then
 	usage
 	exit 1
 fi
+
 transfer_type=${2}
 
 if [ "x${1}" = "x" ]; then
@@ -18,12 +19,13 @@ if [ "x${1}" = "x" ]; then
 	usage
 	exit 1
 fi
+
 target_dir=${1}
 
 case "${transfer_type}" in
 	mmc)
-		sudo rsync -aP ${target_dir}/boot /media/rootfs/ && \
-		sudo rsync -aP ${target_dir}/lib/modules /media/rootfs/lib/ && \
+		sudo rsync -aP ${target_dir}/boot /media/$USER/rootfs/ && \
+		sudo rsync -aP ${target_dir}/lib/modules /media/$USER/rootfs/lib/ && \
 		sudo sync
 		;;
 	net)
