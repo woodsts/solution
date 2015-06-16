@@ -28,12 +28,12 @@ define am3517-evm-env
 	$(call omap2plus-env)
 endef
 
-#define am3517-evm-kernel-append-dtb
-#	@cat $(BOARD_BUILD)/linux/arch/$(BOARD_ARCH)/boot/dts/$(BOARD_KERNEL_DT).dtb >> $(BOARD_BUILD)/linux/arch/$(BOARD_ARCH)/boot/zImage
-#	@mkimage -A arm -O linux -T kernel -C none -a 0x80008000 -e 0x80008000 -n "Linux $(ELDS_BOARD)" \
-#		-d $(BOARD_BUILD)/linux/arch/$(BOARD_ARCH)/boot/zImage $(BOARD_BUILD)/linux/arch/$(BOARD_ARCH)/boot/uImage
-#	@cp -av $(BOARD_BUILD)/linux/arch/$(BOARD_ARCH)/boot/uImage $(BOARD_TARGET)/boot/
-#endef
+define am3517-evm-kernel-append-dtb
+	@cat $(BOARD_BUILD)/linux/arch/$(BOARD_ARCH)/boot/dts/$(BOARD_KERNEL_DT).dtb >> $(BOARD_BUILD)/linux/arch/$(BOARD_ARCH)/boot/zImage
+	@mkimage -A arm -O linux -T kernel -C none -a 0x80008000 -e 0x80008000 -n "Linux $(ELDS_BOARD)" \
+		-d $(BOARD_BUILD)/linux/arch/$(BOARD_ARCH)/boot/zImage $(BOARD_BUILD)/linux/arch/$(BOARD_ARCH)/boot/uImage
+	@cp -av $(BOARD_BUILD)/linux/arch/$(BOARD_ARCH)/boot/uImage $(BOARD_TARGET)/boot/
+endef
 
 define am3517-evm-rootfs-finalize
 	$(call omap2plus-rootfs-finalize)
