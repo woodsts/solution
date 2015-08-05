@@ -308,3 +308,81 @@ distclean: clean
 env:
 	$(call solution-env)
 
+# Essential Embedded Linux Development Packages [Ubuntu 15.04+]
+.PHONY: build-essential
+build-essential:
+	@if [ -f /usr/bin/apt-get ]; then \
+		sudo apt-get install -y \
+			asciidoc \
+			autoconf \
+			autopoint \
+			bash-completion \
+			bc \
+			bison \
+			build-essential \
+			ccache \
+			chrpath \
+			cmake \
+			curl \
+			cvs \
+			device-tree-compiler \
+			dia \
+			dnsmasq \
+			docbook-utils \
+			exuberant-ctags \
+			fakeroot \
+			flex \
+			flip \
+			gawk \
+			gcc-doc \
+			gcc-multilib \
+			gettext \
+			git-core \
+			gperf \
+			help2man \
+			indent \
+			inkscape \
+			intltool \
+			libexpat1-dev \
+			libglade2-dev \
+			libglib2.0-dev \
+			libgtk2.0-dev \
+			libncurses5-dev \
+			libreadline-dev \
+			libssl-dev \
+			libtool \
+			libtool-bin \
+			libusb-1.0-0-dev \
+			libx11-dev \
+			lzma \
+			lzop \
+			man \
+			manpages-dev \
+			manpages-posix-dev \
+			mc \
+			mercurial \
+			mtd-utils \
+			pkg-config \
+			qemu \
+			rsync \
+			ssh \
+			subversion \
+			texinfo \
+			tftp-hpa \
+			tig \
+			tree \
+			tshark \
+			u-boot-tools \
+			uucp \
+			unzip \
+			vim \
+			wget \
+			whiptail \
+			whois \
+			wireshark \
+			xz-utils \
+			zip; \
+		if [ "$(shell uname -m)" = "x86_64" ]; then \
+			sudo apt-get install -y libc6-dev-i386; \
+		fi; \
+	fi
