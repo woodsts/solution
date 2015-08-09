@@ -2,7 +2,7 @@ binutils-2.25.tar.bz2
 cloog-0.18.1.tar.gz
 dmalloc-5.5.2.tgz
 duma_2_5_15.tar.gz
-gcc-4.9.2.tar.bz2
+gcc-4.9.3.tar.bz2
 gdb-7.9.1.tar.xz
 glibc-2.21.tar.xz
 gmp-6.0.0a.tar.xz
