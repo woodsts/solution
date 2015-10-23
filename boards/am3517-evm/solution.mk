@@ -12,6 +12,9 @@ include $(ELDS)/boards/omap2plus/solution.mk
 BOARD_HOSTNAME := am3517-evm
 BOARD_GETTY_PORT := ttyO2
 
+BOARD_ROOTFS_FINAL := $(ELDS)/rootfs/$(ELDS_BOARD)/$(BOARD_ARCH)$(BOARD_VENDOR)-$(BOARD_OS)-$(BOARD_ABI)
+BOARD_ROOTFS_TARGETS += $(BOARD_ROOTFS_FINAL)/images/rootfs.tar
+
 BOARD_KERNEL_DT := am3517-evm
 
 define am3517-evm-bootloader-config
