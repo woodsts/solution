@@ -51,7 +51,7 @@ ELDS_ROOTFS_GIT_VERSION := $(shell make --quiet -C $(ELDS_ROOTFS_SCM) print-vers
 ELDS_ROOTFS_VERSION := $(shell cd $(ELDS_ROOTFS_SCM) 2>/dev/null && make print-version 2>/dev/null)
 ELDS_ROOTFS_BUILD := $(ELDS)/rootfs/$(BOARD_TYPE)/$(ELDS_CROSS_TUPLE)
 ELDS_ROOTFS_CONFIG := $(ELDS_ROOTFS_BUILD)/.config
-ELDS_ROOTFS_SOURCES := $(shell cat $(ELDS)/boards/$(BOARD_TYPE)/rootfs.txt)
+ELDS_ROOTFS_SOURCES := $(shell cat $(ELDS)/common/rootfs.txt)
 ELDS_ROOTFS_TARGETS := $(BOARD_ROOTFS_TARGETS)
 
 # Kernel Definitions

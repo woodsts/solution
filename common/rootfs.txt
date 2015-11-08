@@ -14,6 +14,7 @@ curl-7.43.0.tar.bz2
 dnsmasq-2.75.tar.xz
 dosfstools-3.0.28.tar.xz
 dropbear-2015.67.tar.bz2
+dsp-tools-2.0.tar.gz
 dtc-1.4.1.tar.xz
 e2fsprogs-1.42.13.tar.xz
 e2tools-3158ef18a903ca4a98b8fa220c9fc5c133d8bdf6.tar.gz
@@ -110,7 +111,10 @@ SDL_ttf-2.0.11.tar.gz
 sqlite-autoconf-3081101.tar.gz
 sysfsutils-2.1.0.tar.gz
 sysstat-11.0.5.tar.xz
+tidsp-binaries-23.i3.8.tar.gz
 tiff-4.0.4.tar.gz
+ti-uim-c73894456df5def97111cb33d2106b684b8b7959.tar.gz
+ti-utils-06dbdb2727354b5f3ad7c723897f40051fddee49.tar.gz
 tree-1.6.0.tgz
 usb-modeswitch-2.2.5.tar.bz2
 usb-modeswitch-data-20150627.tar.bz2
