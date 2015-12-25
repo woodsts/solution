@@ -157,7 +157,7 @@ $(ELDS_TOOLCHAIN_CONFIG): $(BOARD_TOOLCHAIN_CONFIG)
 toolchain: $(ELDS_TOOLCHAIN_TARGETS)
 
 $(ELDS_TOOLCHAIN_TARGETS):
-	@$(MAKE) linux-check
+	@$(MAKE) $(ELDS_KERNEL_TREE)-check
 	@if ! [ "$(ELDS_KERNEL_SCM_VERSION)" = "$(ELDS_KERNEL_GIT_VERSION)" ]; then \
 		printf "***** WARNING 'Linux' HAS DIFFERENT VERSION *****\n"; \
 		sleep 3; \
@@ -220,7 +220,7 @@ $(ELDS_KERNEL_CONFIG): $(BOARD_KERNEL_CONFIG)
 kernel: $(ELDS_KERNEL_TARGETS)
 
 $(ELDS_KERNEL_TARGETS): $(ELDS_TOOLCHAIN_TARGETS)
-	@$(MAKE) linux-check
+	@$(MAKE) $(ELDS_KERNEL_TREE)-check
 	@$(MAKE) kernel-config
 	@mkdir -p $(ELDS_KERNEL_BOOT)
 	@mkdir -p $(ELDS_ROOTFS_BUILD)/target/boot

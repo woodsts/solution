@@ -56,9 +56,10 @@ ELDS_ROOTFS_TARGETS := $(BOARD_ROOTFS_TARGETS)
 
 # Kernel Definitions
 ELDS_KERNEL := Linux
-ELDS_KERNEL_BUILD := $(ELDS_ROOTFS_BUILD)/build/linux
-ELDS_KERNEL_SCM := $(ELDS_SCM)/linux
-ELDS_KERNEL_SCM_VERSION := $(shell cat $(ELDS_SCM)/.linux 2>/dev/null)
+ELDS_KERNEL_TREE := $(BOARD_KERNEL_TREE)
+ELDS_KERNEL_BUILD := $(ELDS_ROOTFS_BUILD)/build/$(ELDS_KERNEL_TREE)
+ELDS_KERNEL_SCM := $(ELDS_SCM)/$(ELDS_KERNEL_TREE)
+ELDS_KERNEL_SCM_VERSION := $(shell cat $(ELDS_SCM)/.$(ELDS_KERNEL_TREE) 2>/dev/null)
 ELDS_KERNEL_GIT_VERSION := $(shell cd $(ELDS_KERNEL_SCM) 2>/dev/null && git describe --long 2>/dev/null)
 ELDS_KERNEL_VERSION := $(shell cd $(ELDS_KERNEL_SCM) 2>/dev/null && git describe 2>/dev/null | cut -d v -f 2)
 ELDS_KERNEL_LOCALVERSION := -$(shell printf "$(ELDS_KERNEL_VERSION)" | cut -d '-' -f 2-3)

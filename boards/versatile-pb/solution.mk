@@ -30,7 +30,8 @@ BOARD_ROOTFS_FINAL := $(BOARD_ROOTFS)
 
 BOARD_ROOTFS_TARGETS := $(BOARD_IMAGES)/rootfs.tar $(BOARD_IMAGES)/rootfs.cpio.xz
 
-BOARD_KERNEL_DT := versatile-pb
+BOARD_KERNEL_TREE ?= linux
+BOARD_KERNEL_DT ?= versatile-pb
 
 # Bootloader Definitions
 BOARD_BOOTLOADER := U-Boot

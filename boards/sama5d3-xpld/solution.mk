@@ -30,7 +30,8 @@ BOARD_ROOTFS_FINAL := $(BOARD_ROOTFS)
 
 BOARD_ROOTFS_TARGETS := $(BOARD_IMAGES)/rootfs.tar $(BOARD_IMAGES)/rootfs.ubi $(BOARD_IMAGES)/rootfs.ubifs
 
-BOARD_KERNEL_DT := at91-sama5d3_xplained
+BOARD_KERNEL_TREE ?= linux
+BOARD_KERNEL_DT ?= at91-sama5d3_xplained
 
 # Bootloader Definitions
 BOARD_BOOTLOADER := U-Boot

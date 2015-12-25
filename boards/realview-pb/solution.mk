@@ -30,6 +30,8 @@ BOARD_ROOTFS_FINAL := $(BOARD_ROOTFS)
 
 BOARD_ROOTFS_TARGETS := $(BOARD_IMAGES)/rootfs.tar $(BOARD_IMAGES)/rootfs.cpio.xz
 
+BOARD_KERNEL_TREE ?= linux
+
 define realview-pb-env
 	@printf "BOARD_ARCH                  : $(BOARD_ARCH)\n"
 	@printf "BOARD_VENDOR                : $(BOARD_VENDOR)\n"

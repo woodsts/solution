@@ -30,7 +30,8 @@ BOARD_ROOTFS_FINAL := $(BOARD_ROOTFS)
 
 BOARD_ROOTFS_TARGETS := $(BOARD_IMAGES)/rootfs.tar
 
-BOARD_KERNEL_DT := imx23-olinuxino
+BOARD_KERNEL_TREE ?= linux
+BOARD_KERNEL_DT ?= imx23-olinuxino
 
 # Bootloader Definitions
 BOARD_BOOTLOADER := U-Boot
