@@ -39,8 +39,8 @@ define am3517-evm-kernel-append-dtb
 	@cp -av $(BOARD_BUILD)/linux/arch/$(BOARD_ARCH)/boot/uImage $(BOARD_TARGET)/boot/
 endef
 
-define am3517-evm-rootfs-finalize
-	$(call omap2plus-rootfs-finalize)
+define am3517-evm-finalize
+	$(call omap2plus-finalize)
 endef
 
 export BOARD_HOSTNAME

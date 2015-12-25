@@ -192,7 +192,7 @@ $(ELDS_ROOTFS_TARGETS): $(ELDS_TOOLCHAIN_TARGETS)
 		sleep 3; \
 	fi
 	$(MAKE) -C $(ELDS_ROOTFS_SCM) O=$(ELDS_ROOTFS_BUILD)
-	$(call $(ELDS_BOARD)-rootfs-finalize)
+	$(call $(ELDS_BOARD)-finalize)
 	@$(MAKE) archive
 
 # Run 'make rootfs' with options
@@ -272,6 +272,7 @@ endif
 	$(MAKE) -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) headers_install \
 		LOCALVERSION=$(ELDS_KERNEL_LOCALVERSION) \
 		INSTALL_HDR_PATH=$(ELDS_ROOTFS_BUILD)/staging/usr/include
+	$(call $(ELDS_BOARD)-finalize)
 
 # Run Linux kernel build with options
 kernel-%: $(ELDS_KERNEL_CONFIG)

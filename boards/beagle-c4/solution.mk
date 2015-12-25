@@ -32,8 +32,8 @@ define beagle-c4-env
 	$(call omap2plus-env)
 endef
 
-define beagle-c4-rootfs-finalize
-	$(call omap2plus-rootfs-finalize)
+define beagle-c4-finalize
+	$(call omap2plus-finalize)
 endef
 
 export BOARD_HOSTNAME

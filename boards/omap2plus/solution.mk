@@ -73,7 +73,7 @@ define omap2plus-bootloader
 	esac;
 endef
 
-define omap2plus-rootfs-finalize
+define omap2plus-finalize
 	@mkdir -p $(BOARD_ROOTFS_FINAL)/images
 	@for f in $(ELDS_ROOTFS_TARGETS); do \
 		if [ -f $$f ]; then \
