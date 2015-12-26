@@ -7,16 +7,16 @@
 # under the terms of the GNU General Public License version 2
 #
 
-include $(ELDS)/boards/omap2plus/solution.mk
-
 BOARD_HOSTNAME := beagle-c4
 BOARD_GETTY_PORT := ttyO2
 
-BOARD_ROOTFS_FINAL := $(ELDS)/rootfs/$(ELDS_BOARD)/$(BOARD_ARCH)$(BOARD_VENDOR)-$(BOARD_OS)-$(BOARD_ABI)
-BOARD_ROOTFS_TARGETS += $(BOARD_ROOTFS_FINAL)/images/rootfs.tar
-
 BOARD_KERNEL_TREE ?= linux
 BOARD_KERNEL_DT ?= omap3-beagle
+
+include $(ELDS)/boards/omap2plus/solution.mk
+
+BOARD_ROOTFS_FINAL := $(ELDS)/rootfs/$(ELDS_BOARD)/$(BOARD_ARCH)$(BOARD_VENDOR)-$(BOARD_OS)-$(BOARD_ABI)
+BOARD_ROOTFS_TARGETS += $(BOARD_ROOTFS_FINAL)/images/rootfs.tar
 
 define beagle-c4-bootloader-config
 	@mkdir -p $(BOARD_BOOTLOADER_BUILD)

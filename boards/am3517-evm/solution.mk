@@ -7,16 +7,16 @@
 # under the terms of the GNU General Public License version 2
 #
 
-include $(ELDS)/boards/omap2plus/solution.mk
-
 BOARD_HOSTNAME := am3517-evm
 BOARD_GETTY_PORT := ttyO2
 
-BOARD_ROOTFS_FINAL := $(ELDS)/rootfs/$(ELDS_BOARD)/$(BOARD_ARCH)$(BOARD_VENDOR)-$(BOARD_OS)-$(BOARD_ABI)
-BOARD_ROOTFS_TARGETS += $(BOARD_ROOTFS_FINAL)/images/rootfs.tar
-
 BOARD_KERNEL_TREE ?= linux
 BOARD_KERNEL_DT ?= am3517-evm
+
+include $(ELDS)/boards/omap2plus/solution.mk
+
+BOARD_ROOTFS_FINAL := $(ELDS)/rootfs/$(ELDS_BOARD)/$(BOARD_ARCH)$(BOARD_VENDOR)-$(BOARD_OS)-$(BOARD_ABI)
+BOARD_ROOTFS_TARGETS += $(BOARD_ROOTFS_FINAL)/images/rootfs.tar
 
 define am3517-evm-bootloader-config
 	@mkdir -p $(BOARD_BOOTLOADER_BUILD)
@@ -33,10 +33,10 @@ define am3517-evm-env
 endef
 
 define am3517-evm-kernel-append-dtb
-	@cat $(BOARD_BUILD)/linux/arch/$(BOARD_ARCH)/boot/dts/$(BOARD_KERNEL_DT).dtb >> $(BOARD_BUILD)/linux/arch/$(BOARD_ARCH)/boot/zImage
+	@cat $(BOARD_BUILD)/$(BOARD_KERNEL_TREE)/arch/$(BOARD_ARCH)/boot/dts/$(BOARD_KERNEL_DT).dtb >> $(BOARD_BUILD)/$(BOARD_KERNEL_TREE)/arch/$(BOARD_ARCH)/boot/zImage
 	@mkimage -A arm -O linux -T kernel -C none -a 0x80008000 -e 0x80008000 -n "Linux $(ELDS_BOARD)" \
-		-d $(BOARD_BUILD)/linux/arch/$(BOARD_ARCH)/boot/zImage $(BOARD_BUILD)/linux/arch/$(BOARD_ARCH)/boot/uImage
-	@cp -av $(BOARD_BUILD)/linux/arch/$(BOARD_ARCH)/boot/uImage $(BOARD_TARGET)/boot/
+		-d $(BOARD_BUILD)/$(BOARD_KERNEL_TREE)/arch/$(BOARD_ARCH)/boot/zImage $(BOARD_BUILD)/$(BOARD_KERNEL_TREE)/arch/$(BOARD_ARCH)/boot/uImage
+	@cp -av $(BOARD_BUILD)/$(BOARD_KERNEL_TREE)/arch/$(BOARD_ARCH)/boot/uImage $(BOARD_TARGET)/boot/
 endef
 
 define am3517-evm-finalize

@@ -17,10 +17,12 @@ BOARD_VENDOR ?= -cortexa8
 BOARD_OS ?= linux
 BOARD_ABI ?= gnueabihf
 
+BOARD_KERNEL_TREE ?= linux
+
 BOARD_CONFIG := $(ELDS)/boards/$(BOARD_TYPE)/config
 BOARD_TOOLCHAIN_CONFIG := $(BOARD_CONFIG)/crosstool-ng/config
 BOARD_ROOTFS_CONFIG := $(BOARD_CONFIG)/buildroot/config
-BOARD_KERNEL_CONFIG := $(BOARD_CONFIG)/linux/config
+BOARD_KERNEL_CONFIG := $(BOARD_CONFIG)/$(BOARD_KERNEL_TREE)/config
 
 BOARD_ROOTFS := $(ELDS)/rootfs/$(BOARD_TYPE)/$(BOARD_ARCH)$(BOARD_VENDOR)-$(BOARD_OS)-$(BOARD_ABI)
 BOARD_BUILD := $(BOARD_ROOTFS)/build
@@ -29,8 +31,6 @@ BOARD_TARGET := $(BOARD_ROOTFS)/target
 BOARD_ROOTFS_FINAL := $(BOARD_ROOTFS)
 
 BOARD_ROOTFS_TARGETS := $(BOARD_IMAGES)/rootfs.tar $(BOARD_IMAGES)/rootfs.cpio.xz
-
-BOARD_KERNEL_TREE ?= linux
 
 define realview-pb-env
 	@printf "BOARD_ARCH                  : $(BOARD_ARCH)\n"
