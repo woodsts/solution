@@ -80,7 +80,7 @@ define omap2plus-finalize
 			rsync $$f $(BOARD_ROOTFS_FINAL)/images/; \
 		fi; \
 	done
-	@$(RM) -r $(BOARD_ROOTFS_FINAL)/target
+	@$(RM) -r $(BOARD_ROOTFS_FINAL)/target/{boot,lib/modules}
 	@mkdir -p $(BOARD_ROOTFS_FINAL)/target/lib
 	@if [ -d $(BOARD_TARGET)/boot ]; then \
 		rsync -aP $(BOARD_TARGET)/boot \
