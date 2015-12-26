@@ -93,11 +93,13 @@ PATH := $(PATH):$(ELDS)/toolchain/builder:$(ELDS_TOOLCHAIN_PATH)/bin
 
 # Makefile functions
 define scm-check
-	@if ! [ -f $(ELDS_SCM)/$(*F)/.git ]; then \
-		printf "***** MISSING GIT SUBMODULES *****\n"; \
-		printf "*****     RUN 'make scm'     *****\n"; \
-		sleep 3; \
-		exit 2; \
+	@if ! [ -d $(ELDS_SCM)/$(*F)/.git ]; then \
+		if ! [ -f $(ELDS_SCM)/$(*F)/.git ]; then \
+			printf "***** MISSING GIT SUBMODULES *****\n"; \
+			printf "*****     RUN 'make scm'     *****\n"; \
+			sleep 3; \
+			exit 2; \
+		fi; \
 	fi
 endef
 
