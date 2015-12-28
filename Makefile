@@ -101,6 +101,7 @@ $(BOARD_BOOTLOADER_TARGETS): $(ELDS_TOOLCHAIN_TARGETS)
 	@$(MAKE) u-boot-check
 	@$(MAKE) bootloader-config
 	$(call $(ELDS_BOARD)-bootloader)
+	$(call $(ELDS_BOARD)-finalize)
 
 # Run 'make bootloader' with options
 bootloader-%: $(BOARD_BOOTLOADER_CONFIG)

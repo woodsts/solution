@@ -1,7 +1,23 @@
-optargs=earlyprintk debug
+optargs=rootfstype=ext4 debug
 
-## Reference from U-Boot default environment
-#ethact=macb0,gmacb0
-#ethprime=gmacb0
-#ethaddr=da:b6:37:3b:52:57
-#etha1ddr=92:8d:50:0f:13:56
+## Set the following when creating a new 'uboot.env' on SD/MMC
+#
+# NOTE: The following must be saved within U-Boot session
+#
+# => setenv ethact gmac0,macb0
+#
+## For 100 Mbps Ethernet (eth0)
+#
+# => setenv ethprime macb0
+#
+#    or
+#
+## For 1000 Mbps Ethernet (eth0)
+#
+# => setenv ethprime gmac0
+#
+#    then
+#
+# => setenv ethaddr da:b6:37:3b:52:57
+# => setenv eth1addr 92:8d:50:0f:13:56
+# => saveenv

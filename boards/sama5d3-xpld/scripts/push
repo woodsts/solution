@@ -22,15 +22,23 @@ fi
 
 target_dir=${1}
 
+if [ -d /media/$USER ]; then
+	media="/media/$USER"
+else
+	if [ -d /run/media/$USER ]; then
+		media="/run/media/$USER"
+	else
+		printf "Unknown SD/MMC media directory location!\n"
+		exit 1
+	fi
+fi
+
 case "${transfer_type}" in
 	mmc)
-		sudo rsync -aP ${target_dir}/boot /media/$USER/rootfs/ && \
-		sudo rsync -aP ${target_dir}/lib/modules /media/$USER/rootfs/lib/ && \
-		sudo cp -v ${target_dir}/boot/boot-*.bin /media/$USER/BOOT/BOOT.BIN && \
-		sudo cp -v ${target_dir}/boot/u-boot-*.img /media/$USER/BOOT/u-boot.img && \
-		sudo cp -v ${target_dir}/boot/zImage-* /media/$USER/BOOT/zImage && \
-		sudo cp -v ${target_dir}/boot/at91-sama5d3_xplained-*.dtb /media/$USER/BOOT/at91-sama5d3_xplained.dtb && \
-		sudo sync
+		sudo rsync -aP ${target_dir}/boot ${media}/rootfs/ && \
+		sudo rsync -aP ${target_dir}/lib/modules ${media}/rootfs/lib/ && \
+		sudo cp -v ${target_dir}/boot/boot-*.bin ${media}/BOOT/BOOT.BIN && sync && \
+		sudo cp -v ${target_dir}/boot/u-boot-*.img ${media}/BOOT/u-boot.img && sync
 		;;
 	net)
 		if [ "x${3}" = "x" ]; then
@@ -40,10 +48,8 @@ case "${transfer_type}" in
 		fi
 		rsync -aP ${target_dir}/boot root@${3}:/
 		rsync -aP ${target_dir}/lib/modules root@${3}:/lib/
-		rsync -P ${target_dir}/boot/boot-*.bin root@${3}:/BOOT/BOOT.BIN
-		rsync -P ${target_dir}/boot/u-boot-*.img root@${3}:/BOOT/u-boot.img
-		rsync -P ${target_dir}/boot/zImage-* root@${3}:/BOOT/zImage
-		rsync -P ${target_dir}/boot/at91-sama5d3_xplained-*.dtb root@${3}:/BOOT/at91-sama5d3_xplained.dtb
+		rsync -P ${target_dir}/boot/boot-*.bin root@${3}:/media/BOOT/BOOT.BIN
+		rsync -P ${target_dir}/boot/u-boot-*.img root@${3}:/media/BOOT/u-boot.img
 		;;
 	*)
 		printf "Transfer type [${transfer_type}] not implemented.\n"
