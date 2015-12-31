@@ -111,12 +111,10 @@ bootloader-%: $(BOARD_BOOTLOADER_CONFIG)
 .PHONY: bootloader-rm
 bootloader-rm:
 	$(RM) $(BOARD_BOOTLOADER_TARGETS)
-ifdef BOARD_ROOTFS_FINAL
 	$(RM) $(BOARD_ROOTFS_FINAL)/target/boot/*.img
 	$(RM) $(BOARD_ROOTFS_FINAL)/target/boot/*.bin
 	$(RM) $(BOARD_ROOTFS_FINAL)/target/boot/*.sd
 	$(RM) $(BOARD_ROOTFS_FINAL)/target/boot/MLO*
-endif
 
 # Toolchain build tool (ct-ng) via crostool-NG
 .PHONY: toolchain-builder
