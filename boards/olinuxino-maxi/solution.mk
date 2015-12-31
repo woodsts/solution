@@ -9,8 +9,8 @@
 
 BOARD_TYPE := $(ELDS_BOARD)
 
-BOARD_HOSTNAME := olinuxino-maxi
-BOARD_GETTY_PORT := ttyAMA0
+BOARD_HOSTNAME := $(ELDS_BOARD)
+BOARD_GETTY_PORT ?= ttyAMA0
 
 BOARD_ARCH ?= arm
 BOARD_VENDOR ?= -unknown
@@ -46,13 +46,13 @@ BOARD_BOOTLOADER_SYSMAP := $(BOARD_BOOTLOADER_BUILD)/System.map
 BOARD_BOOTLOADER_BINARY_IMAGE := $(BOARD_BOOTLOADER_BUILD)/u-boot.sd
 BOARD_BOOTLOADER_TARGETS := $(BOARD_BOOTLOADER_BINARY_IMAGE)
 
-define olinuxino-maxi-bootloader-config
+define $(ELDS_BOARD)-bootloader-config
 	@mkdir -p $(BOARD_BOOTLOADER_BUILD)
 	$(MAKE) -C $(BOARD_BOOTLOADER_SCM) O=$(BOARD_BOOTLOADER_BUILD) $(ELDS_CROSS_PARAMS) distclean
 	$(MAKE) -C $(BOARD_BOOTLOADER_SCM) O=$(BOARD_BOOTLOADER_BUILD) $(ELDS_CROSS_PARAMS) mx23_olinuxino_defconfig
 endef
 
-define olinuxino-maxi-bootloader
+define $(ELDS_BOARD)-bootloader
 	@if ! [ "$(BOARD_BOOTLOADER_SCM_VERSION)" = "$(BOARD_BOOTLOADER_GIT_VERSION)" ]; then \
 		printf "***** WARNING 'U-Boot' HAS DIFFERENT VERSION *****\n"; \
 		sleep 3; \
@@ -60,7 +60,7 @@ define olinuxino-maxi-bootloader
 	@case "$@" in \
 	$(BOARD_BOOTLOADER_BINARY_IMAGE))\
 		printf "***** U-Boot $(BOARD_BOOTLOADER_VERSION) 'make $@' *****\n"; \
-		$(MAKE) -j 2 -C $(BOARD_BOOTLOADER_SCM) O=$(BOARD_BOOTLOADER_BUILD) $(ELDS_CROSS_PARAMS) u-boot.sb; \
+		$(MAKE) -C $(BOARD_BOOTLOADER_SCM) O=$(BOARD_BOOTLOADER_BUILD) $(ELDS_CROSS_PARAMS) u-boot.sb; \
 		if ! [ -f $(BOARD_BOOTLOADER_BUILD)/u-boot.sb ]; then \
 			printf "***** U-Boot $(BOARD_BOOTLOADER_VERSION) $(BOARD_BOOTLOADER_BUILD)/u-boot.sb build FAILED! *****\n"; \
 			exit 2; \
@@ -78,11 +78,11 @@ define olinuxino-maxi-bootloader
 		;;\
 	*)\
 		printf "***** U-Boot $(BOARD_BOOTLOADER_VERSION) 'make $(*F)' *****\n"; \
-		$(MAKE) -j 2 -C $(BOARD_BOOTLOADER_SCM) O=$(BOARD_BOOTLOADER_BUILD) $(ELDS_CROSS_PARAMS) $(*F); \
+		$(MAKE) -C $(BOARD_BOOTLOADER_SCM) O=$(BOARD_BOOTLOADER_BUILD) $(ELDS_CROSS_PARAMS) $(*F); \
 	esac;
 endef
 
-define olinuxino-maxi-env
+define $(ELDS_BOARD)-env
 	@printf "BOARD_ARCH                   : $(BOARD_ARCH)\n"
 	@printf "BOARD_VENDOR                 : $(BOARD_VENDOR)\n"
 	@printf "BOARD_OS                     : $(BOARD_OS)\n"
@@ -101,4 +101,5 @@ endef
 export BOARD_TYPE
 export BOARD_HOSTNAME
 export BOARD_GETTY_PORT
-
+export BOARD_KERNEL_TREE
+export BOARD_KERNEL_DT

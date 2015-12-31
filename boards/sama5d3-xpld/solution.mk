@@ -9,8 +9,8 @@
 
 BOARD_TYPE := $(ELDS_BOARD)
 
-BOARD_HOSTNAME := sama5d3-xpld
-BOARD_GETTY_PORT := ttyS0
+BOARD_HOSTNAME := $(ELDS_BOARD)
+BOARD_GETTY_PORT ?= ttyS0
 
 BOARD_ARCH ?= arm
 BOARD_VENDOR ?= -cortexa5
@@ -47,13 +47,13 @@ BOARD_BOOTLOADER_BINARY_SPL := $(BOARD_BOOTLOADER_BUILD)/boot.bin
 BOARD_BOOTLOADER_BINARY_IMAGE := $(BOARD_BOOTLOADER_BUILD)/u-boot.img
 BOARD_BOOTLOADER_TARGETS := $(BOARD_BOOTLOADER_BINARY_SPL) $(BOARD_BOOTLOADER_BINARY_IMAGE)
 
-define sama5d3-xpld-bootloader-config
+define $(ELDS_BOARD)-bootloader-config
 	@mkdir -p $(BOARD_BOOTLOADER_BUILD)
 	$(MAKE) -C $(BOARD_BOOTLOADER_SCM) O=$(BOARD_BOOTLOADER_BUILD) $(ELDS_CROSS_PARAMS) distclean
 	$(MAKE) -C $(BOARD_BOOTLOADER_SCM) O=$(BOARD_BOOTLOADER_BUILD) $(ELDS_CROSS_PARAMS) sama5d3_xplained_mmc_defconfig
 endef
 
-define sama5d3-xpld-bootloader
+define $(ELDS_BOARD)-bootloader
 	@if ! [ "$(BOARD_BOOTLOADER_SCM_VERSION)" = "$(BOARD_BOOTLOADER_GIT_VERSION)" ]; then \
 		printf "***** WARNING 'U-Boot' HAS DIFFERENT VERSION *****\n"; \
 		sleep 3; \
@@ -61,7 +61,7 @@ define sama5d3-xpld-bootloader
 	@case "$@" in \
 	$(BOARD_BOOTLOADER_BINARY_SPL) | $(BOARD_BOOTLOADER_BINARY_IMAGE))\
 		printf "***** U-Boot $(BOARD_BOOTLOADER_VERSION) 'make $@' *****\n"; \
-		$(MAKE) -j 2 -C $(BOARD_BOOTLOADER_SCM) O=$(BOARD_BOOTLOADER_BUILD) $(ELDS_CROSS_PARAMS); \
+		$(MAKE) -C $(BOARD_BOOTLOADER_SCM) O=$(BOARD_BOOTLOADER_BUILD) $(ELDS_CROSS_PARAMS); \
 		if ! [ -f $(BOARD_BOOTLOADER_BINARY_SPL) ]; then \
 			printf "***** U-Boot $(BOARD_BOOTLOADER_VERSION) $(BOARD_BOOTLOADER_BINARY_SPL) build FAILED! *****\n"; \
 			exit 2; \
@@ -82,11 +82,11 @@ define sama5d3-xpld-bootloader
 		;;\
 	*)\
 		printf "***** U-Boot $(BOARD_BOOTLOADER_VERSION) 'make $(*F)' *****\n"; \
-		$(MAKE) -j 2 -C $(BOARD_BOOTLOADER_SCM) O=$(BOARD_BOOTLOADER_BUILD) $(ELDS_CROSS_PARAMS) $(*F); \
+		$(MAKE) -C $(BOARD_BOOTLOADER_SCM) O=$(BOARD_BOOTLOADER_BUILD) $(ELDS_CROSS_PARAMS) $(*F); \
 	esac;
 endef
 
-define sama5d3-xpld-env
+define $(ELDS_BOARD)-env
 	@printf "BOARD_ARCH                   : $(BOARD_ARCH)\n"
 	@printf "BOARD_VENDOR                 : $(BOARD_VENDOR)\n"
 	@printf "BOARD_OS                     : $(BOARD_OS)\n"
@@ -105,4 +105,5 @@ endef
 export BOARD_TYPE
 export BOARD_HOSTNAME
 export BOARD_GETTY_PORT
-
+export BOARD_KERNEL_TREE
+export BOARD_KERNEL_DT

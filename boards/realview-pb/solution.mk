@@ -9,8 +9,8 @@
 
 BOARD_TYPE := $(ELDS_BOARD)
 
-BOARD_HOSTNAME := realview-pb
-BOARD_GETTY_PORT := ttyAMA0
+BOARD_HOSTNAME := $(ELDS_BOARD)
+BOARD_GETTY_PORT ?= ttyAMA0
 
 BOARD_ARCH ?= arm
 BOARD_VENDOR ?= -cortexa8
@@ -32,7 +32,7 @@ BOARD_ROOTFS_FINAL := $(BOARD_ROOTFS)
 
 BOARD_ROOTFS_TARGETS := $(BOARD_IMAGES)/rootfs.tar $(BOARD_IMAGES)/rootfs.cpio.xz
 
-define realview-pb-env
+define $(ELDS_BOARD)-env
 	@printf "BOARD_ARCH                  : $(BOARD_ARCH)\n"
 	@printf "BOARD_VENDOR                : $(BOARD_VENDOR)\n"
 	@printf "BOARD_OS                    : $(BOARD_OS)\n"
@@ -44,4 +44,4 @@ endef
 export BOARD_TYPE
 export BOARD_HOSTNAME
 export BOARD_GETTY_PORT
-
+export BOARD_KERNEL_TREE

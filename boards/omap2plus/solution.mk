@@ -49,7 +49,7 @@ define omap2plus-bootloader
 	@case "$@" in \
 	$(BOARD_BOOTLOADER_BINARY_SPL) | $(BOARD_BOOTLOADER_BINARY_IMAGE))\
 		printf "***** U-Boot $(BOARD_BOOTLOADER_VERSION) 'make $@' *****\n"; \
-		$(MAKE) -j 2 -C $(BOARD_BOOTLOADER_SCM) O=$(BOARD_BOOTLOADER_BUILD) $(ELDS_CROSS_PARAMS); \
+		$(MAKE) -C $(BOARD_BOOTLOADER_SCM) O=$(BOARD_BOOTLOADER_BUILD) $(ELDS_CROSS_PARAMS); \
 		if ! [ -f $(BOARD_BOOTLOADER_BINARY_SPL) ]; then \
 			printf "***** U-Boot $(BOARD_BOOTLOADER_VERSION) $(BOARD_BOOTLOADER_BINARY_SPL) build FAILED! *****\n"; \
 			exit 2; \
@@ -69,7 +69,7 @@ define omap2plus-bootloader
 		;;\
 	*)\
 		printf "***** U-Boot $(BOARD_BOOTLOADER_VERSION) 'make $(*F)' *****\n"; \
-		$(MAKE) -j 2 -C $(BOARD_BOOTLOADER_SCM) O=$(BOARD_BOOTLOADER_BUILD) $(ELDS_CROSS_PARAMS) $(*F); \
+		$(MAKE) -C $(BOARD_BOOTLOADER_SCM) O=$(BOARD_BOOTLOADER_BUILD) $(ELDS_CROSS_PARAMS) $(*F); \
 	esac;
 endef
 
@@ -110,4 +110,3 @@ define omap2plus-env
 endef
 
 export BOARD_TYPE
-

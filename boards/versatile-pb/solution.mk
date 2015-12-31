@@ -9,8 +9,8 @@
 
 BOARD_TYPE := $(ELDS_BOARD)
 
-BOARD_HOSTNAME := versatile-pb
-BOARD_GETTY_PORT := ttyAMA0
+BOARD_HOSTNAME := $(ELDS_BOARD)
+BOARD_GETTY_PORT ?= ttyAMA0
 
 BOARD_ARCH ?= arm
 BOARD_VENDOR ?= -unknown
@@ -46,18 +46,18 @@ BOARD_BOOTLOADER_SYSMAP := $(BOARD_BOOTLOADER_BUILD)/System.map
 BOARD_BOOTLOADER_BINARY := $(BOARD_BOOTLOADER_BUILD)/u-boot.bin
 BOARD_BOOTLOADER_TARGETS := $(BOARD_BOOTLOADER_BINARY)
 
-define versatile-pb-bootloader-config
+define $(ELDS_BOARD)-bootloader-config
 	@mkdir -p $(BOARD_BOOTLOADER_BUILD)
 	$(MAKE) -C $(BOARD_BOOTLOADER_SCM) O=$(BOARD_BOOTLOADER_BUILD) $(ELDS_CROSS_PARAMS) versatilepb_config
 endef
 
-define versatile-pb-bootloader
+define $(ELDS_BOARD)-bootloader
 	@if ! [ "$(BOARD_BOOTLOADER_SCM_VERSION)" = "$(BOARD_BOOTLOADER_GIT_VERSION)" ]; then \
 		printf "***** WARNING 'U-Boot' HAS DIFFERENT VERSION *****\n"; \
 		sleep 3; \
 	fi
 	@if [ "$@" = "$(BOARD_BOOTLOADER_TARGETS)" ]; then \
-		$(MAKE) -j 2 -C $(BOARD_BOOTLOADER_SCM) O=$(BOARD_BOOTLOADER_BUILD) $(ELDS_CROSS_PARAMS); \
+		$(MAKE) -C $(BOARD_BOOTLOADER_SCM) O=$(BOARD_BOOTLOADER_BUILD) $(ELDS_CROSS_PARAMS); \
 		if ! [ -f $(BOARD_BOOTLOADER_BINARY) ]; then \
 			printf "***** U-Boot $(BOARD_BOOTLOADER_VERSION) build FAILED! *****\n"; \
 			exit 2; \
@@ -69,11 +69,11 @@ define versatile-pb-bootloader
 		fi; \
 	else \
 		printf "***** U-Boot $(BOARD_BOOTLOADER_VERSION) 'make $(*F)' *****\n"; \
-		$(MAKE) -j 2 -C $(BOARD_BOOTLOADER_SCM) O=$(BOARD_BOOTLOADER_BUILD) $(ELDS_CROSS_PARAMS) $(*F); \
+		$(MAKE) -C $(BOARD_BOOTLOADER_SCM) O=$(BOARD_BOOTLOADER_BUILD) $(ELDS_CROSS_PARAMS) $(*F); \
 	fi
 endef
 
-define versatile-pb-env
+define $(ELDS_BOARD)-env
 	@printf "BOARD_ARCH                   : $(BOARD_ARCH)\n"
 	@printf "BOARD_VENDOR                 : $(BOARD_VENDOR)\n"
 	@printf "BOARD_OS                     : $(BOARD_OS)\n"
@@ -92,4 +92,5 @@ endef
 export BOARD_TYPE
 export BOARD_HOSTNAME
 export BOARD_GETTY_PORT
-
+export BOARD_KERNEL_TREE
+export BOARD_KERNEL_DT

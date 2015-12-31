@@ -259,7 +259,7 @@ ifdef BOARD_KERNEL_DT
 		printf "***** Linux $(ELDS_KERNEL_VERSION) $(LINUX_DT) build FAILED! *****\n"; \
 		exit 2; \
 	fi
-	$(call $(ELDS_BOARD)-kernel-append-dtb)
+	$(call $(ELDS_BOARD)-append-dtb)
 endif
 	$(MAKE) -j 2 -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) modules \
 		LOCALVERSION=$(ELDS_KERNEL_LOCALVERSION)
