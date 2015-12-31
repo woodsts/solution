@@ -96,14 +96,20 @@ PATH := $(PATH):$(ELDS)/toolchain/builder:$(ELDS_TOOLCHAIN_PATH)/bin
 
 # Makefile functions
 define scm-check
-	@if ! [ -d $(ELDS_SCM)/$(*F)/.git ]; then \
-		if ! [ -f $(ELDS_SCM)/$(*F)/.git ]; then \
-			printf "***** MISSING GIT SUBMODULES *****\n"; \
+	@if [ -d $(ELDS_SCM)/$(*F) ]; then \
+		if ! [ "`ls -A $(ELDS_SCM)/$(*F)`" ]; then \
+			printf "*****   MISSING GIT SOURCES  *****\n"; \
 			printf "*****     RUN 'make scm'     *****\n"; \
 			sleep 3; \
 			exit 2; \
 		fi; \
+	else \
+		printf "***** MISSING $(ELDS_SCM)/$(*F) DIRECTORY *****\n"; \
+		printf "*****     PLEASE ADD SOURCES      *****\n"; \
+		sleep 3; \
+		exit 2; \
 	fi
+	@printf "***** USING $(ELDS_SCM)/$(*F) SOURCES *****\n"
 endef
 
 define solution-env
