@@ -36,7 +36,7 @@ fi
 case "${transfer_type}" in
 	mmc)
 		sudo rsync -aP ${target_dir}/boot ${media}/rootfs/ && \
-		sudo rsync -aP ${target_dir}/lib/modules ${media}/rootfs/lib/ && \
+		sudo rsync -aP ${target_dir}/lib/modules ${media}/rootfs/lib/ && sync && \
 		sudo cp -v ${target_dir}/boot/MLO-* ${media}/BOOT/MLO && sync && \
 		sudo cp -v ${target_dir}/boot/u-boot-*.img ${media}/BOOT/u-boot.img && sync
 		;;
