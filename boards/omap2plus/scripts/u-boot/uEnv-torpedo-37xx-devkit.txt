@@ -1,0 +1,5 @@
+loadximage=fatload mmc 0:1 ${loadaddr} ${bootfile}
+
+mmcargs=setenv bootargs console=tty0 console=${console} ${optargs} root=${mmcroot} rootfstype=${mmcrootfstype}
+
+uenvcmd=run loadximage; run mmcargs; bootm ${loadaddr}

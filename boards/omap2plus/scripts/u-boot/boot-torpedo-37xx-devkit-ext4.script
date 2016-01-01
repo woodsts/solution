@@ -1,0 +1,4 @@
+echo Torpedo 37xx DevKit MMC ext4
+setenv bootargs 'nand-ecc=chip root=/dev/mmcblk0p2 rw rootwait rootfstype=ext4 console=ttyO0,115200n8 mtdparts=omap2-nand.0:512k(x-loader),1664k(u-boot),384k(u-boot-env),5m(kernel),20m(ramdisk),-(fs) debug ignore_loglevel early_printk no_console_suspend'
+ext2load mmc 0:2 82000000 boot/uImage
+bootm 82000000
