@@ -1,0 +1,5 @@
+echo BeagleBoard C4 MMC ext4
+setenv bootargs 'rootwait root=/dev/mmcblk0p2 rw rootwait rootfstype=ext4 console=ttyO0,115200n8 debug early_printk'
+ext2load mmc 0:2 82000000 boot/zImage
+ext2load mmc 0:2 81000000 boot/omap3-beagle.dtb
+bootz 82000000 - 81000000
