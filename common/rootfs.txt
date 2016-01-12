@@ -128,5 +128,6 @@ wireless-regdb-2015.10.22.tar.xz
 wireless_tools.30.pre9.tar.gz
 wpa_supplicant-2.5.tar.gz
 xz-5.2.2.tar.bz2
+yavta-82ff2efdb9787737b9f21b6f4759f077c827b238.tar.gz
 zip30.tgz
 zlib-1.2.8.tar.xz
