@@ -33,12 +33,21 @@ else
 	fi
 fi
 
+push_bootloader="1"
+
+echo "$@" | grep -q noboot
+if [ "$?" = "0" ]; then
+	push_bootloader="0"
+fi
+
 case "${transfer_type}" in
 	mmc)
 		sudo rsync -aP ${target_dir}/boot ${media}/rootfs/ && \
 		sudo rsync -aP ${target_dir}/lib/modules ${media}/rootfs/lib/ && sync && \
-		sudo cp -v ${target_dir}/boot/MLO-* ${media}/BOOT/MLO && sync && \
-		sudo cp -v ${target_dir}/boot/u-boot-*.img ${media}/BOOT/u-boot.img && sync
+		if [ "${push_bootloader}" = "1" ]; then
+			sudo cp -v ${target_dir}/boot/MLO-* ${media}/BOOT/MLO && sync && \
+			sudo cp -v ${target_dir}/boot/u-boot-*.img ${media}/BOOT/u-boot.img && sync
+		fi
 		;;
 	net)
 		if [ "x${3}" = "x" ]; then
@@ -48,8 +57,10 @@ case "${transfer_type}" in
 		fi
 		rsync -aP ${target_dir}/boot root@${3}:/
 		rsync -aP ${target_dir}/lib/modules root@${3}:/lib/
-		rsync -P ${target_dir}/boot/MLO-* root@${3}:/media/BOOT/MLO
-		rsync -P ${target_dir}/boot/u-boot-*.img root@${3}:/media/BOOT/u-boot.img
+		if [ "${push_bootloader}" = "1" ]; then
+			rsync -P ${target_dir}/boot/MLO-* root@${3}:/media/BOOT/MLO
+			rsync -P ${target_dir}/boot/u-boot-*.img root@${3}:/media/BOOT/u-boot.img
+		fi
 		;;
 	*)
 		printf "Transfer type [${transfer_type}] not implemented.\n"
