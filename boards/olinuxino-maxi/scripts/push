@@ -22,19 +22,18 @@ fi
 
 target_dir=${1}
 
-if [ -d /media/$USER ]; then
-	media="/media/$USER"
-else
-	if [ -d /run/media/$USER ]; then
-		media="/run/media/$USER"
-	else
-		printf "Unknown SD/MMC media directory location!\n"
-		exit 1
-	fi
-fi
-
 case "${transfer_type}" in
 	mmc)
+		if [ -d /media/$USER ]; then
+			media="/media/$USER"
+		else
+			if [ -d /run/media/$USER ]; then
+				media="/run/media/$USER"
+			else
+				printf "Unknown SD/MMC media directory location!\n"
+				exit 1
+			fi
+		fi
 		sudo rsync -aP ${target_dir}/boot ${media}/rootfs/ && \
 		sudo rsync -aP ${target_dir}/lib/modules ${media}/rootfs/lib/ && sync
 		;;
