@@ -22,6 +22,8 @@ fi
 
 target_dir=${1}
 
+omap_dir=${1}/../../../omap2plus/arm-cortexa8-linux-gnueabihf/target
+
 push_bootloader="1"
 
 echo "$@" | grep -q noboot
@@ -42,6 +44,7 @@ case "${transfer_type}" in
 			fi
 		fi
 		sudo rsync -aP ${target_dir}/boot ${media}/rootfs/ && \
+		sudo rsync -aP ${omap_dir}/lib/firmware ${media}/rootfs/lib/ && \
 		sudo rsync -aP ${target_dir}/lib/modules ${media}/rootfs/lib/ && sync && \
 		if [ "${push_bootloader}" = "1" ]; then
 			sudo cp -v ${target_dir}/boot/MLO-* ${media}/BOOT/MLO && sync && \
@@ -55,6 +58,7 @@ case "${transfer_type}" in
 			exit 1
 		fi
 		rsync -aP ${target_dir}/boot root@${3}:/
+		rsync -aP ${omap_dir}/lib/firmware root@${3}:/lib/
 		rsync -aP ${target_dir}/lib/modules root@${3}:/lib/
 		if [ "${push_bootloader}" = "1" ]; then
 			rsync -P ${target_dir}/boot/MLO-* root@${3}:/media/BOOT/MLO
