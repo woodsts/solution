@@ -29,9 +29,12 @@ ELDS_CROSS_PARAMS := ARCH=$(BOARD_ARCH) CROSS_COMPILE=$(ELDS_CROSS_COMPILE)
 
 # Toolchain Definitions
 ELDS_TOOLCHAIN := crosstool-NG
-ELDS_TOOLCHAIN_SCM := $(ELDS_SCM)/crosstool-ng
-ELDS_TOOLCHAIN_SCM_VERSION := $(shell cat $(ELDS_SCM)/.crosstool-ng 2>/dev/null)
-ELDS_TOOLCHAIN_GIT_VERSION := $(shell cd $(ELDS_TOOLCHAIN_SCM) 2>/dev/null && git describe --tags --long 2>/dev/null)
+ifeq ($(BOARD_TOOLCHAIN_TREE),)
+ELDS_TOOLCHAIN_TREE := crosstool-ng
+else
+ELDS_TOOLCHAIN_TREE := $(BOARD_TOOLCHAIN_TREE)
+endif
+ELDS_TOOLCHAIN_SCM := $(ELDS_SCM)/$(ELDS_TOOLCHAIN_TREE)
 ELDS_TOOLCHAIN_VERSION := $(shell cd $(ELDS_TOOLCHAIN_SCM) 2>/dev/null && git describe --tags 2>/dev/null)
 ELDS_TOOLCHAIN_PATH := $(ELDS)/toolchain/$(ELDS_CROSS_TUPLE)
 ELDS_TOOLCHAIN_BUILD := $(ELDS)/toolchain/build/$(ELDS_CROSS_TUPLE)
@@ -43,11 +46,21 @@ ELDS_TOOLCHAIN_TARGETS := $(ELDS_TOOLCHAIN_PATH)/bin/$(ELDS_CROSS_COMPILE)gcc \
 	$(ELDS_TOOLCHAIN_PATH)/$(ELDS_CROSS_TUPLE)/debug-root/usr/bin/gdbserver \
 	$(ELDS_TOOLCHAIN_PATH)/$(ELDS_CROSS_TUPLE)/debug-root/usr/bin/strace
 
+# Bootloader Definitions
+ifeq ($(BOARD_BOOTLOADER_TREE),)
+ELDS_BOOTLOADER_TREE := u-boot
+else
+ELDS_BOOTLOADER_TREE := $(BOARD_BOOTLOADER_TREE)
+endif
+
 # Root Filesystem Definitions
 ELDS_ROOTFS := Buildroot
-ELDS_ROOTFS_SCM := $(ELDS_SCM)/buildroot
-ELDS_ROOTFS_SCM_VERSION := $(shell cat $(ELDS_SCM)/.buildroot 2>/dev/null)
-ELDS_ROOTFS_GIT_VERSION := $(shell make --quiet -C $(ELDS_ROOTFS_SCM) print-version 2>/dev/null)
+ifeq ($(BOARD_ROOTFS_TREE),)
+ELDS_ROOTFS_TREE := buildroot
+else
+ELDS_ROOTFS_TREE := $(BOARD_ROOTFS_TREE)
+endif
+ELDS_ROOTFS_SCM := $(ELDS_SCM)/$(ELDS_ROOTFS_TREE)
 ELDS_ROOTFS_VERSION := $(shell cd $(ELDS_ROOTFS_SCM) 2>/dev/null && make print-version 2>/dev/null)
 ELDS_ROOTFS_BUILD := $(ELDS)/rootfs/$(BOARD_TYPE)/$(ELDS_CROSS_TUPLE)
 ELDS_ROOTFS_CONFIG := $(ELDS_ROOTFS_BUILD)/.config
@@ -63,8 +76,6 @@ ELDS_KERNEL_TREE := $(BOARD_KERNEL_TREE)
 endif
 ELDS_KERNEL_BUILD := $(ELDS_ROOTFS_BUILD)/build/$(ELDS_KERNEL_TREE)
 ELDS_KERNEL_SCM := $(ELDS_SCM)/$(ELDS_KERNEL_TREE)
-ELDS_KERNEL_SCM_VERSION := $(shell cat $(ELDS_SCM)/.$(ELDS_KERNEL_TREE) 2>/dev/null)
-ELDS_KERNEL_GIT_VERSION := $(shell cd $(ELDS_KERNEL_SCM) 2>/dev/null && git describe --long 2>/dev/null)
 ELDS_KERNEL_VERSION := $(shell cd $(ELDS_KERNEL_SCM) 2>/dev/null && git describe 2>/dev/null | cut -d v -f 2)
 ELDS_KERNEL_LOCALVERSION := -$(shell printf "$(ELDS_KERNEL_VERSION)" | cut -d '-' -f 2-3)
 ifeq ($(ELDS_KERNEL_LOCALVERSION),-$(ELDS_KERNEL_VERSION))
@@ -96,14 +107,7 @@ PATH := $(PATH):$(ELDS)/toolchain/builder:$(ELDS_TOOLCHAIN_PATH)/bin
 
 # Makefile functions
 define scm-check
-	@if [ -d $(ELDS_SCM)/$(*F) ]; then \
-		if ! [ "`ls -A $(ELDS_SCM)/$(*F)`" ]; then \
-			printf "*****   MISSING GIT SOURCES  *****\n"; \
-			printf "*****     RUN 'make scm'     *****\n"; \
-			sleep 3; \
-			exit 2; \
-		fi; \
-	else \
+	@if ! [ -d $(ELDS_SCM)/$(*F) ]; then \
 		printf "***** MISSING $(ELDS_SCM)/$(*F) DIRECTORY *****\n"; \
 		printf "*****     PLEASE ADD SOURCES      *****\n"; \
 		sleep 3; \
@@ -121,26 +125,23 @@ define solution-env
 	$(call $(ELDS_BOARD)-env)
 	@printf "========================================================================\n"
 	@printf "ELDS_TOOLCHAIN               : $(ELDS_TOOLCHAIN)\n"
+	@printf "ELDS_TOOLCHAIN_TREE          : $(ELDS_TOOLCHAIN_TREE)\n"
 	@printf "ELDS_TOOLCHAIN_VERSION       : $(ELDS_TOOLCHAIN_VERSION)\n"
-	@printf "ELDS_TOOLCHAIN_SCM_VERSION   : $(ELDS_TOOLCHAIN_SCM_VERSION)\n"
-	@printf "ELDS_TOOLCHAIN_GIT_VERSION   : $(ELDS_TOOLCHAIN_GIT_VERSION)\n"
 	@printf "ELDS_TOOLCHAIN_PATH          : $(ELDS_TOOLCHAIN_PATH)\n"
 	@printf "ELDS_TOOLCHAIN_BUILD         : $(ELDS_TOOLCHAIN_BUILD)\n"
 	@printf "ELDS_TOOLCHAIN_SOURCES       : $(ELDS_TOOLCHAIN_SOURCES)\n"
 	@printf "ELDS_TOOLCHAIN_TARGETS       : $(ELDS_TOOLCHAIN_TARGETS)\n"
 	@printf "========================================================================\n"
 	@printf "ELDS_ROOTFS                  : $(ELDS_ROOTFS)\n"
+	@printf "ELDS_ROOTFS_TREE             : $(ELDS_ROOTFS_TREE)\n"
 	@printf "ELDS_ROOTFS_VERSION          : $(ELDS_ROOTFS_VERSION)\n"
-	@printf "ELDS_ROOTFS_SCM_VERSION      : $(ELDS_ROOTFS_SCM_VERSION)\n"
-	@printf "ELDS_ROOTFS_GIT_VERSION      : $(ELDS_ROOTFS_GIT_VERSION)\n"
 	@printf "ELDS_ROOTFS_BUILD            : $(ELDS_ROOTFS_BUILD)\n"
 	@printf "ELDS_ROOTFS_SOURCES          : $(ELDS_ROOTFS_SOURCES)\n"
 	@printf "ELDS_ROOTFS_TARGETS          : $(ELDS_ROOTFS_TARGETS)\n"
 	@printf "========================================================================\n"
 	@printf "ELDS_KERNEL                  : $(ELDS_KERNEL)\n"
+	@printf "ELDS_KERNEL_TREE             : $(ELDS_KERNEL_TREE)\n"
 	@printf "ELDS_KERNEL_VERSION          : $(ELDS_KERNEL_VERSION)\n"
-	@printf "ELDS_KERNEL_SCM_VERSION      : $(ELDS_KERNEL_SCM_VERSION)\n"
-	@printf "ELDS_KERNEL_GIT_VERSION      : $(ELDS_KERNEL_GIT_VERSION)\n"
 	@printf "ELDS_KERNEL_LOCALVERSION     : $(ELDS_KERNEL_LOCALVERSION)\n"
 	@printf "ELDS_KERNEL_BUILD            : $(ELDS_KERNEL_BUILD)\n"
 	@printf "ELDS_KERNEL_BOOT             : $(ELDS_KERNEL_BOOT)\n"
@@ -155,3 +156,7 @@ export ELDS
 export ELDS_BOARD
 export ELDS_ISSUE
 export ELDS_CROSS_TUPLE
+export ELDS_TOOLCHAIN_TREE
+export ELDS_BOOTLOADER_TREE
+export ELDS_KERNEL_TREE
+export ELDS_ROOTFS_TREE

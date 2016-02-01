@@ -60,17 +60,7 @@ archive:
 		done; \
 	fi
 
-# Initialize and update(clone/pull) Git Submodules
-.PHONY: scm
-scm:
-	@git submodule init
-	@git submodule update
-
-# Run 'git submodule' with option
-scm-%:
-	@git submodule $(*F)
-
-# Test for Git Submodule's existence
+# Test for Git source existence
 %-check:
 	$(call scm-check)
 
@@ -98,7 +88,7 @@ $(BOARD_BOOTLOADER_CONFIG):
 bootloader: $(BOARD_BOOTLOADER_TARGETS)
 
 $(BOARD_BOOTLOADER_TARGETS): $(ELDS_TOOLCHAIN_TARGETS)
-	@$(MAKE) u-boot-check
+	@$(MAKE) $(ELDS_BOOTLOADER_TREE)-check
 	@$(MAKE) bootloader-config
 	$(call $(ELDS_BOARD)-bootloader)
 	$(call $(ELDS_BOARD)-finalize)
@@ -121,14 +111,14 @@ bootloader-rm:
 toolchain-builder: $(ELDS)/toolchain/builder/ct-ng
 
 $(ELDS)/toolchain/builder/ct-ng:
-	@$(MAKE) crosstool-ng-check
+	@$(MAKE) $(ELDS_TOOLCHAIN_TREE)-check
 	@if ! [ -d $(shell dirname $@) ]; then \
 		mkdir -p $(ELDS)/toolchain; \
-		cp -a $(ELDS_SCM)/crosstool-ng $(ELDS)/toolchain/builder; \
+		cp -a $(ELDS_SCM)/$(ELDS_TOOLCHAIN_TREE) $(ELDS)/toolchain/builder; \
 	fi
 	@cd $(ELDS)/toolchain/builder; \
 	if ! [ -f .crosstool-ng-patched ]; then \
-		for f in $(shell ls $(ELDS_PATCHES)/crosstool-ng/*.patch); do \
+		for f in $(shell ls $(ELDS_PATCHES)/$(ELDS_TOOLCHAIN_TREE)/*.patch); do \
 			patch -p1 < $$f; \
 		done; \
 		touch .crosstool-ng-patched; \
@@ -157,10 +147,6 @@ toolchain: $(ELDS_TOOLCHAIN_TARGETS)
 
 $(ELDS_TOOLCHAIN_TARGETS):
 	@$(MAKE) $(ELDS_KERNEL_TREE)-check
-	@if ! [ "$(ELDS_KERNEL_SCM_VERSION)" = "$(ELDS_KERNEL_GIT_VERSION)" ]; then \
-		printf "***** WARNING 'Linux' HAS DIFFERENT VERSION *****\n"; \
-		sleep 3; \
-	fi
 	$(MAKE) toolchain-build
 	@$(MAKE) archive
 
@@ -184,12 +170,8 @@ rootfs: $(ELDS_ROOTFS_TARGETS)
 
 $(ELDS_ROOTFS_TARGETS): $(ELDS_TOOLCHAIN_TARGETS)
 	@$(MAKE) restore
-	@$(MAKE) buildroot-check
+	@$(MAKE) $(ELDS_ROOTFS_TREE)-check
 	@$(MAKE) rootfs-config
-	@if ! [ "$(ELDS_ROOTFS_SCM_VERSION)" = "$(ELDS_ROOTFS_GIT_VERSION)" ]; then \
-		printf "***** WARNING 'buildroot' HAS DIFFERENT VERSION *****\n"; \
-		sleep 3; \
-	fi
 	$(MAKE) -C $(ELDS_ROOTFS_SCM) O=$(ELDS_ROOTFS_BUILD)
 	$(call $(ELDS_BOARD)-finalize)
 	@$(MAKE) archive
@@ -223,10 +205,6 @@ $(ELDS_KERNEL_TARGETS): $(ELDS_TOOLCHAIN_TARGETS)
 	@$(MAKE) kernel-config
 	@mkdir -p $(ELDS_KERNEL_BOOT)
 	@mkdir -p $(ELDS_ROOTFS_BUILD)/target/boot
-	@if ! [ "$(ELDS_KERNEL_SCM_VERSION)" = "$(ELDS_KERNEL_GIT_VERSION)" ]; then \
-		printf "***** WARNING 'Linux' HAS DIFFERENT VERSION *****\n"; \
-		sleep 3; \
-	fi
 	$(MAKE) -j 2 -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) zImage \
 		LOCALVERSION=$(ELDS_KERNEL_LOCALVERSION)
 	@if [ -f $(ELDS_KERNEL_BOOT)/zImage ]; then \
