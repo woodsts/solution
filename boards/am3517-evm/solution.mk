@@ -10,7 +10,7 @@
 BOARD_HOSTNAME := $(ELDS_BOARD)
 BOARD_GETTY_PORT ?= ttyO2
 
-BOARD_KERNEL_TREE ?= linux
+BOARD_KERNEL_TREE ?= linux-$(BOARD_HOSTNAME)
 BOARD_KERNEL_DT ?= am3517-evm
 
 include $(ELDS)/boards/omap2plus/solution.mk
