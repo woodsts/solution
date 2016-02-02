@@ -20,46 +20,6 @@ usage:
 .PHONY: solution
 solution: toolchain kernel bootloader rootfs
 
-# Restore any downloaded files that have been previously archived
-.PHONY: restore
-restore:
-	@mkdir -p $(ELDS)/toolchain/tarballs
-	@if [ -d $(ELDS_ARCHIVE)/toolchain/tarballs ]; then \
-		for f in $(ELDS_TOOLCHAIN_SOURCES); do \
-			if [ -f $(ELDS_ARCHIVE)/toolchain/tarballs/$$f ]; then \
-				rsync -a $(ELDS_ARCHIVE)/toolchain/tarballs/$$f $(ELDS)/toolchain/tarballs/; \
-			fi; \
-		done; \
-	fi
-	@mkdir -p $(ELDS)/rootfs/tarballs
-	@if [ -d $(ELDS_ARCHIVE)/rootfs/tarballs ]; then \
-		for f in $(ELDS_ROOTFS_SOURCES); do \
-			if [ -f $(ELDS_ARCHIVE)/rootfs/tarballs/$$f ]; then \
-				rsync -a $(ELDS_ARCHIVE)/rootfs/tarballs/$$f $(ELDS)/rootfs/tarballs/; \
-			fi; \
-		done; \
-	fi
-
-# Store any downloaded files
-.PHONY: archive
-archive:
-	@mkdir -p $(ELDS_ARCHIVE)/toolchain
-	@if [ -d $(ELDS)/toolchain/tarballs ]; then \
-		for f in $(ELDS_TOOLCHAIN_SOURCES); do \
-			if [ -f $(ELDS)/toolchain/tarballs/$$f ]; then \
-				rsync -a $(ELDS)/toolchain/tarballs/$$f $(ELDS_ARCHIVE)/toolchain/tarballs/; \
-			fi; \
-		done; \
-	fi
-	@mkdir -p $(ELDS_ARCHIVE)/rootfs
-	@if [ -d $(ELDS)/rootfs/tarballs ]; then \
-		for f in $(ELDS_ROOTFS_SOURCES); do \
-			if [ -f $(ELDS)/rootfs/tarballs/$$f ]; then \
-				rsync -a $(ELDS)/rootfs/tarballs/$$f $(ELDS_ARCHIVE)/rootfs/tarballs/; \
-			fi; \
-		done; \
-	fi
-
 # Test for Git source existence
 %-check:
 	$(call scm-check)
@@ -148,11 +108,9 @@ toolchain: $(ELDS_TOOLCHAIN_TARGETS)
 $(ELDS_TOOLCHAIN_TARGETS):
 	@$(MAKE) $(ELDS_KERNEL_TREE)-check
 	$(MAKE) toolchain-build
-	@$(MAKE) archive
 
 # Run toolchain build tool (ct-ng) with options
 toolchain-%: $(ELDS_TOOLCHAIN_CONFIG)
-	@$(MAKE) restore
 	@cd $(ELDS_TOOLCHAIN_BUILD) && CT_ARCH=$(BOARD_ARCH) ct-ng $(*F)
 	@cat $< > $(BOARD_TOOLCHAIN_CONFIG)
 
@@ -169,16 +127,13 @@ $(ELDS_ROOTFS_CONFIG): $(BOARD_ROOTFS_CONFIG)
 rootfs: $(ELDS_ROOTFS_TARGETS)
 
 $(ELDS_ROOTFS_TARGETS): $(ELDS_TOOLCHAIN_TARGETS)
-	@$(MAKE) restore
 	@$(MAKE) $(ELDS_ROOTFS_TREE)-check
 	@$(MAKE) rootfs-config
 	$(MAKE) -C $(ELDS_ROOTFS_SCM) O=$(ELDS_ROOTFS_BUILD)
 	$(call $(ELDS_BOARD)-finalize)
-	@$(MAKE) archive
 
 # Run 'make rootfs' with options
 rootfs-%: $(ELDS_ROOTFS_CONFIG)
-	@$(MAKE) restore
 	$(MAKE) -C $(ELDS_SCM)/buildroot O=$(ELDS_ROOTFS_BUILD) $(*F)
 	@cat $< > $(BOARD_ROOTFS_CONFIG)
 
@@ -267,7 +222,7 @@ kernel-rm:
 
 # Selectively remove some solution artifacts
 .PHONY: clean
-clean: archive
+clean:
 	$(RM) $(ELDS_ROOTFS_TARGETS)
 	$(RM) $(ELDS_KERNEL_TARGETS)
 	$(RM) $(BOARD_BOOTLOADER_TARGETS)

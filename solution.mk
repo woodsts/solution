@@ -40,7 +40,6 @@ ELDS_TOOLCHAIN_PATH := $(ELDS)/toolchain/$(ELDS_CROSS_TUPLE)
 ELDS_TOOLCHAIN_BUILD := $(ELDS)/toolchain/build/$(ELDS_CROSS_TUPLE)
 ELDS_TOOLCHAIN_BUILDER := $(ELDS)/toolchain/builder
 ELDS_TOOLCHAIN_CONFIG := $(ELDS_TOOLCHAIN_BUILD)/.config
-ELDS_TOOLCHAIN_SOURCES := $(shell cat $(ELDS)/common/toolchain.txt)
 ELDS_TOOLCHAIN_TARGETS := $(ELDS_TOOLCHAIN_PATH)/bin/$(ELDS_CROSS_COMPILE)gcc \
 	$(ELDS_TOOLCHAIN_PATH)/bin/$(ELDS_CROSS_COMPILE)gdb \
 	$(ELDS_TOOLCHAIN_PATH)/$(ELDS_CROSS_TUPLE)/debug-root/usr/bin/gdbserver \
@@ -64,7 +63,6 @@ ELDS_ROOTFS_SCM := $(ELDS_SCM)/$(ELDS_ROOTFS_TREE)
 ELDS_ROOTFS_VERSION := $(shell cd $(ELDS_ROOTFS_SCM) 2>/dev/null && make print-version 2>/dev/null)
 ELDS_ROOTFS_BUILD := $(ELDS)/rootfs/$(BOARD_TYPE)/$(ELDS_CROSS_TUPLE)
 ELDS_ROOTFS_CONFIG := $(ELDS_ROOTFS_BUILD)/.config
-ELDS_ROOTFS_SOURCES := $(shell cat $(ELDS)/common/rootfs.txt)
 ELDS_ROOTFS_TARGETS := $(BOARD_ROOTFS_TARGETS)
 
 # Kernel Definitions
@@ -129,14 +127,12 @@ define solution-env
 	@printf "ELDS_TOOLCHAIN_VERSION       : $(ELDS_TOOLCHAIN_VERSION)\n"
 	@printf "ELDS_TOOLCHAIN_PATH          : $(ELDS_TOOLCHAIN_PATH)\n"
 	@printf "ELDS_TOOLCHAIN_BUILD         : $(ELDS_TOOLCHAIN_BUILD)\n"
-	@printf "ELDS_TOOLCHAIN_SOURCES       : $(ELDS_TOOLCHAIN_SOURCES)\n"
 	@printf "ELDS_TOOLCHAIN_TARGETS       : $(ELDS_TOOLCHAIN_TARGETS)\n"
 	@printf "========================================================================\n"
 	@printf "ELDS_ROOTFS                  : $(ELDS_ROOTFS)\n"
 	@printf "ELDS_ROOTFS_TREE             : $(ELDS_ROOTFS_TREE)\n"
 	@printf "ELDS_ROOTFS_VERSION          : $(ELDS_ROOTFS_VERSION)\n"
 	@printf "ELDS_ROOTFS_BUILD            : $(ELDS_ROOTFS_BUILD)\n"
-	@printf "ELDS_ROOTFS_SOURCES          : $(ELDS_ROOTFS_SOURCES)\n"
 	@printf "ELDS_ROOTFS_TARGETS          : $(ELDS_ROOTFS_TARGETS)\n"
 	@printf "========================================================================\n"
 	@printf "ELDS_KERNEL                  : $(ELDS_KERNEL)\n"
