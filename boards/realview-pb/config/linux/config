@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Linux/arm 4.4.2 Kernel Configuration
+# Linux/arm 4.4.4 Kernel Configuration
 #
 CONFIG_ARM=y
 CONFIG_SYS_SUPPORTS_APM_EMULATION=y
@@ -2246,7 +2246,6 @@ CONFIG_DEBUG_LL=y
 CONFIG_DEBUG_LL_UART_PL01X=y
 CONFIG_DEBUG_LL_INCLUDE="debug/pl01x.S"
 # CONFIG_DEBUG_UART_8250 is not set
-# CONFIG_DEBUG_UART_BCM63XX is not set
 CONFIG_DEBUG_UART_PHYS=0x101f1000
 CONFIG_DEBUG_UART_VIRT=0xf11f1000
 CONFIG_UNCOMPRESS_INCLUDE="mach/uncompress.h"
