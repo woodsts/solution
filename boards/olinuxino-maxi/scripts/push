@@ -34,7 +34,7 @@ case "${transfer_type}" in
 				exit 1
 			fi
 		fi
-		sudo rsync -aP ${target_dir}/boot ${media}/rootfs/ && \
+		sudo rsync -aP ${target_dir}/boot        ${media}/rootfs/     && \
 		sudo rsync -aP ${target_dir}/lib/modules ${media}/rootfs/lib/ && sync
 		;;
 	net)
@@ -43,7 +43,7 @@ case "${transfer_type}" in
 			usage
 			exit 1
 		fi
-		rsync -aP ${target_dir}/boot root@${3}:/
+		rsync -aP ${target_dir}/boot        root@${3}:/
 		rsync -aP ${target_dir}/lib/modules root@${3}:/lib/
 		;;
 	*)

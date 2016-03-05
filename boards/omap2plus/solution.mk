@@ -56,16 +56,17 @@ define omap2plus-bootloader
 		mkdir -p $(BOARD_BOOTLOADER_TARGET); \
 		$(RM) $(BOARD_BOOTLOADER_TARGET)/u-boot*; \
 		$(RM) $(BOARD_BOOTLOADER_TARGET)/MLO*; \
-		cp -av $(BOARD_BOOTLOADER_BINARY_SPL) $(BOARD_BOOTLOADER_TARGET)/MLO-$(BOARD_BOOTLOADER_VERSION); \
-		cp -av $(BOARD_BOOTLOADER_BINARY_IMAGE) $(BOARD_BOOTLOADER_TARGET)/u-boot-$(BOARD_BOOTLOADER_VERSION).img; \
-		cd $(BOARD_BOOTLOADER_TARGET) && \
-			ln -sf u-boot-$(BOARD_BOOTLOADER_VERSION).img u-boot.img && \
-			ln -sf MLO-$(BOARD_BOOTLOADER_VERSION) MLO; \
-		;;\
+		cp -av $(BOARD_BOOTLOADER_BINARY_SPL) $(BOARD_BOOTLOADER_TARGET)/; \
+		cp -av $(BOARD_BOOTLOADER_BINARY_IMAGE) $(BOARD_BOOTLOADER_TARGET)/; \
+		;; \
 	*)\
 		printf "***** U-Boot $(BOARD_BOOTLOADER_VERSION) 'make $(*F)' *****\n"; \
 		$(MAKE) -C $(BOARD_BOOTLOADER_SCM) O=$(BOARD_BOOTLOADER_BUILD) $(ELDS_CROSS_PARAMS) $(*F); \
 	esac;
+endef
+
+define $(ELDS_BOARD)-bootloader
+	$(call omap2plus-bootloader)
 endef
 
 define omap2plus-finalize
@@ -75,7 +76,8 @@ define omap2plus-finalize
 			rsync $$f $(BOARD_ROOTFS_FINAL)/images/; \
 		fi; \
 	done
-	@$(RM) -r $(BOARD_ROOTFS_FINAL)/target/{boot,lib/modules}
+	@$(RM) -r $(BOARD_ROOTFS_FINAL)/target/boot
+	@$(RM) -r $(BOARD_ROOTFS_FINAL)/target/lib/modules
 	@mkdir -p $(BOARD_ROOTFS_FINAL)/target/lib
 	@if [ -d $(BOARD_TARGET)/boot ]; then \
 		rsync -aP $(BOARD_TARGET)/boot \
@@ -85,6 +87,23 @@ define omap2plus-finalize
 		rsync -aP $(BOARD_TARGET)/lib/modules \
 			$(BOARD_ROOTFS_FINAL)/target/lib/; \
 	fi
+endef
+
+define $(ELDS_BOARD)-finalize
+	$(call omap2plus-finalize)
+endef
+
+define $(ELDS_BOARD)-append-dtb
+	@cat $(BOARD_BUILD)/$(BOARD_KERNEL_TREE)/arch/$(BOARD_ARCH)/boot/dts/$(BOARD_KERNEL_DT).dtb >> \
+		$(BOARD_BUILD)/$(BOARD_KERNEL_TREE)/arch/$(BOARD_ARCH)/boot/zImage
+	@mkimage -A arm -O linux -T kernel -C none -a 0x82000000 -e 0x82000000 -n "Linux $(ELDS_KERNEL_VERSION)" \
+		-d $(BOARD_BUILD)/$(BOARD_KERNEL_TREE)/arch/$(BOARD_ARCH)/boot/zImage \
+		$(BOARD_BUILD)/$(BOARD_KERNEL_TREE)/arch/$(BOARD_ARCH)/boot/uImage
+	@cp -av $(BOARD_BUILD)/$(BOARD_KERNEL_TREE)/arch/$(BOARD_ARCH)/boot/uImage $(BOARD_TARGET)/boot/
+endef
+
+define $(ELDS_BOARD)-env
+	$(call omap2plus-env)
 endef
 
 define omap2plus-env

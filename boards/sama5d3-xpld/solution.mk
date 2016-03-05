@@ -69,11 +69,8 @@ define $(ELDS_BOARD)-bootloader
 		$(RM) $(BOARD_BOOTLOADER_TARGET)/u-boot*; \
 		$(RM) $(BOARD_BOOTLOADER_TARGET)/boot*; \
 		cp -av $(BOARD_CONFIG)/u-boot/uEnv.txt $(BOARD_BOOTLOADER_TARGET)/; \
-		cp -av $(BOARD_BOOTLOADER_BINARY_SPL) $(BOARD_BOOTLOADER_TARGET)/boot-$(BOARD_BOOTLOADER_VERSION).bin; \
-		cp -av $(BOARD_BOOTLOADER_BINARY_IMAGE) $(BOARD_BOOTLOADER_TARGET)/u-boot-$(BOARD_BOOTLOADER_VERSION).img; \
-		cd $(BOARD_BOOTLOADER_TARGET) && \
-			ln -sf u-boot-$(BOARD_BOOTLOADER_VERSION).img u-boot.img && \
-			ln -sf boot-$(BOARD_BOOTLOADER_VERSION).bin boot.bin; \
+		cp -av $(BOARD_BOOTLOADER_BINARY_SPL) $(BOARD_BOOTLOADER_TARGET)/; \
+		cp -av $(BOARD_BOOTLOADER_BINARY_IMAGE) $(BOARD_BOOTLOADER_TARGET)/; \
 		;;\
 	*)\
 		printf "***** U-Boot $(BOARD_BOOTLOADER_VERSION) 'make $(*F)' *****\n"; \

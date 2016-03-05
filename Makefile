@@ -163,17 +163,13 @@ $(ELDS_KERNEL_TARGETS): $(ELDS_TOOLCHAIN_TARGETS)
 	$(MAKE) -j 2 -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) zImage \
 		LOCALVERSION=$(ELDS_KERNEL_LOCALVERSION)
 	@if [ -f $(ELDS_KERNEL_BOOT)/zImage ]; then \
-		$(RM) $(ELDS_ROOTFS_BUILD)/target/boot/uImage-*; \
-		$(RM) $(ELDS_ROOTFS_BUILD)/target/boot/zImage-*; \
-		$(RM) $(ELDS_ROOTFS_BUILD)/target/boot/System.map-*; \
-		cp -av $(ELDS_KERNEL_BOOT)/zImage $(ELDS_ROOTFS_BUILD)/target/boot/zImage-$(ELDS_KERNEL_VERSION); \
-	        cp -av $(ELDS_KERNEL_SYSMAP) $(ELDS_ROOTFS_BUILD)/target/boot/System.map-$(ELDS_KERNEL_VERSION); \
-		mkimage -A arm -O linux -T kernel -C none -a 0x80008000 -e 0x80008000 -n "Linux $(ELDS_KERNEL_VERSION)" \
-			-d $(ELDS_KERNEL_BOOT)/zImage $(ELDS_ROOTFS_BUILD)/target/boot/uImage-$(ELDS_KERNEL_VERSION); \
-		cd $(ELDS_ROOTFS_BUILD)/target/boot && \
-			ln -sf uImage-$(ELDS_KERNEL_VERSION) uImage && \
-			ln -sf zImage-$(ELDS_KERNEL_VERSION) zImage && \
-			ln -sf System.map-$(ELDS_KERNEL_VERSION) System.map; \
+		$(RM) $(ELDS_ROOTFS_BUILD)/target/boot/uImage; \
+		$(RM) $(ELDS_ROOTFS_BUILD)/target/boot/zImage; \
+		$(RM) $(ELDS_ROOTFS_BUILD)/target/boot/System.map; \
+	        cp -av $(ELDS_KERNEL_SYSMAP) $(ELDS_ROOTFS_BUILD)/target/boot/System.map; \
+		cp -av $(ELDS_KERNEL_BOOT)/zImage $(ELDS_ROOTFS_BUILD)/target/boot/zImage; \
+		mkimage -A arm -O linux -T kernel -C none -a 0x82000000 -e 0x82000000 -n "Linux $(ELDS_KERNEL_VERSION)" \
+			-d $(ELDS_KERNEL_BOOT)/zImage $(ELDS_ROOTFS_BUILD)/target/boot/uImage; \
 	else \
 		printf "***** Linux $(ELDS_KERNEL_VERSION) zImage build FAILED! *****\n"; \
 		exit 2; \
@@ -183,14 +179,14 @@ ifdef BOARD_KERNEL_DT
 		LOCALVERSION=$(ELDS_KERNEL_LOCALVERSION)
 	@if [ -f $(ELDS_KERNEL_DTB) ]; then \
 		$(RM) $(ELDS_ROOTFS_BUILD)/target/boot/*.dtb; \
-		cp -av $(ELDS_KERNEL_DTB) $(ELDS_ROOTFS_BUILD)/target/boot/$(BOARD_KERNEL_DT)-$(ELDS_KERNEL_VERSION).dtb; \
-		cd $(ELDS_ROOTFS_BUILD)/target/boot/ && \
-			ln -sf $(BOARD_KERNEL_DT)-$(ELDS_KERNEL_VERSION).dtb $(BOARD_KERNEL_DT).dtb; \
+		cp -av $(ELDS_KERNEL_DTB) $(ELDS_ROOTFS_BUILD)/target/boot/; \
 	else \
 		printf "***** Linux $(ELDS_KERNEL_VERSION) $(LINUX_DT) build FAILED! *****\n"; \
 		exit 2; \
 	fi
+ifdef ELDS_APPEND_DTB
 	$(call $(ELDS_BOARD)-append-dtb)
+endif
 endif
 	$(MAKE) -j 2 -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) modules \
 		LOCALVERSION=$(ELDS_KERNEL_LOCALVERSION)

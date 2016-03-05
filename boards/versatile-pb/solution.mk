@@ -59,8 +59,7 @@ define $(ELDS_BOARD)-bootloader
 		else \
 			mkdir -p $(BOARD_BOOTLOADER_TARGET); \
 			$(RM) $(BOARD_BOOTLOADER_TARGET)/u-boot-*; \
-			cp -av $(BOARD_BOOTLOADER_BINARY) $(BOARD_BOOTLOADER_TARGET)/u-boot-$(BOARD_BOOTLOADER_VERSION).bin; \
-			cd $(BOARD_BOOTLOADER_TARGET) && ln -sf u-boot-$(BOARD_BOOTLOADER_VERSION).bin u-boot.bin; \
+			cp -av $(BOARD_BOOTLOADER_BINARY) $(BOARD_BOOTLOADER_TARGET)/; \
 		fi; \
 	else \
 		printf "***** U-Boot $(BOARD_BOOTLOADER_VERSION) 'make $(*F)' *****\n"; \

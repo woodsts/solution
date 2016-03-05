@@ -41,12 +41,15 @@ case "${transfer_type}" in
 				exit 1
 			fi
 		fi
-		sudo rsync -aP ${target_dir}/boot ${media}/rootfs/ && \
+		sudo rsync -aP ${target_dir}/boot        ${media}/rootfs/     && \
 		sudo rsync -aP ${target_dir}/lib/modules ${media}/rootfs/lib/ && sync && \
 		if [ "${push_bootloader}" = "1" ]; then
-			sudo cp -v ${target_dir}/boot/boot-*.bin ${media}/BOOT/BOOT.BIN && sync && \
-			sudo cp -v ${target_dir}/boot/u-boot-*.img ${media}/BOOT/u-boot.img && sync
+			sudo cp -v ${target_dir}/boot/boot.bin   ${media}/BOOT/BOOT.BIN && sync && \
+			sudo cp -v ${target_dir}/boot/u-boot.img ${media}/BOOT/         && sync
 		fi
+		sudo cp -v ${target_dir}/boot/*.dtb  ${media}/BOOT/ && \
+		sudo cp -v ${target_dir}/boot/uImage ${media}/BOOT/ && \
+		sudo cp -v ${target_dir}/boot/zImage ${media}/BOOT/ && sync
 		;;
 	net)
 		if [ "x${3}" = "x" ]; then
@@ -54,12 +57,15 @@ case "${transfer_type}" in
 			usage
 			exit 1
 		fi
-		rsync -aP ${target_dir}/boot root@${3}:/
+		rsync -aP ${target_dir}/boot        root@${3}:/
 		rsync -aP ${target_dir}/lib/modules root@${3}:/lib/
 		if [ "${push_bootloader}" = "1" ]; then
-			rsync -P ${target_dir}/boot/boot-*.bin root@${3}:/media/BOOT/BOOT.BIN
-			rsync -P ${target_dir}/boot/u-boot-*.img root@${3}:/media/BOOT/u-boot.img
+			rsync -P ${target_dir}/boot/boot.bin   root@${3}:/media/BOOT/BOOT.BIN
+			rsync -P ${target_dir}/boot/u-boot.img root@${3}:/media/BOOT/
 		fi
+		rsync -P ${target_dir}/boot/*.dtb  root@${3}:/media/BOOT/
+		rsync -P ${target_dir}/boot/uImage root@${3}:/media/BOOT/
+		rsync -P ${target_dir}/boot/zImage root@${3}:/media/BOOT/
 		;;
 	*)
 		printf "Transfer type [${transfer_type}] not implemented.\n"
