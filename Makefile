@@ -18,7 +18,7 @@ usage:
 
 # Primary make target for 'solution'
 .PHONY: solution
-solution: toolchain kernel bootloader rootfs
+solution: toolchain rootfs kernel bootloader
 
 # Test for Git source existence
 %-check:
@@ -190,12 +190,12 @@ endif
 endif
 	$(MAKE) -j 2 -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) modules \
 		LOCALVERSION=$(ELDS_KERNEL_LOCALVERSION)
-	@$(RM) -r $(ELDS_ROOTFS_BUILD)/target/lib/modules/*
+	@$(RM) -r $(BOARD_TARGET)/lib/modules
 	$(MAKE) -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) modules_install \
 		LOCALVERSION=$(ELDS_KERNEL_LOCALVERSION) \
-		INSTALL_MOD_PATH=$(ELDS_ROOTFS_BUILD)/target
-	@if [ -d $(ELDS_ROOTFS_BUILD)/target/lib/modules ]; then \
-		find $(ELDS_ROOTFS_BUILD)/target/lib/modules -type l -exec rm -f {} \; ; \
+		INSTALL_MOD_PATH=$(BOARD_TARGET)
+	@if [ -d $(BOARD_TARGET)/lib/modules ]; then \
+		find $(BOARD_TARGET)/lib/modules -type l -exec rm -f {} \; ; \
 	fi
 	$(MAKE) -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) headers_install \
 		LOCALVERSION=$(ELDS_KERNEL_LOCALVERSION) \
