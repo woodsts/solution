@@ -22,14 +22,14 @@ fi
 
 target_dir=${1}
 
-omap_dir=${1}/../../../omap2plus/arm-cortexa8-linux-gnueabihf/target
-
 push_bootloader="1"
 
 echo "$@" | grep -q noboot
 if [ "$?" = "0" ]; then
 	push_bootloader="0"
 fi
+
+send_list="boot lib/firmware lib/modules"
 
 case "${transfer_type}" in
 	mmc)
@@ -43,16 +43,16 @@ case "${transfer_type}" in
 				exit 1
 			fi
 		fi
-		sudo rsync -aP ${target_dir}/boot        ${media}/rootfs/     && \
-		sudo rsync -aP ${omap_dir}/lib/firmware  ${media}/rootfs/lib/ && \
-		sudo rsync -aP ${target_dir}/lib/modules ${media}/rootfs/lib/ && sync && \
+		pushd ${target_dir}
+		sudo rsync -aPR ${send_list} ${media}/rootfs/ && sync
+		popd
+		send_list="*.dtb uImage zImage"
 		if [ "${push_bootloader}" = "1" ]; then
-			sudo cp -v ${target_dir}/boot/MLO        ${media}/BOOT/ && sync && \
-			sudo cp -v ${target_dir}/boot/u-boot.img ${media}/BOOT/ && sync
+			send_list="MLO u-boot.img ${send_list}"
 		fi
-		sudo cp -v ${target_dir}/boot/*.dtb  ${media}/BOOT/ && \
-		sudo cp -v ${target_dir}/boot/uImage ${media}/BOOT/ && \
-		sudo cp -v ${target_dir}/boot/zImage ${media}/BOOT/ && sync
+		pushd ${target_dir}/boot
+		sudo rsync -P ${send_list} ${media}/BOOT/ && sync
+		popd
 		;;
 	net)
 		if [ "x${3}" = "x" ]; then
@@ -60,16 +60,16 @@ case "${transfer_type}" in
 			usage
 			exit 1
 		fi
-		rsync -aP ${target_dir}/boot        root@${3}:/
-		rsync -aP ${omap_dir}/lib/firmware  root@${3}:/lib/
-		rsync -aP ${target_dir}/lib/modules root@${3}:/lib/
+		pushd ${target_dir}
+		rsync -aPR ${send_list} root@${3}:/
+		popd
+		send_list="*.dtb uImage zImage"
 		if [ "${push_bootloader}" = "1" ]; then
-			rsync -P ${target_dir}/boot/MLO        root@${3}:/media/BOOT/
-			rsync -P ${target_dir}/boot/u-boot.img root@${3}:/media/BOOT/
+			send_list="MLO u-boot.img ${send_list}"
 		fi
-		rsync -P ${target_dir}/boot/*.dtb  root@${3}:/media/BOOT/
-		rsync -P ${target_dir}/boot/uImage root@${3}:/media/BOOT/
-		rsync -P ${target_dir}/boot/zImage root@${3}:/media/BOOT/
+		pushd ${target_dir}/boot
+		rsync -P ${send_list} root@${3}:/media/BOOT/
+		popd
 		;;
 	*)
 		printf "Transfer type [${transfer_type}] not implemented.\n"

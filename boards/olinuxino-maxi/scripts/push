@@ -22,6 +22,8 @@ fi
 
 target_dir=${1}
 
+send_list="boot lib/firmware lib/modules"
+
 case "${transfer_type}" in
 	mmc)
 		if [ -d /media/$USER ]; then
@@ -34,8 +36,9 @@ case "${transfer_type}" in
 				exit 1
 			fi
 		fi
-		sudo rsync -aP ${target_dir}/boot        ${media}/rootfs/     && \
-		sudo rsync -aP ${target_dir}/lib/modules ${media}/rootfs/lib/ && sync
+		pushd ${target_dir}
+		sudo rsync -aPR ${send_list} ${media}/rootfs/ && sync
+		popd
 		;;
 	net)
 		if [ "x${3}" = "x" ]; then
@@ -43,8 +46,9 @@ case "${transfer_type}" in
 			usage
 			exit 1
 		fi
-		rsync -aP ${target_dir}/boot        root@${3}:/
-		rsync -aP ${target_dir}/lib/modules root@${3}:/lib/
+		pushd ${target_dir}
+		rsync -aPR ${send_list} root@${3}:/
+		popd
 		;;
 	*)
 		printf "Transfer type [${transfer_type}] not implemented.\n"
