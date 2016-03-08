@@ -87,6 +87,10 @@ define omap2plus-finalize
 		rsync -aP $(BOARD_TARGET)/lib/modules \
 			$(BOARD_ROOTFS_FINAL)/target/lib/; \
 	fi
+	@if [ -d $(BOARD_TARGET)/lib/firmware ]; then \
+		rsync -aP $(BOARD_TARGET)/lib/firmware \
+			$(BOARD_ROOTFS_FINAL)/target/lib/; \
+	fi
 endef
 
 define $(ELDS_BOARD)-finalize
