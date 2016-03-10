@@ -205,6 +205,17 @@ endif
 # Run Linux kernel build with options
 kernel-%: $(ELDS_KERNEL_CONFIG)
 	$(MAKE) -j 2 -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) $(*F)
+	@if [ "$(*F)" = "$(BOARD_KERNEL_DT).dtb" ]; then \
+		if [ -f $(ELDS_KERNEL_DTB) ]; then \
+			$(RM) $(ELDS_ROOTFS_BUILD)/target/boot/*.dtb; \
+			$(RM) $(BOARD_ROOTFS_FINAL)/target/boot/*.dtb; \
+			cp -av $(ELDS_KERNEL_DTB) $(ELDS_ROOTFS_BUILD)/target/boot/; \
+			cp -av $(ELDS_KERNEL_DTB) $(BOARD_ROOTFS_FINAL)/target/boot/; \
+		else \
+			printf "***** Linux $(ELDS_KERNEL_VERSION) $(LINUX_DT) build FAILED! *****\n"; \
+			exit 2; \
+		fi; \
+	fi
 	@cat $< > $(BOARD_KERNEL_CONFIG)
 
 # Remove kernel targets
