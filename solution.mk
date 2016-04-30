@@ -41,8 +41,8 @@ ELDS_TOOLCHAIN_BUILD := $(ELDS)/toolchain/build/$(ELDS_CROSS_TUPLE)
 ELDS_TOOLCHAIN_BUILDER := $(ELDS)/toolchain/builder
 ELDS_TOOLCHAIN_CONFIG := $(ELDS_TOOLCHAIN_BUILD)/.config
 ELDS_TOOLCHAIN_TARGETS := $(ELDS_TOOLCHAIN_PATH)/bin/$(ELDS_CROSS_COMPILE)gcc \
-	$(ELDS_TOOLCHAIN_PATH)/bin/$(ELDS_CROSS_COMPILE)gdb \
-	$(ELDS_TOOLCHAIN_PATH)/$(ELDS_CROSS_TUPLE)/debug-root/usr/bin/gdbserver \
+	$(ELDS_TOOLCHAIN_PATH)/bin/$(ELDS_CROSS_COMPILE)g++ \
+	$(ELDS_TOOLCHAIN_PATH)/$(ELDS_CROSS_TUPLE)/debug-root/usr/bin/ltrace \
 	$(ELDS_TOOLCHAIN_PATH)/$(ELDS_CROSS_TUPLE)/debug-root/usr/bin/strace
 
 # Bootloader Definitions
