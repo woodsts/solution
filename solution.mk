@@ -82,6 +82,9 @@ endif
 ifeq ($(shell printf "$(ELDS_KERNEL_VERSION)" | cut -d '-' -f 1),next)
 ELDS_KERNEL_LOCALVERSION :=
 endif
+ifneq ($(shell printf "$(ELDS_KERNEL_VERSION)" | grep -e "-rc"),)
+ELDS_KERNEL_LOCALVERSION :=
+endif
 ELDS_KERNEL_CONFIG := $(ELDS_KERNEL_BUILD)/.config
 ELDS_KERNEL_SYSMAP := $(ELDS_KERNEL_BUILD)/System.map
 ELDS_KERNEL_BOOT := $(ELDS_KERNEL_BUILD)/arch/$(BOARD_ARCH)/boot
