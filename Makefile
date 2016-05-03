@@ -19,6 +19,7 @@ usage:
 # Primary make target for 'solution'
 .PHONY: solution
 solution: toolchain rootfs kernel bootloader
+	$(call $(ELDS_BOARD)-finalize)
 
 # Test for Git source existence
 %-check:

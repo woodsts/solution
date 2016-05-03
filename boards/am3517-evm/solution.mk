@@ -16,7 +16,6 @@ BOARD_KERNEL_DT ?= am3517-evm
 include $(ELDS)/boards/omap2plus/solution.mk
 
 BOARD_ROOTFS_FINAL := $(ELDS)/rootfs/$(ELDS_BOARD)/$(BOARD_ARCH)$(BOARD_VENDOR)-$(BOARD_OS)-$(BOARD_ABI)
-BOARD_ROOTFS_TARGETS += $(BOARD_ROOTFS_FINAL)/images/rootfs.tar $(BOARD_ROOTFS_FINAL)/images/rootfs.ubi $(BOARD_ROOTFS_FINAL)/images/rootfs.ubifs
 
 define $(ELDS_BOARD)-bootloader-config
 	@mkdir -p $(BOARD_BOOTLOADER_BUILD)

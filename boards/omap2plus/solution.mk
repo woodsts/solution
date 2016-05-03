@@ -25,7 +25,7 @@ BOARD_IMAGES := $(BOARD_ROOTFS)/images
 BOARD_TARGET := $(BOARD_ROOTFS)/target
 BOARD_ROOTFS_FINAL := $(BOARD_ROOTFS)
 
-BOARD_ROOTFS_TARGETS := $(BOARD_IMAGES)/rootfs.tar
+BOARD_ROOTFS_TARGETS := $(BOARD_IMAGES)/rootfs.tar $(BOARD_IMAGES)/rootfs.ubi $(BOARD_IMAGES)/rootfs.ubifs
 
 # Bootloader Definitions
 BOARD_BOOTLOADER := U-Boot
@@ -80,15 +80,15 @@ define omap2plus-finalize
 	@$(RM) -r $(BOARD_ROOTFS_FINAL)/target/lib/modules
 	@mkdir -p $(BOARD_ROOTFS_FINAL)/target/lib
 	@if [ -d $(BOARD_TARGET)/boot ]; then \
-		rsync -aP $(BOARD_TARGET)/boot \
+		rsync -a $(BOARD_TARGET)/boot \
 			$(BOARD_ROOTFS_FINAL)/target/; \
 	fi
 	@if [ -d $(BOARD_TARGET)/lib/modules ]; then \
-		rsync -aP $(BOARD_TARGET)/lib/modules \
+		rsync -a $(BOARD_TARGET)/lib/modules \
 			$(BOARD_ROOTFS_FINAL)/target/lib/; \
 	fi
 	@if [ -d $(BOARD_TARGET)/lib/firmware ]; then \
-		rsync -aP $(BOARD_TARGET)/lib/firmware \
+		rsync -a $(BOARD_TARGET)/lib/firmware \
 			$(BOARD_ROOTFS_FINAL)/target/lib/; \
 	fi
 endef
