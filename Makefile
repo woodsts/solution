@@ -179,7 +179,7 @@ ifdef BOARD_KERNEL_DT
 	$(MAKE) -j 2 -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) $(BOARD_KERNEL_DT).dtb \
 		LOCALVERSION=$(ELDS_KERNEL_LOCALVERSION)
 	@if [ -f $(ELDS_KERNEL_DTB) ]; then \
-		$(RM) $(ELDS_ROOTFS_BUILD)/target/boot/*.dtb; \
+		$(RM) $(ELDS_ROOTFS_BUILD)/target/boot/$(BOARD_KERNEL_DT).dtb; \
 		cp -av $(ELDS_KERNEL_DTB) $(ELDS_ROOTFS_BUILD)/target/boot/; \
 	else \
 		printf "***** Linux $(ELDS_KERNEL_VERSION) $(LINUX_DT) build FAILED! *****\n"; \
@@ -188,6 +188,17 @@ ifdef BOARD_KERNEL_DT
 ifdef ELDS_APPEND_DTB
 	$(call $(ELDS_BOARD)-append-dtb)
 endif
+endif
+ifdef BOARD_KERNEL_DT_OTHER
+	$(MAKE) -j 2 -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) $(BOARD_KERNEL_DT_OTHER).dtb \
+		LOCALVERSION=$(ELDS_KERNEL_LOCALVERSION)
+	@if [ -f $(ELDS_KERNEL_DTB_OTHER) ]; then \
+		$(RM) $(ELDS_ROOTFS_BUILD)/target/boot/$(BOARD_KERNEL_DT_OTHER).dtb; \
+		cp -av $(ELDS_KERNEL_DTB_OTHER) $(ELDS_ROOTFS_BUILD)/target/boot/; \
+	else \
+		printf "***** Linux $(ELDS_KERNEL_VERSION) $(LINUX_DT_OTHER) build FAILED! *****\n"; \
+		exit 2; \
+	fi
 endif
 	$(MAKE) -j 2 -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) modules \
 		LOCALVERSION=$(ELDS_KERNEL_LOCALVERSION)
@@ -206,10 +217,11 @@ endif
 # Run Linux kernel build with options
 kernel-%: $(ELDS_KERNEL_CONFIG)
 	$(MAKE) -j 2 -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) $(*F)
+ifdef BOARD_KERNEL_DT
 	@if [ "$(*F)" = "$(BOARD_KERNEL_DT).dtb" ]; then \
 		if [ -f $(ELDS_KERNEL_DTB) ]; then \
-			$(RM) $(ELDS_ROOTFS_BUILD)/target/boot/*.dtb; \
-			$(RM) $(BOARD_ROOTFS_FINAL)/target/boot/*.dtb; \
+			$(RM) $(ELDS_ROOTFS_BUILD)/target/boot/$(BOARD_KERNEL_DT).dtb; \
+			$(RM) $(BOARD_ROOTFS_FINAL)/target/boot/$(BOARD_KERNEL_DT).dtb; \
 			cp -av $(ELDS_KERNEL_DTB) $(ELDS_ROOTFS_BUILD)/target/boot/; \
 			cp -av $(ELDS_KERNEL_DTB) $(BOARD_ROOTFS_FINAL)/target/boot/; \
 		else \
@@ -217,6 +229,20 @@ kernel-%: $(ELDS_KERNEL_CONFIG)
 			exit 2; \
 		fi; \
 	fi
+endif
+ifdef BOARD_KERNEL_DT_OTHER
+	@if [ "$(*F)" = "$(BOARD_KERNEL_DT_OTHER).dtb" ]; then \
+		if [ -f $(ELDS_KERNEL_DTB_OTHER) ]; then \
+			$(RM) $(ELDS_ROOTFS_BUILD)/target/boot/$(BOARD_KERNEL_DT_OTHER).dtb; \
+			$(RM) $(BOARD_ROOTFS_FINAL)/target/boot/$(BOARD_KERNEL_DT_OTHER).dtb; \
+			cp -av $(ELDS_KERNEL_DTB_OTHER) $(ELDS_ROOTFS_BUILD)/target/boot/; \
+			cp -av $(ELDS_KERNEL_DTB_OTHER) $(BOARD_ROOTFS_FINAL)/target/boot/; \
+		else \
+			printf "***** Linux $(ELDS_KERNEL_VERSION) $(LINUX_DT_OTHER) build FAILED! *****\n"; \
+			exit 2; \
+		fi; \
+	fi
+endif
 	@cat $< > $(BOARD_KERNEL_CONFIG)
 
 # Remove kernel targets

@@ -12,6 +12,7 @@ BOARD_GETTY_PORT ?= ttyO2
 
 BOARD_KERNEL_TREE ?= linux-$(BOARD_HOSTNAME)
 BOARD_KERNEL_DT ?= am3517-evm
+BOARD_KERNEL_DT_OTHER ?= am3517-evm-wireless
 
 include $(ELDS)/boards/omap2plus/solution.mk
 
@@ -27,3 +28,4 @@ export BOARD_HOSTNAME
 export BOARD_GETTY_PORT
 export BOARD_KERNEL_TREE
 export BOARD_KERNEL_DT
+export BOARD_KERNEL_DT_OTHER
