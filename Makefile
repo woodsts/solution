@@ -99,6 +99,7 @@ toolchain-config: $(ELDS_TOOLCHAIN_CONFIG)
 
 $(ELDS_TOOLCHAIN_CONFIG): $(BOARD_TOOLCHAIN_CONFIG)
 	@mkdir -p $(ELDS_TOOLCHAIN_BUILD)
+	@mkdir -p $(ELDS_TOOLCHAIN_TARBALLS)
 	@cat $< > $@
 	@$(MAKE) toolchain-builder
 
@@ -121,6 +122,7 @@ rootfs-config: $(ELDS_ROOTFS_CONFIG)
 
 $(ELDS_ROOTFS_CONFIG): $(BOARD_ROOTFS_CONFIG)
 	@mkdir -p $(ELDS_ROOTFS_BUILD)
+	@mkdir -p $(ELDS_ROOTFS_TARBALLS)
 	@cat $< > $@
 
 # Build rootfs for embedded target board
