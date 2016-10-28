@@ -10,7 +10,7 @@
 BOARD_HOSTNAME := $(ELDS_BOARD)
 BOARD_GETTY_PORT ?= ttyO0
 
-BOARD_KERNEL_TREE ?= linux-$(ELDS_BOARD)
+BOARD_KERNEL_TREE ?= linux
 BOARD_KERNEL_DT ?= logicpd-torpedo-37xx-devkit
 
 include $(ELDS)/boards/omap2plus/solution.mk
