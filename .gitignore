@@ -4,3 +4,11 @@
 /doc/solution.pdf
 /toolchain
 /rootfs
+/*.patch
+*.log
+*.o
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+*.un~
+Session.vim
+.netrwhist
