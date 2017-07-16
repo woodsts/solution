@@ -13,11 +13,7 @@ printf "\n`cat ${TARGET}/etc/issue`\n\n" > ${TARGET}/etc/issue
 
 # Board Specific Modifications
 case "${ELDS_BOARD}" in
-	*am3517-evm*)
-		mkdir -p ${TARGET}/media/BOOT
-		printf "/dev/mmcblk0p1 /media/BOOT auto errors=remount-ro 0 1\n" >> ${TARGET}/etc/fstab
-		;;
-	*beagle-c4*)
+	*am3517-evm*|*beagle-c4*|*torpedo*|*sama5d3-xpld*)
 		mkdir -p ${TARGET}/media/BOOT
 		printf "/dev/mmcblk0p1 /media/BOOT auto errors=remount-ro 0 1\n" >> ${TARGET}/etc/fstab
 		;;
@@ -28,12 +24,10 @@ case "${ELDS_BOARD}" in
 		printf "ttyAPP0::respawn:/sbin/getty -L ttyAPP0 115200 vt102\n" >> ${TARGET}/etc/inittab
 		;;
 	*realview-pb*)
-		;;
-	*sama5d3-xpld*)
-		mkdir -p ${TARGET}/media/BOOT
-		printf "/dev/mmcblk0p1 /media/BOOT auto errors=remount-ro 0 1\n" >> ${TARGET}/etc/fstab
+		# NYI
 		;;
 	*versatile-pb*)
+		# NYI
 		;;
 	*)
 		;;
