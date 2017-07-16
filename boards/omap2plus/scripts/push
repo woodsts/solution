@@ -33,11 +33,11 @@ send_list="boot lib/firmware lib/modules"
 
 case "${transfer_type}" in
 	mmc)
-		if [ -d /media/$USER ]; then
+		if [ -d /media/$SUDO_USER ]; then
 			media="/media/$USER"
 		else
-			if [ -d /run/media/$USER ]; then
-				media="/run/media/$USER"
+			if [ -d /run/media/$SUDO_USER ]; then
+				media="/run/media/$SUDO_USER"
 			else
 				printf "Unknown SD/MMC media directory location!\n"
 				exit 1
