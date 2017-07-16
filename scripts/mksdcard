@@ -19,7 +19,7 @@ fi
 board=$1
 
 case "${board}" in
-	am3517-evm|beagle-c4|sama5d3-xpld|olinuxino-maxi)
+	*am3517-evm|beagle-c4|sama5d3-xpld|olinuxino-maxi|*torpedo*|*overo*)
 		;;
 	*)
 		printf "***** INVALID BOARD NAME *****\n"
@@ -76,10 +76,10 @@ printf "[${board}] Preparing ${controller} @ ${disk}\n"
 sleep 3
 
 case "${board}" in
-	am3517-evm|beagle-c4|sama5d3-xpld)
-		printf "[${board}] Partitioning ${disk} [ 100MB (BOOT) / <fill> (rootfs) ]\n"
-		LC_ALL=C sfdisk --force --in-order --Linux --unit M "${disk}" <<-__EOF__
-		1,100,0xE,*
+	*am3517-evm|beagle-c4|sama5d3-xpld|*torpedo*|*overo*)
+		printf "[${board}] Partitioning ${disk} [ 256MB (BOOT) / <fill> (rootfs) ]\n"
+		LC_ALL=C sfdisk "${disk}" <<-__EOF__
+		1M,256M,0xE,*
 		,,,-
 		__EOF__
 		case "${controller}" in
@@ -102,8 +102,8 @@ case "${board}" in
 
 	olinuxino-maxi)
 		printf "[${board}] Partitioning ${disk} [ 16MB (RAW) / <fill> (rootfs) ]\n"
-		LC_ALL=C sfdisk --force --in-order --Linux --unit M "${disk}" <<-__EOF__
-		1,16,0x53,-
+		LC_ALL=C sfdisk "${disk}" <<-__EOF__
+		1M,16M,0x53,-
 		,,,-
 		__EOF__
 		case "${controller}" in
