@@ -2,8 +2,8 @@
 
 usage()
 {
-	printf "USAGE: push <target-dir> mmc\n"
-	printf "       push <target-dir> net <ip-address>\n"
+	printf "USAGE: push <board> mmc\n"
+	printf "       push <board> net <ip-address>\n"
 }
 
 if [ "x${2}" = "x" ]; then
@@ -15,12 +15,29 @@ fi
 transfer_type=${2}
 
 if [ "x${1}" = "x" ]; then
-	printf "Missing target directory!\n"
+	printf "Missing target board!\n"
 	usage
 	exit 1
 fi
 
-target_dir=${1}
+target_board=${1}
+
+board_dir="`dirname ${0}`/../../../rootfs/${target_board}/arm-cortexa8-linux-gnueabihf/target"
+
+target_dir="`realpath -e ${board_dir}`"
+
+case "${1}" in
+	*am3517-evm*|*beagle-c4*|*torpedo*|*sama5d3-xpld*)
+		if ! [ -d ${target_dir} ]; then
+			printf "Invalid Target Directory [${target_dir}]!\n"
+			exit 1
+		fi
+		;;
+	*)
+		printf "Unknown Board [${target_board}]!\n"
+		exit 1
+		;;
+esac
 
 push_bootloader="1"
 
@@ -33,11 +50,11 @@ send_list="boot lib/firmware lib/modules"
 
 case "${transfer_type}" in
 	mmc)
-		if [ -d /media/$SUDO_USER ]; then
+		if [ -d /media/$USER ]; then
 			media="/media/$USER"
 		else
-			if [ -d /run/media/$SUDO_USER ]; then
-				media="/run/media/$SUDO_USER"
+			if [ -d /run/media/$USER ]; then
+				media="/run/media/$USER"
 			else
 				printf "Unknown SD/MMC media directory location!\n"
 				exit 1
@@ -51,7 +68,7 @@ case "${transfer_type}" in
 			send_list="MLO u-boot.img ${send_list}"
 		fi
 		pushd ${target_dir}/boot
-		sudo rsync -P ${send_list} ${media}/BOOT/ && sync
+		rsync -P ${send_list} ${media}/BOOT/ && sync
 		popd
 		;;
 	net)
