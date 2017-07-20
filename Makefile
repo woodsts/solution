@@ -18,7 +18,7 @@ usage:
 
 # Primary make target for 'solution'
 .PHONY: solution
-solution: toolchain rootfs kernel bootloader
+solution: toolchain bootloader kernel rootfs
 	$(call $(ELDS_BOARD)-finalize)
 
 # Test for Git source existence
@@ -39,14 +39,19 @@ $(ELDS)/doc/solution.pdf: $(ELDS)/doc/solution.txt
 
 # Create bootloader configuration for embedded target board
 .PHONY: bootloader-config
-bootloader-config: $(BOARD_BOOTLOADER_CONFIG)
+bootloader-config: $(ELDS_BOOTLOADER_CONFIG)
+
+$(ELDS_BOOTLOADER_CONFIG): $(BOARD_BOOTLOADER_CONFIG)
+	@mkdir -p $(ELDS_BOOTLOADER_BUILD)
+	@cat $< > $@
 
 $(BOARD_BOOTLOADER_CONFIG):
-	$(call $(ELDS_BOARD)-bootloader-config)
+	$(call $(ELDS_BOARD)-bootloader-defconfig)
+	@cat $(ELDS_BOOTLOADER_CONFIG) > $@
 
 # Build bootloader for embedded target board
 .PHONY: bootloader
-bootloader: $(BOARD_BOOTLOADER_TARGETS)
+bootloader: $(ELDS_BOOTLOADER_TARGETS)
 
 $(BOARD_BOOTLOADER_TARGETS): $(ELDS_TOOLCHAIN_TARGETS)
 	@$(MAKE) $(ELDS_BOOTLOADER_TREE)-check
@@ -258,10 +263,7 @@ kernel-rm:
 
 # Selectively remove some solution artifacts
 .PHONY: clean
-clean:
-	$(RM) $(ELDS_ROOTFS_TARGETS)
-	$(RM) $(ELDS_KERNEL_TARGETS)
-	$(RM) $(BOARD_BOOTLOADER_TARGETS)
+clean: bootloader-rm kernel-rm rootfs-rm
 	$(RM) $(ELDS)/doc/solution.pdf
 
 # Nearly complete removal of solution artifacts

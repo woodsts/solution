@@ -18,6 +18,7 @@ BOARD_OS ?= linux
 BOARD_ABI ?= gnueabihf
 
 BOARD_KERNEL_TREE ?= linux
+BOARD_KERNEL_DT ?= arm-realview-pba8
 
 BOARD_CONFIG := $(ELDS)/boards/$(BOARD_TYPE)/config
 BOARD_TOOLCHAIN_CONFIG := $(BOARD_CONFIG)/crosstool-ng/config
@@ -30,7 +31,7 @@ BOARD_IMAGES := $(BOARD_ROOTFS)/images
 BOARD_TARGET := $(BOARD_ROOTFS)/target
 BOARD_ROOTFS_FINAL := $(BOARD_ROOTFS)
 
-BOARD_ROOTFS_TARGETS := $(BOARD_IMAGES)/rootfs.tar $(BOARD_IMAGES)/rootfs.cpio.xz
+BOARD_ROOTFS_TARGETS := $(BOARD_IMAGES)/rootfs.cpio.xz
 
 define $(ELDS_BOARD)-env
 	@printf "BOARD_ARCH                  : $(BOARD_ARCH)\n"
@@ -45,3 +46,4 @@ export BOARD_TYPE
 export BOARD_HOSTNAME
 export BOARD_GETTY_PORT
 export BOARD_KERNEL_TREE
+export BOARD_KERNEL_DT

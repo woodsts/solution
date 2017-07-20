@@ -18,7 +18,7 @@ include $(ELDS)/boards/omap2plus/solution.mk
 
 BOARD_ROOTFS_FINAL := $(ELDS)/rootfs/$(ELDS_BOARD)/$(BOARD_ARCH)$(BOARD_VENDOR)-$(BOARD_OS)-$(BOARD_ABI)
 
-define $(ELDS_BOARD)-bootloader-config
+define $(ELDS_BOARD)-bootloader-defconfig
 	@mkdir -p $(BOARD_BOOTLOADER_BUILD)
 	$(MAKE) -C $(BOARD_BOOTLOADER_SCM) O=$(BOARD_BOOTLOADER_BUILD) $(ELDS_CROSS_PARAMS) distclean
 	$(MAKE) -C $(BOARD_BOOTLOADER_SCM) O=$(BOARD_BOOTLOADER_BUILD) $(ELDS_CROSS_PARAMS) am3517_evm_defconfig
