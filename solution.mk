@@ -11,6 +11,17 @@
 # ARM Linux [http://www.arm.linux.org.uk/docs/kerncomp.php]
 #
 
+ELDS_BUILD_OS_ID = Ubuntu
+ELDS_BUILD_OS_CODENAME = xenial
+ELDS_BUILD_OS_MESSAGE = [ 'solution' requires $(ELDS_BUILD_OS_ID) 16.04 LTS ] ***
+ifneq ($(shell lsb_release -i|cut -d : -f 2|tr -d '\t'),$(ELDS_BUILD_OS_ID))
+$(error $(ELDS_BUILD_OS_MESSAGE))
+else
+ifneq ($(shell lsb_release -c|cut -d : -f 2|tr -d '\t'),$(ELDS_BUILD_OS_CODENAME))
+$(error $(ELDS_BUILD_OS_MESSAGE))
+endif
+endif
+
 ELDS := $(shell readlink -e $(CURDIR))
 ELDS_BOARD ?= versatile-pb
 
