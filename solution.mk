@@ -133,6 +133,7 @@ define solution-env
 	@printf "ELDS                         : $(ELDS)\n"
 	@printf "ELDS_ISSUE                   : $(ELDS_ISSUE)\n"
 	@printf "ELDS_BOARD                   : $(ELDS_BOARD)\n"
+	@printf "ELDS_CROSS_TUPLE             : $(ELDS_CROSS_TUPLE)\n"
 	@printf "========================================================================\n"
 	$(call $(ELDS_BOARD)-env)
 	@printf "========================================================================\n"
@@ -168,6 +169,7 @@ export ELDS
 export ELDS_BOARD
 export ELDS_ISSUE
 export ELDS_CROSS_TUPLE
+export ELDS_TOOLCHAIN_BUILD
 export ELDS_TOOLCHAIN_TREE
 export ELDS_BOOTLOADER_TREE
 export ELDS_KERNEL_TREE

@@ -118,7 +118,8 @@ $(ELDS_TOOLCHAIN_TARGETS):
 
 # Run toolchain build tool (ct-ng) with options
 toolchain-%: $(ELDS_TOOLCHAIN_CONFIG)
-	@cd $(ELDS_TOOLCHAIN_BUILD) && CT_ARCH=$(BOARD_ARCH) ct-ng $(*F)
+	@cd $(ELDS_TOOLCHAIN_BUILD) && CT_ARCH=$(BOARD_ARCH) ct-ng $(*F) && \
+		[ "$(*F)" = "build" ] && $(RM) -r $(ELDS_TOOLCHAIN_BUILD)/{$(ELDS_CROSS_TUPLE),src}
 	@cat $< > $(BOARD_TOOLCHAIN_CONFIG)
 
 # Restore existing rootfs configuration for embedded target board
