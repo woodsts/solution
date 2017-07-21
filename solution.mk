@@ -23,7 +23,7 @@ endif
 endif
 
 ELDS := $(shell readlink -e $(CURDIR))
-ELDS_BOARD ?= versatile-pb
+ELDS_BOARD ?= omap3-evm
 
 # Directory Definitions
 ELDS_SCM := $(ELDS)/scm
