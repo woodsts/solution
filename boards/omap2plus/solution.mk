@@ -24,6 +24,7 @@ BOARD_ROOTFS := $(ELDS)/rootfs/$(BOARD_TYPE)/$(BOARD_CROSS_TUPLE)
 BOARD_BUILD := $(BOARD_ROOTFS)/build
 BOARD_IMAGES := $(BOARD_ROOTFS)/images
 BOARD_TARGET := $(BOARD_ROOTFS)/target
+# NOTE: Using derived ELDS_BOARD for final build artifacts
 BOARD_ROOTFS_FINAL := $(ELDS)/rootfs/$(ELDS_BOARD)/$(BOARD_CROSS_TUPLE)
 
 BOARD_ROOTFS_TARGETS := $(BOARD_ROOTFS_FINAL)/images/rootfs.tar $(BOARD_ROOTFS_FINAL)/images/rootfs.ubifs
@@ -74,20 +75,32 @@ define $(ELDS_BOARD)-bootloader
 endef
 
 define omap2plus-finalize
-	@printf "\n***** [$(ELDS_BOARD)][$(BOARD_TYPE)] finalize *****\n\n"
+	@printf "\n***** [$(ELDS_BOARD)][$(BOARD_TYPE)] finalize *****\n"
 	@case "$@" in \
 	$(ELDS_ROOTFS_TARGET_FINAL)) \
 		rsync -a $(BOARD_IMAGES) $(BOARD_ROOTFS_FINAL)/; \
 		;; \
-	$(ELDS_BOOTLOADER_TARGET_FINAL) | $(ELDS_KERNEL_TARGET_FINAL)) \
+	$(ELDS_BOOTLOADER_TARGET_FINAL)) \
 		if [ -d $(BOARD_TARGET)/boot ]; then \
-			rsync -a $(BOARD_TARGET)/boot \
-				$(BOARD_ROOTFS_FINAL)/target/; \
+			cp -a \
+				$(BOARD_BOOTLOADER_TARGET)/MLO \
+				$(BOARD_BOOTLOADER_TARGET)/u-boot.img \
+				$(BOARD_ROOTFS_FINAL)/target/boot/; \
 		fi; \
-		if [ -d $(BOARD_TARGET)/lib/modules ]; then \
-			mkdir -p $(BOARD_ROOTFS_FINAL)/target/lib; \
-			rsync -a $(BOARD_TARGET)/lib/modules \
-				$(BOARD_ROOTFS_FINAL)/target/lib/; \
+		;; \
+	$(ELDS_KERNEL_TARGET_FINAL)) \
+		if [ -d $(BOARD_TARGET)/boot ]; then \
+			cp -a \
+				$(BOARD_TARGET)/boot/zImage \
+				$(BOARD_TARGET)/boot/uImage \
+				$(BOARD_TARGET)/boot/$(BOARD_KERNEL_DT).dtb \
+				$(BOARD_TARGET)/boot/System.map \
+				$(BOARD_ROOTFS_FINAL)/target/boot/; \
+		fi; \
+		if [ -d $(BOARD_TARGET)/lib/modules/$(ELDS_KERNEL_VERSION) ]; then \
+			mkdir -p $(BOARD_ROOTFS_FINAL)/target/lib/modules; \
+			rsync -a $(BOARD_TARGET)/lib/modules/$(ELDS_KERNEL_VERSION) \
+				$(BOARD_ROOTFS_FINAL)/target/lib/modules/; \
 		fi; \
 		if [ -d $(BOARD_TARGET)/lib/firmware ]; then \
 			rsync -a $(BOARD_TARGET)/lib/firmware \
