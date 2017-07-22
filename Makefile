@@ -78,7 +78,7 @@ toolchain: $(ELDS_TOOLCHAIN_TARGET_FINAL)
 
 $(ELDS_TOOLCHAIN_TARGET_FINAL):
 	@printf "\n***** [$(ELDS_BOARD)][$(BOARD_TYPE)] $(ELDS_TOOLCHAIN) $(BOARD_TOOLCHAIN_VERSION) *****\n"
-	@$(MAKE) $(ELDS_KERNEL_TREE)-check
+	@$(MAKE) $(ELDS_TOOLCHAIN_TREE)-check
 	$(MAKE) toolchain-build
 
 # Run toolchain build tool (ct-ng) with options
