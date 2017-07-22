@@ -31,7 +31,7 @@ BOARD_IMAGES := $(BOARD_ROOTFS)/images
 BOARD_TARGET := $(BOARD_ROOTFS)/target
 BOARD_ROOTFS_FINAL := $(BOARD_ROOTFS)
 
-BOARD_ROOTFS_TARGETS := $(BOARD_IMAGES)/rootfs.cpio.xz
+BOARD_ROOTFS_TARGETS := $(ELDS)/rootfs/$(ELDS_BOARD)/$(ELDS_CROSS_TUPLE)/images/rootfs.tar
 
 define $(ELDS_BOARD)-env
 	@printf "BOARD_ARCH                   : $(BOARD_ARCH)\n"
