@@ -19,7 +19,6 @@ usage:
 # Primary make target for 'solution'
 .PHONY: solution
 solution: toolchain bootloader kernel rootfs
-	$(call $(ELDS_BOARD)-finalize)
 
 # Test for Git source existence
 %-check:
@@ -36,41 +35,6 @@ $(ELDS)/doc/solution.pdf: $(ELDS)/doc/solution.txt
 		printf "***** AsciiDoc is NOT installed! *****\n"; \
 		exit 1; \
 	fi
-
-# Create bootloader configuration for embedded target board
-.PHONY: bootloader-config
-bootloader-config: $(ELDS_BOOTLOADER_CONFIG)
-
-$(ELDS_BOOTLOADER_CONFIG): $(BOARD_BOOTLOADER_CONFIG)
-	@mkdir -p $(ELDS_BOOTLOADER_BUILD)
-	@cat $< > $@
-
-$(BOARD_BOOTLOADER_CONFIG):
-	$(call $(ELDS_BOARD)-bootloader-defconfig)
-	@cat $(ELDS_BOOTLOADER_CONFIG) > $@
-
-# Build bootloader for embedded target board
-.PHONY: bootloader
-bootloader: $(ELDS_BOOTLOADER_TARGETS)
-
-$(BOARD_BOOTLOADER_TARGETS): $(ELDS_TOOLCHAIN_TARGETS)
-	@$(MAKE) $(ELDS_BOOTLOADER_TREE)-check
-	@$(MAKE) bootloader-config
-	$(call $(ELDS_BOARD)-bootloader)
-	$(call $(ELDS_BOARD)-finalize)
-
-# Run 'make bootloader' with options
-bootloader-%: $(BOARD_BOOTLOADER_CONFIG)
-	$(call $(ELDS_BOARD)-bootloader)
-
-# Remove targets
-.PHONY: bootloader-rm
-bootloader-rm:
-	$(RM) $(BOARD_BOOTLOADER_TARGETS)
-	$(RM) $(BOARD_ROOTFS_FINAL)/target/boot/*.img
-	$(RM) $(BOARD_ROOTFS_FINAL)/target/boot/*.bin
-	$(RM) $(BOARD_ROOTFS_FINAL)/target/boot/*.sd
-	$(RM) $(BOARD_ROOTFS_FINAL)/target/boot/MLO*
 
 # Toolchain build tool (ct-ng) via crostool-NG
 .PHONY: toolchain-builder
@@ -110,47 +74,53 @@ $(ELDS_TOOLCHAIN_CONFIG): $(BOARD_TOOLCHAIN_CONFIG)
 
 # Build toolchain for embedded target board
 .PHONY: toolchain
-toolchain: $(ELDS_TOOLCHAIN_TARGETS)
+toolchain: $(ELDS_TOOLCHAIN_TARGET_FINAL)
 
-$(ELDS_TOOLCHAIN_TARGETS):
+$(ELDS_TOOLCHAIN_TARGET_FINAL):
+	@printf "\n***** [$(ELDS_BOARD)][$(BOARD_TYPE)] $(ELDS_TOOLCHAIN) $(BOARD_TOOLCHAIN_VERSION) *****\n"
 	@$(MAKE) $(ELDS_KERNEL_TREE)-check
 	$(MAKE) toolchain-build
 
 # Run toolchain build tool (ct-ng) with options
 toolchain-%: $(ELDS_TOOLCHAIN_CONFIG)
+	@printf "\n***** [$(ELDS_BOARD)][$(BOARD_TYPE)] make $@ *****\n\n"
 	@cd $(ELDS_TOOLCHAIN_BUILD) && CT_ARCH=$(BOARD_ARCH) ct-ng $(*F) && \
 		[ "$(*F)" = "build" ] && $(RM) -r $(ELDS_TOOLCHAIN_BUILD)/{$(ELDS_CROSS_TUPLE),src}
 	@cat $< > $(BOARD_TOOLCHAIN_CONFIG)
 
-# Restore existing rootfs configuration for embedded target board
-.PHONY: rootfs-config
-rootfs-config: $(ELDS_ROOTFS_CONFIG)
+# Create bootloader configuration for embedded target board
+.PHONY: bootloader-config
+bootloader-config: $(ELDS_BOOTLOADER_CONFIG)
 
-$(ELDS_ROOTFS_CONFIG): $(BOARD_ROOTFS_CONFIG)
-	@mkdir -p $(ELDS_ROOTFS_BUILD)
-	@mkdir -p $(ELDS_ROOTFS_TARBALLS)
+$(ELDS_BOOTLOADER_CONFIG): $(BOARD_BOOTLOADER_CONFIG)
+	@mkdir -p $(ELDS_BOOTLOADER_BUILD)
 	@cat $< > $@
 
-# Build rootfs for embedded target board
-.PHONY: rootfs
-rootfs: $(ELDS_ROOTFS_TARGETS)
+$(BOARD_BOOTLOADER_CONFIG):
+	$(call $(ELDS_BOARD)-bootloader-defconfig)
+	@cat $(ELDS_BOOTLOADER_CONFIG) > $@
 
-$(ELDS_ROOTFS_TARGETS): $(ELDS_TOOLCHAIN_TARGETS)
-	@$(MAKE) $(ELDS_ROOTFS_TREE)-check
-	@$(MAKE) rootfs-config
-	$(MAKE) -C $(ELDS_ROOTFS_SCM) O=$(ELDS_ROOTFS_BUILD)
+# Build bootloader for embedded target board
+.PHONY: bootloader
+bootloader: $(ELDS_BOOTLOADER_TARGET_FINAL)
+
+$(ELDS_BOOTLOADER_TARGET_FINAL): $(ELDS_TOOLCHAIN_TARGETS)
+	@printf "\n***** [$(ELDS_BOARD)][$(BOARD_TYPE)] $(ELDS_BOOTLOADER) $(BOARD_BOOTLOADER_VERSION) *****\n"
+	@$(MAKE) $(ELDS_BOOTLOADER_TREE)-check
+	@$(MAKE) bootloader-config
+	$(call $(ELDS_BOARD)-bootloader)
 	$(call $(ELDS_BOARD)-finalize)
 
-# Run 'make rootfs' with options
-rootfs-%: $(ELDS_ROOTFS_CONFIG)
-	$(MAKE) -C $(ELDS_SCM)/buildroot O=$(ELDS_ROOTFS_BUILD) $(*F)
-	@cat $< > $(BOARD_ROOTFS_CONFIG)
+# Run 'make bootloader' with options
+bootloader-%: $(BOARD_BOOTLOADER_CONFIG)
+	@printf "\n***** [$(ELDS_BOARD)][$(BOARD_TYPE)] make $@ *****\n\n"
+	$(call $(ELDS_BOARD)-bootloader)
+	$(call $(ELDS_BOARD)-finalize)
 
-# Remove rootfs targets
-.PHONY: rootfs-rm
-rootfs-rm:
-	$(RM) $(ELDS_ROOTFS_TARGETS)
-	$(RM) $(BOARD_ROOTFS_FINAL)/images/rootfs.*
+# Remove targets
+.PHONY: bootloader-rm
+bootloader-rm:
+	$(RM) $(BOARD_BOOTLOADER_TARGETS)
 
 # Restore existing kernel configuration for embedded target board
 .PHONY: kernel-config
@@ -162,13 +132,15 @@ $(ELDS_KERNEL_CONFIG): $(BOARD_KERNEL_CONFIG)
 
 # Build kernel for embedded target board
 .PHONY: kernel
-kernel: $(ELDS_KERNEL_TARGETS)
+kernel: $(ELDS_KERNEL_TARGET_FINAL)
 
-$(ELDS_KERNEL_TARGETS): $(ELDS_TOOLCHAIN_TARGETS)
+$(ELDS_KERNEL_TARGET_FINAL): $(ELDS_TOOLCHAIN_TARGETS)
+	@printf "\n***** [$(ELDS_BOARD)][$(BOARD_TYPE)] $(ELDS_KERNEL) $(ELDS_KERNEL_VERSION) *****\n\n"
 	@$(MAKE) $(ELDS_KERNEL_TREE)-check
 	@$(MAKE) kernel-config
 	@mkdir -p $(ELDS_KERNEL_BOOT)
 	@mkdir -p $(ELDS_ROOTFS_BUILD)/target/boot
+	@printf "\n***** [$(ELDS_BOARD)][$(BOARD_TYPE)] make kernel zImage *****\n\n"
 	$(MAKE) -j 2 -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) zImage \
 		LOCALVERSION=$(ELDS_KERNEL_LOCALVERSION)
 	@if [ -f $(ELDS_KERNEL_BOOT)/zImage ]; then \
@@ -177,13 +149,14 @@ $(ELDS_KERNEL_TARGETS): $(ELDS_TOOLCHAIN_TARGETS)
 		$(RM) $(ELDS_ROOTFS_BUILD)/target/boot/System.map; \
 	        cp -av $(ELDS_KERNEL_SYSMAP) $(ELDS_ROOTFS_BUILD)/target/boot/System.map; \
 		cp -av $(ELDS_KERNEL_BOOT)/zImage $(ELDS_ROOTFS_BUILD)/target/boot/zImage; \
+		printf "\n***** [$(ELDS_BOARD)][$(BOARD_TYPE)] make kernel uImage *****\n\n"; \
 		mkimage -A arm -O linux -T kernel -C none -a 0x82000000 -e 0x82000000 -n "Linux $(ELDS_KERNEL_VERSION)" \
 			-d $(ELDS_KERNEL_BOOT)/zImage $(ELDS_ROOTFS_BUILD)/target/boot/uImage; \
 	else \
 		printf "***** Linux $(ELDS_KERNEL_VERSION) zImage build FAILED! *****\n"; \
 		exit 2; \
 	fi
-ifdef BOARD_KERNEL_DT
+	@printf "\n***** [$(ELDS_BOARD)][$(BOARD_TYPE)] make kernel device-tree ($(BOARD_KERNEL_DT)) *****\n\n"
 	$(MAKE) -j 2 -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) $(BOARD_KERNEL_DT).dtb \
 		LOCALVERSION=$(ELDS_KERNEL_LOCALVERSION)
 	@if [ -f $(ELDS_KERNEL_DTB) ]; then \
@@ -196,8 +169,8 @@ ifdef BOARD_KERNEL_DT
 ifdef ELDS_APPEND_DTB
 	$(call $(ELDS_BOARD)-append-dtb)
 endif
-endif
 ifdef BOARD_KERNEL_DT_OTHER
+	@printf "\n***** [$(ELDS_BOARD)][$(BOARD_TYPE)] make kernel device-tree (other) *****\n\n"
 	$(MAKE) -j 2 -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) $(BOARD_KERNEL_DT_OTHER).dtb \
 		LOCALVERSION=$(ELDS_KERNEL_LOCALVERSION)
 	@if [ -f $(ELDS_KERNEL_DTB_OTHER) ]; then \
@@ -208,15 +181,18 @@ ifdef BOARD_KERNEL_DT_OTHER
 		exit 2; \
 	fi
 endif
+	@printf "\n***** [$(ELDS_BOARD)][$(BOARD_TYPE)] make kernel modules *****\n\n"
 	$(MAKE) -j 2 -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) modules \
 		LOCALVERSION=$(ELDS_KERNEL_LOCALVERSION)
 	@$(RM) -r $(BOARD_TARGET)/lib/modules
+	@printf "\n***** [$(ELDS_BOARD)][$(BOARD_TYPE)] make kernel modules_install *****\n\n"
 	$(MAKE) -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) modules_install \
 		LOCALVERSION=$(ELDS_KERNEL_LOCALVERSION) \
 		INSTALL_MOD_PATH=$(BOARD_TARGET)
 	@if [ -d $(BOARD_TARGET)/lib/modules ]; then \
 		find $(BOARD_TARGET)/lib/modules -type l -exec rm -f {} \; ; \
 	fi
+	@printf "\n***** [$(ELDS_BOARD)][$(BOARD_TYPE)] make kernel headers_install *****\n\n"
 	$(MAKE) -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) headers_install \
 		LOCALVERSION=$(ELDS_KERNEL_LOCALVERSION) \
 		INSTALL_HDR_PATH=$(ELDS_ROOTFS_BUILD)/staging/usr/include
@@ -224,10 +200,11 @@ endif
 
 # Run Linux kernel build with options
 kernel-%: $(ELDS_KERNEL_CONFIG)
+	@printf "\n***** [$(ELDS_BOARD)][$(BOARD_TYPE)] make $@ *****\n\n"
 	$(MAKE) -j 2 -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) $(*F)
-ifdef BOARD_KERNEL_DT
 	@if [ "$(*F)" = "$(BOARD_KERNEL_DT).dtb" ]; then \
 		if [ -f $(ELDS_KERNEL_DTB) ]; then \
+			printf "\n***** [$(ELDS_BOARD)][$(BOARD_TYPE)] make kernel device-tree ($(BOARD_KERNEL_DT)) *****\n\n"; \
 			$(RM) $(ELDS_ROOTFS_BUILD)/target/boot/$(BOARD_KERNEL_DT).dtb; \
 			$(RM) $(BOARD_ROOTFS_FINAL)/target/boot/$(BOARD_KERNEL_DT).dtb; \
 			cp -av $(ELDS_KERNEL_DTB) $(ELDS_ROOTFS_BUILD)/target/boot/; \
@@ -237,10 +214,10 @@ ifdef BOARD_KERNEL_DT
 			exit 2; \
 		fi; \
 	fi
-endif
 ifdef BOARD_KERNEL_DT_OTHER
 	@if [ "$(*F)" = "$(BOARD_KERNEL_DT_OTHER).dtb" ]; then \
 		if [ -f $(ELDS_KERNEL_DTB_OTHER) ]; then \
+			printf "\n***** [$(ELDS_BOARD)][$(BOARD_TYPE)] make kernel device-tree ($(BOARD_KERNEL_DT_OTHER)) *****\n\n"; \
 			$(RM) $(ELDS_ROOTFS_BUILD)/target/boot/$(BOARD_KERNEL_DT_OTHER).dtb; \
 			$(RM) $(BOARD_ROOTFS_FINAL)/target/boot/$(BOARD_KERNEL_DT_OTHER).dtb; \
 			cp -av $(ELDS_KERNEL_DTB_OTHER) $(ELDS_ROOTFS_BUILD)/target/boot/; \
@@ -252,15 +229,44 @@ ifdef BOARD_KERNEL_DT_OTHER
 	fi
 endif
 	@cat $< > $(BOARD_KERNEL_CONFIG)
+	$(call $(ELDS_BOARD)-finalize)
 
 # Remove kernel targets
 .PHONY: kernel-rm
 kernel-rm:
 	$(RM) $(ELDS_KERNEL_TARGETS)
-	$(RM) $(BOARD_ROOTFS_FINAL)/target/boot/System.map*
-	$(RM) $(BOARD_ROOTFS_FINAL)/target/boot/uImage*
-	$(RM) $(BOARD_ROOTFS_FINAL)/target/boot/zImage*
-	$(RM) $(BOARD_ROOTFS_FINAL)/target/boot/*.dtb
+
+# Restore existing rootfs configuration for embedded target board
+.PHONY: rootfs-config
+rootfs-config: $(ELDS_ROOTFS_CONFIG)
+
+$(ELDS_ROOTFS_CONFIG): $(BOARD_ROOTFS_CONFIG)
+	@mkdir -p $(ELDS_ROOTFS_BUILD)
+	@mkdir -p $(ELDS_ROOTFS_TARBALLS)
+	@cat $< > $@
+
+# Build rootfs for embedded target board
+.PHONY: rootfs
+rootfs: $(ELDS_ROOTFS_TARGET_FINAL)
+
+$(ELDS_ROOTFS_TARGET_FINAL): $(ELDS_TOOLCHAIN_TARGETS)
+	@printf "\n***** [$(ELDS_BOARD)][$(BOARD_TYPE)] $(ELDS_ROOTFS) $(ELDS_ROOTFS_VERSION) *****\n\n"
+	@$(MAKE) $(ELDS_ROOTFS_TREE)-check
+	@$(MAKE) rootfs-config
+	$(MAKE) -C $(ELDS_ROOTFS_SCM) O=$(ELDS_ROOTFS_BUILD)
+	$(call $(ELDS_BOARD)-finalize)
+
+# Run 'make rootfs' with options
+rootfs-%: $(ELDS_ROOTFS_CONFIG)
+	@printf "\n***** [$(ELDS_BOARD)][$(BOARD_TYPE)] make $@ *****\n\n"
+	$(MAKE) -C $(ELDS_SCM)/buildroot O=$(ELDS_ROOTFS_BUILD) $(*F)
+	@cat $< > $(BOARD_ROOTFS_CONFIG)
+	$(call $(ELDS_BOARD)-finalize)
+
+# Remove rootfs targets
+.PHONY: rootfs-rm
+rootfs-rm:
+	$(RM) $(ELDS_ROOTFS_TARGETS)
 
 # Selectively remove some solution artifacts
 .PHONY: clean
@@ -299,8 +305,8 @@ build-essential:
 			cvs \
 			device-tree-compiler \
 			dia \
-			dnsmasq \
 			docbook-utils \
+			dosfstools \
 			exuberant-ctags \
 			fakeroot \
 			flex \
@@ -310,6 +316,8 @@ build-essential:
 			gcc-multilib \
 			gettext \
 			git-core \
+			gitg \
+			gitk \
 			gperf \
 			help2man \
 			indent \
@@ -328,7 +336,7 @@ build-essential:
 			libx11-dev \
 			lzma \
 			lzop \
-			man \
+			man-db \
 			manpages-dev \
 			manpages-posix-dev \
 			mc \

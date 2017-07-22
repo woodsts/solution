@@ -1,37 +1,42 @@
 #
 # This is the GNU Make include file for 'solution'
 #
-# Copyright (C) 2014 Derald D. Woods
+# Copyright (C) 2017 Derald D. Woods
 #
 # This file is part of the solution project, and is made available
 # under the terms of the GNU General Public License version 2
 #
 
-BOARD_TYPE := $(ELDS_BOARD)
-
 BOARD_HOSTNAME := $(ELDS_BOARD)
+
 BOARD_GETTY_PORT ?= ttyAMA0
 
-BOARD_ARCH ?= arm
-BOARD_VENDOR ?= -cortexa8
-BOARD_OS ?= linux
-BOARD_ABI ?= gnueabihf
+BOARD_KERNEL_DT ?= arm-realview-pba8
 
 BOARD_KERNEL_TREE ?= linux
-BOARD_KERNEL_DT ?= arm-realview-pba8
+BOARD_ROOTFS_TREE ?= buildroot
+BOARD_TOOLCHAIN_TREE ?= crosstool-ng
+
+BOARD_TYPE := $(ELDS_BOARD)
+
+BOARD_ARCH ?= arm
+BOARD_VENDOR ?= cortexa8
+BOARD_OS ?= linux
+BOARD_ABI ?= gnueabihf
+BOARD_CROSS_TUPLE := $(BOARD_ARCH)-$(BOARD_VENDOR)-$(BOARD_OS)-$(BOARD_ABI)
 
 BOARD_CONFIG := $(ELDS)/boards/$(BOARD_TYPE)/config
 BOARD_TOOLCHAIN_CONFIG := $(BOARD_CONFIG)/crosstool-ng/config
 BOARD_ROOTFS_CONFIG := $(BOARD_CONFIG)/buildroot/config
 BOARD_KERNEL_CONFIG := $(BOARD_CONFIG)/$(BOARD_KERNEL_TREE)/config
 
-BOARD_ROOTFS := $(ELDS)/rootfs/$(BOARD_TYPE)/$(BOARD_ARCH)$(BOARD_VENDOR)-$(BOARD_OS)-$(BOARD_ABI)
+BOARD_ROOTFS := $(ELDS)/rootfs/$(BOARD_TYPE)/$(BOARD_CROSS_TUPLE)
 BOARD_BUILD := $(BOARD_ROOTFS)/build
 BOARD_IMAGES := $(BOARD_ROOTFS)/images
 BOARD_TARGET := $(BOARD_ROOTFS)/target
 BOARD_ROOTFS_FINAL := $(BOARD_ROOTFS)
 
-BOARD_ROOTFS_TARGETS := $(ELDS)/rootfs/$(ELDS_BOARD)/$(ELDS_CROSS_TUPLE)/images/rootfs.tar
+BOARD_ROOTFS_TARGETS := $(BOARD_ROOTFS_FINAL)/images/rootfs.tar $(BOARD_ROOTFS_FINAL)/images/rootfs.cpio.xz
 
 define $(ELDS_BOARD)-env
 	@printf "BOARD_ARCH                  : $(BOARD_ARCH)\n"

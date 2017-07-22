@@ -1,7 +1,7 @@
 #
 # This is the GNU Make include file for 'solution'
 #
-# Copyright (C) 2014 Derald D. Woods
+# Copyright (C) 2017 Derald D. Woods
 #
 # This file is part of the solution project, and is made available
 # under the terms of the GNU General Public License version 2
@@ -10,26 +10,26 @@
 BOARD_TYPE := omap2plus
 
 BOARD_ARCH ?= arm
-BOARD_VENDOR ?= -cortexa8
+BOARD_VENDOR ?= cortexa8
 BOARD_OS ?= linux
 BOARD_ABI ?= gnueabihf
+BOARD_CROSS_TUPLE := $(BOARD_ARCH)-$(BOARD_VENDOR)-$(BOARD_OS)-$(BOARD_ABI)
 
 BOARD_CONFIG := $(ELDS)/boards/$(BOARD_TYPE)/config
 BOARD_TOOLCHAIN_CONFIG := $(BOARD_CONFIG)/crosstool-ng/config
 BOARD_ROOTFS_CONFIG := $(BOARD_CONFIG)/buildroot/config
 BOARD_KERNEL_CONFIG := $(BOARD_CONFIG)/$(BOARD_KERNEL_TREE)/config
 
-BOARD_ROOTFS := $(ELDS)/rootfs/$(BOARD_TYPE)/$(BOARD_ARCH)$(BOARD_VENDOR)-$(BOARD_OS)-$(BOARD_ABI)
+BOARD_ROOTFS := $(ELDS)/rootfs/$(BOARD_TYPE)/$(BOARD_CROSS_TUPLE)
 BOARD_BUILD := $(BOARD_ROOTFS)/build
 BOARD_IMAGES := $(BOARD_ROOTFS)/images
 BOARD_TARGET := $(BOARD_ROOTFS)/target
-BOARD_ROOTFS_FINAL := $(BOARD_ROOTFS)
+BOARD_ROOTFS_FINAL := $(ELDS)/rootfs/$(ELDS_BOARD)/$(BOARD_CROSS_TUPLE)
 
-BOARD_ROOTFS_TARGETS := $(ELDS)/rootfs/$(ELDS_BOARD)/$(ELDS_CROSS_TUPLE)/images/rootfs.tar
+BOARD_ROOTFS_TARGETS := $(BOARD_ROOTFS_FINAL)/images/rootfs.tar $(BOARD_ROOTFS_FINAL)/images/rootfs.ubifs
 
 # Bootloader Definitions
 BOARD_BOOTLOADER := U-Boot
-BOARD_BOOTLOADER_TREE ?= u-boot
 BOARD_BOOTLOADER_BUILD := $(BOARD_BUILD)/u-boot-$(ELDS_BOARD)
 BOARD_BOOTLOADER_TARGET := $(BOARD_TARGET)/boot
 BOARD_BOOTLOADER_SCM := $(ELDS_SCM)/$(BOARD_BOOTLOADER_TREE)
@@ -41,19 +41,19 @@ BOARD_BOOTLOADER_CONFIG := $(BOARD_CONFIG)/u-boot-$(ELDS_BOARD)/config
 BOARD_BOOTLOADER_SYSMAP := $(BOARD_BOOTLOADER_BUILD)/System.map
 BOARD_BOOTLOADER_BINARY_SPL := $(BOARD_BOOTLOADER_BUILD)/MLO
 BOARD_BOOTLOADER_BINARY_IMAGE := $(BOARD_BOOTLOADER_BUILD)/u-boot.img
-BOARD_BOOTLOADER_TARGETS := $(ELDS)/rootfs/$(ELDS_BOARD)/$(ELDS_CROSS_TUPLE)/target/boot/u-boot.img
+BOARD_BOOTLOADER_TARGETS := $(BOARD_ROOTFS_FINAL)/target/boot/u-boot.img $(BOARD_ROOTFS_FINAL)/target/boot/MLO
 
 define omap2plus-bootloader
 	@case "$@" in \
-	$(BOARD_BOOTLOADER_TARGET)/u-boot.img) \
-		printf "***** U-Boot $(BOARD_BOOTLOADER_VERSION) 'make $@' *****\n"; \
+	$(BOARD_ROOTFS_FINAL)/target/boot/u-boot.img | $(BOARD_ROOTFS_FINAL)/target/boot/MLO) \
+		printf "\n***** [$(ELDS_BOARD)][$(BOARD_TYPE)] make bootloader *****\n\n"; \
 		$(MAKE) -C $(BOARD_BOOTLOADER_SCM) O=$(BOARD_BOOTLOADER_BUILD) $(ELDS_CROSS_PARAMS); \
 		if ! [ -f $(BOARD_BOOTLOADER_BINARY_SPL) ]; then \
-			printf "***** U-Boot $(BOARD_BOOTLOADER_VERSION) $(BOARD_BOOTLOADER_BINARY_SPL) build FAILED! *****\n"; \
+			printf "\n***** [$(ELDS_BOARD)][$(BOARD_TYPE)] make bootloader $(BOARD_BOOTLOADER_BINARY_SPL) build FAILED! *****\n\n"; \
 			exit 2; \
 		fi; \
 		if ! [ -f $(BOARD_BOOTLOADER_BINARY_IMAGE) ]; then \
-			printf "***** U-Boot $(BOARD_BOOTLOADER_VERSION) $(BOARD_BOOTLOADER_BINARY_IMAGE) build FAILED! *****\n"; \
+			printf "\n***** [$(ELDS_BOARD)][$(BOARD_TYPE)] make bootloader $(BOARD_BOOTLOADER_BINARY_IMAGE) build FAILED! *****\n\n"; \
 			exit 2; \
 		fi; \
 		mkdir -p $(BOARD_BOOTLOADER_TARGET); \
@@ -62,8 +62,8 @@ define omap2plus-bootloader
 		cp -av $(BOARD_BOOTLOADER_BINARY_SPL) $(BOARD_BOOTLOADER_TARGET)/; \
 		cp -av $(BOARD_BOOTLOADER_BINARY_IMAGE) $(BOARD_BOOTLOADER_TARGET)/; \
 		;; \
-	*)\
-		printf "***** U-Boot $(BOARD_BOOTLOADER_VERSION) 'make $(*F)' *****\n"; \
+	*) \
+		printf "\n***** [$(ELDS_BOARD)][$(BOARD_TYPE)] make $(*F) *****\n\n"; \
 		$(MAKE) -C $(BOARD_BOOTLOADER_SCM) O=$(BOARD_BOOTLOADER_BUILD) $(ELDS_CROSS_PARAMS) $(*F); \
 		cat $(ELDS_BOOTLOADER_CONFIG) > $(BOARD_BOOTLOADER_CONFIG); \
 	esac;
@@ -74,27 +74,29 @@ define $(ELDS_BOARD)-bootloader
 endef
 
 define omap2plus-finalize
-	@mkdir -p $(BOARD_ROOTFS_FINAL)/images
-	@for f in $(ELDS_ROOTFS_TARGETS); do \
-		if [ -f $$f ]; then \
-			rsync $$f $(BOARD_ROOTFS_FINAL)/images/; \
+	@printf "\n***** [$(ELDS_BOARD)][$(BOARD_TYPE)] finalize *****\n\n"
+	@case "$@" in \
+	$(ELDS_ROOTFS_TARGET_FINAL)) \
+		rsync -a $(BOARD_IMAGES) $(BOARD_ROOTFS_FINAL)/; \
+		;; \
+	$(ELDS_BOOTLOADER_TARGET_FINAL) | $(ELDS_KERNEL_TARGET_FINAL)) \
+		if [ -d $(BOARD_TARGET)/boot ]; then \
+			rsync -a $(BOARD_TARGET)/boot \
+				$(BOARD_ROOTFS_FINAL)/target/; \
 		fi; \
-	done
-	@$(RM) -r $(BOARD_ROOTFS_FINAL)/target/boot
-	@$(RM) -r $(BOARD_ROOTFS_FINAL)/target/lib/modules
-	@mkdir -p $(BOARD_ROOTFS_FINAL)/target/lib
-	@if [ -d $(BOARD_TARGET)/boot ]; then \
-		rsync -a $(BOARD_TARGET)/boot \
-			$(BOARD_ROOTFS_FINAL)/target/; \
-	fi
-	@if [ -d $(BOARD_TARGET)/lib/modules ]; then \
-		rsync -a $(BOARD_TARGET)/lib/modules \
-			$(BOARD_ROOTFS_FINAL)/target/lib/; \
-	fi
-	@if [ -d $(BOARD_TARGET)/lib/firmware ]; then \
-		rsync -a $(BOARD_TARGET)/lib/firmware \
-			$(BOARD_ROOTFS_FINAL)/target/lib/; \
-	fi
+		if [ -d $(BOARD_TARGET)/lib/modules ]; then \
+			mkdir -p $(BOARD_ROOTFS_FINAL)/target/lib; \
+			rsync -a $(BOARD_TARGET)/lib/modules \
+				$(BOARD_ROOTFS_FINAL)/target/lib/; \
+		fi; \
+		if [ -d $(BOARD_TARGET)/lib/firmware ]; then \
+			rsync -a $(BOARD_TARGET)/lib/firmware \
+				$(BOARD_ROOTFS_FINAL)/target/lib/; \
+		fi; \
+		;; \
+	*) \
+		;; \
+	esac;
 endef
 
 define $(ELDS_BOARD)-finalize

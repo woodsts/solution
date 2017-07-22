@@ -1,21 +1,24 @@
 #
 # This is the GNU Make include file for 'solution'
 #
-# Copyright (C) 2014 Derald D. Woods
+# Copyright (C) 2017 Derald D. Woods
 #
 # This file is part of the solution project, and is made available
 # under the terms of the GNU General Public License version 2
 #
 
 BOARD_HOSTNAME := $(ELDS_BOARD)
+
 BOARD_GETTY_PORT ?= ttyO2
 
-BOARD_KERNEL_TREE ?= linux
 BOARD_KERNEL_DT ?= omap3-beagle
 
-include $(ELDS)/boards/omap2plus/solution.mk
+BOARD_KERNEL_TREE ?= linux
+BOARD_ROOTFS_TREE ?= buildroot
+BOARD_BOOTLOADER_TREE ?= u-boot
+BOARD_TOOLCHAIN_TREE ?= crosstool-ng
 
-BOARD_ROOTFS_FINAL := $(ELDS)/rootfs/$(ELDS_BOARD)/$(BOARD_ARCH)$(BOARD_VENDOR)-$(BOARD_OS)-$(BOARD_ABI)
+include $(ELDS)/boards/omap2plus/solution.mk
 
 define $(ELDS_BOARD)-bootloader-defconfig
 	@mkdir -p $(BOARD_BOOTLOADER_BUILD)
