@@ -93,34 +93,45 @@ toolchain-%: $(ELDS_TOOLCHAIN_CONFIG)
 bootloader-config: $(ELDS_BOOTLOADER_CONFIG)
 
 $(ELDS_BOOTLOADER_CONFIG): $(BOARD_BOOTLOADER_CONFIG)
+ifdef BOARD_BOOTLOADER
 	@mkdir -p $(ELDS_BOOTLOADER_BUILD)
 	@cat $< > $@
+endif
 
 $(BOARD_BOOTLOADER_CONFIG):
+ifdef BOARD_BOOTLOADER
+	@mkdir -p `dirname $(BOARD_BOOTLOADER_CONFIG)`
 	$(call $(ELDS_BOARD)-bootloader-defconfig)
 	@cat $(ELDS_BOOTLOADER_CONFIG) > $@
+endif
 
 # Build bootloader for embedded target board
 .PHONY: bootloader
 bootloader: $(ELDS_BOOTLOADER_TARGET_FINAL)
 
 $(ELDS_BOOTLOADER_TARGET_FINAL): $(ELDS_TOOLCHAIN_TARGETS)
+ifdef BOARD_BOOTLOADER
 	@printf "\n***** [$(ELDS_BOARD)][$(BOARD_TYPE)] $(ELDS_BOOTLOADER) $(BOARD_BOOTLOADER_VERSION) *****\n\n"
 	@$(MAKE) $(ELDS_BOOTLOADER_TREE)-check
 	@$(MAKE) bootloader-config
 	$(call $(ELDS_BOARD)-bootloader)
 	$(call $(ELDS_BOARD)-finalize)
+endif
 
 # Run 'make bootloader' with options
 bootloader-%: $(BOARD_BOOTLOADER_CONFIG)
+ifdef BOARD_BOOTLOADER
 	@printf "\n***** [$(ELDS_BOARD)][$(BOARD_TYPE)] make $@ *****\n\n"
 	$(call $(ELDS_BOARD)-bootloader)
 	$(call $(ELDS_BOARD)-finalize)
+endif
 
 # Remove targets
 .PHONY: bootloader-rm
 bootloader-rm:
+ifdef BOARD_BOOTLOADER
 	$(RM) $(BOARD_BOOTLOADER_TARGETS)
+endif
 
 # Restore existing kernel configuration for embedded target board
 .PHONY: kernel-config

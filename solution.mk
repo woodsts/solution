@@ -56,12 +56,14 @@ ELDS_TOOLCHAIN_TARGETS := $(ELDS_TOOLCHAIN_PATH)/bin/$(ELDS_CROSS_COMPILE)gcc \
 ELDS_TOOLCHAIN_TARGET_FINAL := $(ELDS_TOOLCHAIN_PATH)/$(ELDS_CROSS_TUPLE)/debug-root/usr/bin/gdbserver
 
 # Bootloader Definitions
+ifdef BOARD_BOOTLOADER
 ELDS_BOOTLOADER := $(BOARD_BOOTLOADER)
 ELDS_BOOTLOADER_TREE := $(BOARD_BOOTLOADER_TREE)
 ELDS_BOOTLOADER_BUILD := $(BOARD_BOOTLOADER_BUILD)
 ELDS_BOOTLOADER_CONFIG := $(BOARD_BOOTLOADER_BUILD)/.config
 ELDS_BOOTLOADER_TARGETS := $(BOARD_BOOTLOADER_TARGETS)
-ELDS_BOOTLOADER_TARGET_FINAL := $(BOARD_ROOTFS_FINAL)/target/boot/u-boot.img
+ELDS_BOOTLOADER_TARGET_FINAL ?= $(BOARD_ROOTFS_FINAL)/target/boot/u-boot.img
+endif
 
 # Root Filesystem Definitions
 ELDS_ROOTFS := Buildroot
@@ -138,7 +140,9 @@ define solution-env
 	@printf "ELDS_CROSS_TUPLE             : $(ELDS_CROSS_TUPLE)\n"
 	@printf "========================================================================\n"
 	$(call $(ELDS_BOARD)-env)
-	@printf "ELDS_BOOTLOADER_TARGET_FINAL : $(ELDS_BOOTLOADER_TARGET_FINAL)\n"
+	@if ! [ "x$(BOARD_BOOTLOADER)" = "x" ]; then \
+		printf "ELDS_BOOTLOADER_TARGET_FINAL : $(ELDS_BOOTLOADER_TARGET_FINAL)\n"; \
+	fi
 	@printf "========================================================================\n"
 	@printf "ELDS_TOOLCHAIN               : $(ELDS_TOOLCHAIN)\n"
 	@printf "ELDS_TOOLCHAIN_TREE          : $(ELDS_TOOLCHAIN_TREE)\n"
@@ -177,11 +181,15 @@ export ELDS_ISSUE
 export ELDS_CROSS_TUPLE
 export ELDS_TOOLCHAIN_BUILD
 export ELDS_TOOLCHAIN_TREE
+ifdef BOARD_BOOTLOADER
 export ELDS_BOOTLOADER_TREE
+endif
 export ELDS_KERNEL_TREE
 export ELDS_ROOTFS_TREE
 export ELDS_TOOLCHAIN_SCM
+ifdef BOARD_BOOTLOADER
 export ELDS_BOOTLOADER_SCM
+endif
 export ELDS_KERNEL_SCM
 export ELDS_ROOTFS_SCM
 export ELDS_TOOLCHAIN_TARBALLS

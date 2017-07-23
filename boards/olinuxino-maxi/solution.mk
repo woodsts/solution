@@ -1,7 +1,7 @@
 #
 # This is the GNU Make include file for 'solution'
 #
-# Copyright (C) 2014 Derald D. Woods
+# Copyright (C) 2017 Derald D. Woods
 #
 # This file is part of the solution project, and is made available
 # under the terms of the GNU General Public License version 2
@@ -52,6 +52,8 @@ BOARD_BOOTLOADER_CONFIG := $(BOARD_CONFIG)/u-boot/config
 BOARD_BOOTLOADER_SYSMAP := $(BOARD_BOOTLOADER_BUILD)/System.map
 BOARD_BOOTLOADER_BINARY_IMAGE := $(BOARD_BOOTLOADER_BUILD)/u-boot.sd
 BOARD_BOOTLOADER_TARGETS := $(BOARD_ROOTFS_FINAL)/target/boot/u-boot.sd
+# Special case (this is a different(old) type of SOC)
+ELDS_BOOTLOADER_TARGET_FINAL ?= $(BOARD_ROOTFS_FINAL)/target/boot/u-boot.sd
 
 define $(ELDS_BOARD)-bootloader-defconfig
 	@mkdir -p $(BOARD_BOOTLOADER_BUILD)
