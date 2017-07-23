@@ -12,15 +12,19 @@ rsync -av ${ELDS}/toolchain/${ELDS_CROSS_TUPLE}/${ELDS_CROSS_TUPLE}/debug-root/*
 printf "\n`cat ${TARGET}/etc/issue`\n\n" > ${TARGET}/etc/issue
 
 # Board Specific Modifications
-case "${ELDS_BOARD}" in
-	*am3517-evm*|*beagle-c4*|*torpedo*|*sama5d3-xpld*)
+case "${BOARD_TYPE}" in
+	omap2plus)
+		printf "\n***** [${ELDS_BOARD}][${BOARD_TYPE}] Setup /etc/fstab *****\n\n"
 		mkdir -p ${TARGET}/media/BOOT
 		printf "/dev/mmcblk0p1 /media/BOOT auto errors=remount-ro 0 1\n" >> ${TARGET}/etc/fstab
 		;;
 	*olinuxino-maxi*)
+		printf "\n***** [${ELDS_BOARD}] ADD ttyAPP0 to /etc/securetty *****"
 		# ttyAMA0 is not working on my board (for now)
 		printf "ttyAPP0\n" >> ${TARGET}/etc/securetty
+		printf "\n***** [${ELDS_BOARD}] ADD ttyAPP0 to /boot/uEnv.txt *****"
 		printf "console=ttyAPP0\n" > ${TARGET}/boot/uEnv.txt
+		printf "\n***** [${ELDS_BOARD}] ADD ttyAPP0 to /etc/inittab *****\n\n"
 		printf "ttyAPP0::respawn:/sbin/getty -L ttyAPP0 115200 vt102\n" >> ${TARGET}/etc/inittab
 		;;
 	*realview-pb*)
