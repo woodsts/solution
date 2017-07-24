@@ -76,6 +76,8 @@ endef
 
 define omap2plus-finalize
 	@printf "\n***** [$(ELDS_BOARD)][$(BOARD_TYPE)] finalize *****\n"
+	@mkdir -p $(BOARD_ROOTFS_FINAL)/target/boot
+	@mkdir -p $(BOARD_ROOTFS_FINAL)/target/lib/modules
 	@case "$@" in \
 	$(ELDS_ROOTFS_TARGET_FINAL)) \
 		rsync -a $(BOARD_IMAGES) $(BOARD_ROOTFS_FINAL)/; \
@@ -98,7 +100,6 @@ define omap2plus-finalize
 				$(BOARD_ROOTFS_FINAL)/target/boot/; \
 		fi; \
 		if [ -d $(BOARD_TARGET)/lib/modules/$(ELDS_KERNEL_VERSION) ]; then \
-			mkdir -p $(BOARD_ROOTFS_FINAL)/target/lib/modules; \
 			rsync -a $(BOARD_TARGET)/lib/modules/$(ELDS_KERNEL_VERSION) \
 				$(BOARD_ROOTFS_FINAL)/target/lib/modules/; \
 		fi; \
