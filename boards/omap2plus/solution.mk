@@ -117,14 +117,17 @@ define $(ELDS_BOARD)-finalize
 	$(call omap2plus-finalize)
 endef
 
-#define $(ELDS_BOARD)-append-dtb
-#	@cat $(BOARD_BUILD)/$(BOARD_KERNEL_TREE)/arch/$(BOARD_ARCH)/boot/dts/$(BOARD_KERNEL_DT).dtb >> \
-#		$(BOARD_BUILD)/$(BOARD_KERNEL_TREE)/arch/$(BOARD_ARCH)/boot/zImage
-#	@mkimage -A arm -O linux -T kernel -C none -a 0x82000000 -e 0x82000000 -n "Linux $(ELDS_KERNEL_VERSION)" \
-#		-d $(BOARD_BUILD)/$(BOARD_KERNEL_TREE)/arch/$(BOARD_ARCH)/boot/zImage \
-#		$(BOARD_BUILD)/$(BOARD_KERNEL_TREE)/arch/$(BOARD_ARCH)/boot/uImage
-#	@cp -av $(BOARD_BUILD)/$(BOARD_KERNEL_TREE)/arch/$(BOARD_ARCH)/boot/uImage $(BOARD_TARGET)/boot/
-#endef
+ifdef ELDS_APPEND_DTB
+define $(ELDS_BOARD)-append-dtb
+	@cat $(BOARD_BUILD)/$(BOARD_KERNEL_TREE)/arch/$(BOARD_ARCH)/boot/dts/$(BOARD_KERNEL_DT).dtb >> \
+		$(BOARD_BUILD)/$(BOARD_KERNEL_TREE)/arch/$(BOARD_ARCH)/boot/zImage
+	@mkimage -A arm -O linux -T kernel -C none -a 0x82000000 -e 0x82000000 -n "Linux $(ELDS_KERNEL_VERSION)" \
+		-d $(BOARD_BUILD)/$(BOARD_KERNEL_TREE)/arch/$(BOARD_ARCH)/boot/zImage \
+		$(BOARD_BUILD)/$(BOARD_KERNEL_TREE)/arch/$(BOARD_ARCH)/boot/uImage
+	@cp -av $(BOARD_BUILD)/$(BOARD_KERNEL_TREE)/arch/$(BOARD_ARCH)/boot/zImage $(BOARD_TARGET)/boot/
+	@cp -av $(BOARD_BUILD)/$(BOARD_KERNEL_TREE)/arch/$(BOARD_ARCH)/boot/uImage $(BOARD_TARGET)/boot/
+endef
+endif
 
 define $(ELDS_BOARD)-env
 	$(call omap2plus-env)

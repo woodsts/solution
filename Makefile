@@ -178,6 +178,7 @@ $(ELDS_KERNEL_TARGET_FINAL): $(ELDS_TOOLCHAIN_TARGETS)
 		exit 2; \
 	fi
 ifdef ELDS_APPEND_DTB
+	@printf "\n***** [$(ELDS_BOARD)][$(BOARD_TYPE)] appending $(BOARD_KERNEL_DT).dtb to uImage *****\n\n"
 	$(call $(ELDS_BOARD)-append-dtb)
 endif
 ifdef BOARD_KERNEL_DT_OTHER
