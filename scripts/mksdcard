@@ -19,7 +19,7 @@ fi
 board=$1
 
 case "${board}" in
-	*am3517-evm|beagle-c4|sama5d3-xpld|olinuxino-maxi|*torpedo*|*overo*)
+	*am3517*|*beagle*|*sama5d3*|*torpedo*|*omap3*|*overo*)
 		;;
 	*)
 		printf "***** INVALID BOARD NAME *****\n"
@@ -76,7 +76,7 @@ printf "[${board}] Preparing ${controller} @ ${disk}\n"
 sleep 3
 
 case "${board}" in
-	*am3517-evm|beagle-c4|sama5d3-xpld|*torpedo*|*overo*)
+	*am3517*|*beagle*|*sama5d3*|*torpedo*|*omap3*|*overo*)
 		printf "[${board}] Partitioning ${disk} [ 256MB (BOOT) / <fill> (rootfs) ]\n"
 		LC_ALL=C sfdisk "${disk}" <<-__EOF__
 		1M,256M,0xE,*

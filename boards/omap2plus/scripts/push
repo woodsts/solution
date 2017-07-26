@@ -27,7 +27,7 @@ board_dir="`dirname ${0}`/../../../rootfs/${target_board}/arm-cortexa8-linux-gnu
 target_dir="`realpath -e ${board_dir}`"
 
 case "${1}" in
-	*am3517-evm*|*beagle-c4*|*torpedo*|*sama5d3-xpld*)
+	*am3517-evm*|*beagle-c4*|*torpedo*|*sama5d3-xpld*|*omap3-evm*|*overo-tobi*)
 		if ! [ -d ${target_dir} ]; then
 			printf "Invalid Target Directory [${target_dir}]!\n"
 			exit 1
