@@ -119,7 +119,7 @@ ifdef BOARD_BOOTLOADER
 endif
 
 # Run 'make bootloader' with options
-bootloader-%: $(BOARD_BOOTLOADER_CONFIG)
+bootloader-%: $(ELDS_BOOTLOADER_CONFIG)
 ifdef BOARD_BOOTLOADER
 	@printf "\n***** [$(ELDS_BOARD)][$(BOARD_TYPE)] make $@ *****\n\n"
 	$(call $(ELDS_BOARD)-bootloader)
