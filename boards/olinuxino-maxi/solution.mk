@@ -82,6 +82,9 @@ define $(ELDS_BOARD)-bootloader
 	*)\
 		printf "***** U-Boot $(BOARD_BOOTLOADER_VERSION) 'make $(*F)' *****\n"; \
 		$(MAKE) -C $(BOARD_BOOTLOADER_SCM) O=$(BOARD_BOOTLOADER_BUILD) $(ELDS_CROSS_PARAMS) $(*F); \
+		if ! [ "$(*F)" = "distclean" ]; then \
+			cat $(ELDS_BOOTLOADER_CONFIG) > $(BOARD_BOOTLOADER_CONFIG); \
+		fi; \
 	esac;
 endef
 

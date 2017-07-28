@@ -102,7 +102,9 @@ $(BOARD_BOOTLOADER_CONFIG):
 ifdef BOARD_BOOTLOADER
 	@mkdir -p `dirname $(BOARD_BOOTLOADER_CONFIG)`
 	$(call $(ELDS_BOARD)-bootloader-defconfig)
-	@cat $(ELDS_BOOTLOADER_CONFIG) > $@
+	@[ -f $(ELDS_BOOTLOADER_CONFIG) ] && \
+		cat $(ELDS_BOOTLOADER_CONFIG) > $@ || \
+		printf "\n***** [$(ELDS_BOARD)][$(BOARD_TYPE)] bootloader-defconfig failed!!! *****\n\n"
 endif
 
 # Build bootloader for embedded target board
@@ -240,7 +242,9 @@ ifdef BOARD_KERNEL_DT_OTHER
 		fi; \
 	fi
 endif
-	@cat $< > $(BOARD_KERNEL_CONFIG)
+	@if ! [ "$(*F)" = "distclean" ]; then \
+		cat $< > $(BOARD_KERNEL_CONFIG); \
+	fi
 	$(call $(ELDS_BOARD)-finalize)
 
 # Remove kernel targets
@@ -272,7 +276,9 @@ $(ELDS_ROOTFS_TARGET_FINAL): $(ELDS_TOOLCHAIN_TARGETS)
 rootfs-%: $(ELDS_ROOTFS_CONFIG)
 	@printf "\n***** [$(ELDS_BOARD)][$(BOARD_TYPE)] make $@ *****\n\n"
 	$(MAKE) -C $(ELDS_SCM)/buildroot O=$(ELDS_ROOTFS_BUILD) $(*F)
-	@cat $< > $(BOARD_ROOTFS_CONFIG)
+	@if ! [ "$(*F)" = "distclean" ]; then \
+		cat $< > $(BOARD_ROOTFS_CONFIG); \
+	fi
 	$(call $(ELDS_BOARD)-finalize)
 
 # Remove rootfs targets

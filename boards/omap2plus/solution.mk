@@ -66,7 +66,9 @@ define omap2plus-bootloader
 	*) \
 		printf "\n***** [$(ELDS_BOARD)][$(BOARD_TYPE)] make $(*F) *****\n\n"; \
 		$(MAKE) -C $(BOARD_BOOTLOADER_SCM) O=$(BOARD_BOOTLOADER_BUILD) $(ELDS_CROSS_PARAMS) $(*F); \
-		cat $(ELDS_BOOTLOADER_CONFIG) > $(BOARD_BOOTLOADER_CONFIG); \
+		if ! [ "$(*F)" = "distclean" ]; then \
+			cat $(ELDS_BOOTLOADER_CONFIG) > $(BOARD_BOOTLOADER_CONFIG); \
+		fi; \
 	esac;
 endef
 
