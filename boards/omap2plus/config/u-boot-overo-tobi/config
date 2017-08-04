@@ -602,7 +602,6 @@ CONFIG_DM_DEV_READ_INLINE=y
 # CONFIG_ADC_EXYNOS is not set
 # CONFIG_ADC_SANDBOX is not set
 # CONFIG_SATA is not set
-# CONFIG_SCSI is not set
 
 #
 # SATA/SCSI device support
@@ -655,6 +654,7 @@ CONFIG_DM_GPIO=y
 # CONFIG_AT91_GPIO is not set
 # CONFIG_ATMEL_PIO4 is not set
 # CONFIG_INTEL_BROADWELL_GPIO is not set
+# CONFIG_INTEL_ICH6_GPIO is not set
 # CONFIG_IMX_RGPIO2P is not set
 # CONFIG_LPC32XX_GPIO is not set
 # CONFIG_MSM_GPIO is not set
@@ -711,6 +711,8 @@ CONFIG_OMAP_GPIO=y
 CONFIG_MMC=y
 CONFIG_DM_MMC=y
 CONFIG_DM_MMC_OPS=y
+CONFIG_SPL_DM_MMC=y
+CONFIG_SPL_DM_MMC_OPS=y
 # CONFIG_SPL_MMC_TINY is not set
 # CONFIG_MMC_DW is not set
 # CONFIG_MMC_MXC is not set
@@ -801,6 +803,7 @@ CONFIG_TWL4030_POWER=y
 # Real Time Clock
 #
 # CONFIG_DM_RTC is not set
+# CONFIG_SCSI is not set
 
 #
 # Serial drivers

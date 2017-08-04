@@ -575,7 +575,6 @@ CONFIG_DM_DEV_READ_INLINE=y
 # CONFIG_ADC_EXYNOS is not set
 # CONFIG_ADC_SANDBOX is not set
 # CONFIG_SATA is not set
-# CONFIG_SCSI is not set
 
 #
 # SATA/SCSI device support
@@ -734,6 +733,7 @@ CONFIG_TWL4030_POWER=y
 #
 # Real Time Clock
 #
+# CONFIG_SCSI is not set
 
 #
 # Serial drivers
