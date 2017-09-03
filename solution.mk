@@ -92,6 +92,10 @@ ifeq ($(shell printf "$(ELDS_KERNEL_VERSION)" | cut -d '-' -f 1),next)
 # this is linux-next
 ELDS_KERNEL_LOCALVERSION :=
 endif
+ifneq ($(shell cd $(ELDS_KERNEL_SCM) && git describe --exact-match 2>/dev/null),)
+# this is an exact tag, so no need for local version
+ELDS_KERNEL_LOCALVERSION :=
+endif
 ifeq ($(ksublevel),SUBLEVEL = 0)
 # sublevel = 0 does not appear in actual tag
 ELDS_KERNEL_VERSION := $(kversion).0$(ELDS_KERNEL_LOCALVERSION)
