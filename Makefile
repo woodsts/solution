@@ -250,7 +250,7 @@ endif
 # Remove kernel targets
 .PHONY: kernel-rm
 kernel-rm:
-	$(RM) $(ELDS_KERNEL_TARGETS)
+	$(RM) -r $(ELDS_KERNEL_TARGETS)
 
 # Restore existing rootfs configuration for embedded target board
 .PHONY: rootfs-config

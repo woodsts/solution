@@ -81,16 +81,27 @@ ELDS_KERNEL := Linux
 ELDS_KERNEL_TREE := $(BOARD_KERNEL_TREE)
 ELDS_KERNEL_BUILD := $(ELDS_ROOTFS_BUILD)/build/$(ELDS_KERNEL_TREE)
 ELDS_KERNEL_SCM := $(ELDS_SCM)/$(ELDS_KERNEL_TREE)
-ELDS_KERNEL_VERSION := $(shell cd $(ELDS_KERNEL_SCM) 2>/dev/null && git describe 2>/dev/null | cut -d v -f 2)
-ELDS_KERNEL_LOCALVERSION := -$(shell printf "$(ELDS_KERNEL_VERSION)" | cut -d '-' -f 2-3)
-ifeq ($(ELDS_KERNEL_LOCALVERSION),-$(ELDS_KERNEL_VERSION))
-ELDS_KERNEL_LOCALVERSION :=
+ksublevel := $(shell grep -m 1 SUBLEVEL $(ELDS_KERNEL_SCM)/Makefile 2>/dev/null)
+kversion := $(shell cd $(ELDS_KERNEL_SCM) && git describe 2>/dev/null | cut -d '-' -f 1 | cut -d v -f 2)
+klocalversion := $(shell cd $(ELDS_KERNEL_SCM) && git describe 2>/dev/null | cut -d '-' -f 2-8)
+ifneq (-$(klocalversion),-)
+# extra local version information is present
+ELDS_KERNEL_LOCALVERSION := -$(klocalversion)
 endif
 ifeq ($(shell printf "$(ELDS_KERNEL_VERSION)" | cut -d '-' -f 1),next)
+# this is linux-next
 ELDS_KERNEL_LOCALVERSION :=
 endif
-ifneq ($(shell printf "$(ELDS_KERNEL_VERSION)" | grep -e "-rc"),)
-ELDS_KERNEL_LOCALVERSION :=
+ifeq ($(ksublevel),SUBLEVEL = 0)
+# sublevel = 0 does not appear in actual tag
+ELDS_KERNEL_VERSION := $(kversion).0$(ELDS_KERNEL_LOCALVERSION)
+ifneq ($(shell cd $(ELDS_KERNEL_SCM) && git describe 2>/dev/null | grep -e "-rc"),)
+# this is a release candidate
+ELDS_KERNEL_LOCALVERSION := -$(shell printf $(klocalversion) | cut -d '-' -f 2-8)
+endif
+else
+# sublevel is non-zero
+ELDS_KERNEL_VERSION := $(kversion)$(ELDS_KERNEL_LOCALVERSION)
 endif
 ELDS_KERNEL_CONFIG := $(ELDS_KERNEL_BUILD)/.config
 ELDS_KERNEL_SYSMAP := $(ELDS_KERNEL_BUILD)/System.map
@@ -99,14 +110,15 @@ ELDS_KERNEL_DTB := $(ELDS_KERNEL_BOOT)/dts/$(BOARD_KERNEL_DT).dtb
 ifdef BOARD_KERNEL_DT_OTHER
 ELDS_KERNEL_DTB_OTHER := $(ELDS_KERNEL_BOOT)/dts/$(BOARD_KERNEL_DT_OTHER).dtb
 endif
-ELDS_KERNEL_TARGETS := $(ELDS)/rootfs/$(ELDS_BOARD)/$(ELDS_CROSS_TUPLE)/target/boot/uImage \
-	$(ELDS)/rootfs/$(ELDS_BOARD)/$(ELDS_CROSS_TUPLE)/target/boot/zImage \
-	$(ELDS)/rootfs/$(ELDS_BOARD)/$(ELDS_CROSS_TUPLE)/target/boot/System.map \
-	$(ELDS)/rootfs/$(ELDS_BOARD)/$(ELDS_CROSS_TUPLE)/target/boot/$(BOARD_KERNEL_DT).dtb
+ELDS_KERNEL_TARGETS := $(BOARD_ROOTFS_FINAL)/target/boot/uImage \
+	$(BOARD_ROOTFS_FINAL)/target/boot/zImage \
+	$(BOARD_ROOTFS_FINAL)/target/boot/System.map \
+	$(BOARD_ROOTFS_FINAL)/target/boot/$(BOARD_KERNEL_DT).dtb \
+	$(BOARD_ROOTFS_FINAL)/target/lib/modules/$(ELDS_KERNEL_VERSION)
 ifdef BOARD_KERNEL_DT_OTHER
-ELDS_KERNEL_TARGETS += $(ELDS)/rootfs/$(ELDS_BOARD)/$(ELDS_CROSS_TUPLE)/target/boot/$(BOARD_KERNEL_DT_OTHER).dtb
+ELDS_KERNEL_TARGETS += $(BOARD_ROOTFS_FINAL)/target/boot/$(BOARD_KERNEL_DT_OTHER).dtb
 endif
-ELDS_KERNEL_TARGET_FINAL := $(BOARD_ROOTFS_FINAL)/target/boot/$(BOARD_KERNEL_DT).dtb
+ELDS_KERNEL_TARGET_FINAL := $(BOARD_ROOTFS_FINAL)/target/lib/modules/$(ELDS_KERNEL_VERSION)
 
 # Misc.
 ELDS_ISSUE := $(shell printf "$(ELDS_BOARD) Solution @ $(shell git describe --always)")
