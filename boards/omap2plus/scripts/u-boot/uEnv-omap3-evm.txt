@@ -1,0 +1,3 @@
+loadzimage=echo loading ${bootfile} from mmc ${mmcdev}:2 ...;setenv bootfile zImage;ext4load mmc ${mmcdev}:2 ${loadaddr} boot/zImage
+loaddtb=echo loading omap3-evm.dtb from mmc ${mmcdev}:2 ...;ext4load mmc ${mmcdev}:2 ${fdtaddr} boot/omap3-evm.dtb
+uenvcmd=run loadzimage;run loaddtb;echo Booting ${bootfile} from mmc ...;run mmcargs;bootz ${loadaddr} - ${fdtaddr}
