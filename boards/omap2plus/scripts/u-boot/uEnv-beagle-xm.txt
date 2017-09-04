@@ -1,0 +1,2 @@
+mmcrootfstype=ext4 rootwait
+uenvcmd=run loadimage;run loadfdt;echo Booting ${bootfile} from mmc ...;run mmcargs;bootz ${loadaddr} - ${fdtaddr}
