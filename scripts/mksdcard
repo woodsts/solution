@@ -19,7 +19,14 @@ fi
 board=$1
 
 case "${board}" in
-	*am3517*|*beagle*|*sama5d3*|*torpedo*|*omap3*|*overo*)
+	*sama5d3*)
+		printf "***** SAMA5D3 ARM Cortex-A5 *****\n"
+		;;
+	*am3517*|*beagle*|*torpedo*|*omap3*|*overo*)
+		printf "***** OMAP3 ARM Cortex-A8 *****\n"
+		;;
+	olinuxino-maxi)
+		printf "***** ARM9 ARM926E-JS *****\n"
 		;;
 	*)
 		printf "***** INVALID BOARD NAME *****\n"
