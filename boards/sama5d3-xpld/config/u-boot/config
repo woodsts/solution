@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# U-Boot 2017.09-rc4 Configuration
+# U-Boot 2017.09 Configuration
 #
 CONFIG_CREATE_ARCH_SYMLINK=y
 # CONFIG_ARC is not set
@@ -595,6 +595,7 @@ CONFIG_ENV_IS_IN_FAT=y
 # CONFIG_ENV_IS_IN_REMOTE is not set
 # CONFIG_ENV_IS_IN_SPI_FLASH is not set
 # CONFIG_ENV_IS_IN_UBI is not set
+# CONFIG_ENV_AES is not set
 CONFIG_ENV_FAT_INTERFACE="mmc"
 CONFIG_ENV_FAT_DEVICE_AND_PART="0"
 CONFIG_ENV_FAT_FILE="uboot.env"
@@ -1007,12 +1008,7 @@ CONFIG_USB_EHCI_ATMEL=y
 CONFIG_USB_STORAGE=y
 # CONFIG_USB_KEYBOARD is not set
 # CONFIG_USB_GADGET is not set
-
-#
-# USB to Ethernet Controller Drivers
-#
-# CONFIG_USB_ETHER_LAN75XX is not set
-# CONFIG_USB_ETHER_LAN78XX is not set
+# CONFIG_USB_HOST_ETHER is not set
 
 #
 # Graphics support
