@@ -153,6 +153,7 @@ $(ELDS_KERNEL_TARGET_FINAL): $(ELDS_TOOLCHAIN_TARGETS)
 	@$(MAKE) kernel-config
 	@mkdir -p $(ELDS_KERNEL_BOOT)
 	@mkdir -p $(ELDS_ROOTFS_BUILD)/target/boot
+	@$(RM) $(ELDS_ROOTFS_BUILD)/target/boot/*.dtb
 	@printf "\n***** [$(ELDS_BOARD)][$(BOARD_TYPE)] make kernel zImage *****\n\n"
 	$(MAKE) -j 2 -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) zImage \
 		LOCALVERSION=$(ELDS_KERNEL_LOCALVERSION)
