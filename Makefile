@@ -186,6 +186,7 @@ ifdef ELDS_APPEND_DTB
 endif
 ifdef BOARD_KERNEL_DT_OTHER
 	@printf "\n***** [$(ELDS_BOARD)][$(BOARD_TYPE)] make kernel device-tree (other) *****\n\n"
+	@rsync -av $(BOARD_CONFIG)/dts/$(ELDS_BOARD)/*.* $(ELDS_KERNEL_SCM)/arch/arm/boot/dts/
 	$(MAKE) -j 2 -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) $(BOARD_KERNEL_DT_OTHER).dtb \
 		LOCALVERSION=$(ELDS_KERNEL_LOCALVERSION)
 	@if [ -f $(ELDS_KERNEL_DTB_OTHER) ]; then \
@@ -200,6 +201,7 @@ endif
 	$(MAKE) -j 2 -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) modules \
 		LOCALVERSION=$(ELDS_KERNEL_LOCALVERSION)
 	@$(RM) -r $(BOARD_TARGET)/lib/modules
+	@$(RM) -r $(BOARD_ROOTFS_FINAL)/target/lib/modules
 	@printf "\n***** [$(ELDS_BOARD)][$(BOARD_TYPE)] make kernel modules_install *****\n\n"
 	$(MAKE) -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) modules_install \
 		LOCALVERSION=$(ELDS_KERNEL_LOCALVERSION) \
@@ -216,6 +218,9 @@ endif
 # Run Linux kernel build with options
 kernel-%: $(ELDS_KERNEL_CONFIG)
 	@printf "\n***** [$(ELDS_BOARD)][$(BOARD_TYPE)] make $@ *****\n\n"
+ifdef BOARD_KERNEL_DT_OTHER
+	@rsync -av $(BOARD_CONFIG)/dts/$(ELDS_BOARD)/*.* $(ELDS_KERNEL_SCM)/arch/arm/boot/dts/
+endif
 	$(MAKE) -j 2 -C $(ELDS_KERNEL_SCM) O=$(ELDS_KERNEL_BUILD) $(ELDS_CROSS_PARAMS) $(*F)
 	@if [ "$(*F)" = "$(BOARD_KERNEL_DT).dtb" ]; then \
 		if [ -f $(ELDS_KERNEL_DTB) ]; then \

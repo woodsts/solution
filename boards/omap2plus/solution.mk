@@ -97,7 +97,7 @@ define omap2plus-finalize
 			cp -a \
 				$(BOARD_TARGET)/boot/zImage \
 				$(BOARD_TARGET)/boot/uImage \
-				$(BOARD_TARGET)/boot/$(BOARD_KERNEL_DT).dtb \
+				$(BOARD_TARGET)/boot/*.dtb \
 				$(BOARD_TARGET)/boot/System.map \
 				$(BOARD_ROOTFS_FINAL)/target/boot/; \
 		fi; \
