@@ -12,6 +12,7 @@ BOARD_HOSTNAME := $(ELDS_BOARD)
 BOARD_GETTY_PORT ?= ttyO2
 
 BOARD_KERNEL_DT ?= omap3-beagle-xm
+#BOARD_KERNEL_DT_OTHER ?= omap3-beagle-xm-solution
 
 BOARD_KERNEL_TREE ?= linux
 BOARD_ROOTFS_TREE ?= buildroot
@@ -32,3 +33,4 @@ export BOARD_HOSTNAME
 export BOARD_GETTY_PORT
 export BOARD_KERNEL_TREE
 export BOARD_KERNEL_DT
+export BOARD_KERNEL_DT_OTHER

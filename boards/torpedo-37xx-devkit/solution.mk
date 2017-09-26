@@ -12,11 +12,14 @@ BOARD_HOSTNAME := $(ELDS_BOARD)
 BOARD_GETTY_PORT ?= ttyO0
 
 BOARD_KERNEL_DT ?= logicpd-torpedo-37xx-devkit
+#BOARD_KERNEL_DT_OTHER ?= logicpd-torpedo-37xx-devkit-solution
 
 BOARD_KERNEL_TREE ?= linux
 BOARD_ROOTFS_TREE ?= buildroot
 BOARD_BOOTLOADER_TREE ?= u-boot
 BOARD_TOOLCHAIN_TREE ?= crosstool-ng
+
+ELDS_APPEND_DTB := yes
 
 include $(ELDS)/boards/omap2plus/solution.mk
 
@@ -30,3 +33,4 @@ export BOARD_HOSTNAME
 export BOARD_GETTY_PORT
 export BOARD_KERNEL_TREE
 export BOARD_KERNEL_DT
+export BOARD_KERNEL_DT_OTHER

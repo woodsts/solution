@@ -19,6 +19,8 @@ BOARD_ROOTFS_TREE ?= buildroot
 BOARD_BOOTLOADER_TREE ?= u-boot
 BOARD_TOOLCHAIN_TREE ?= crosstool-ng
 
+ELDS_APPEND_DTB := yes
+
 include $(ELDS)/boards/omap2plus/solution.mk
 
 define $(ELDS_BOARD)-bootloader-defconfig
