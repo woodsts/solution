@@ -84,8 +84,7 @@ $(ELDS_TOOLCHAIN_TARGET_FINAL):
 # Run toolchain build tool (ct-ng) with options
 toolchain-%: $(ELDS_TOOLCHAIN_CONFIG)
 	@printf "\n***** [$(ELDS_BOARD)][$(BOARD_TYPE)] make $@ *****\n\n"
-	@cd $(ELDS_TOOLCHAIN_BUILD) && CT_ARCH=$(BOARD_ARCH) ct-ng $(*F) && \
-		[ "$(*F)" = "build" ] && $(RM) -r $(ELDS_TOOLCHAIN_BUILD)/{$(ELDS_CROSS_TUPLE),src}
+	@(cd $(ELDS_TOOLCHAIN_BUILD) && CT_ARCH=$(BOARD_ARCH) ct-ng $(*F))
 	@cat $< > $(BOARD_TOOLCHAIN_CONFIG)
 
 # Create bootloader configuration for embedded target board
