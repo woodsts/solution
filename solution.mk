@@ -33,6 +33,10 @@ ELDS_ARCHIVE ?= $(HOME)/Public
 # Read the Embedded Board Definitions
 include $(ELDS)/boards/$(ELDS_BOARD)/solution.mk
 
+ifndef BOARD_TOOLCHAIN_TREE
+$(error [ 'solution' requires BOARD_TOOLCHAIN_TREE to be defined! ] ***)
+endif
+
 # Cross-Compilation Definitions
 ELDS_CROSS_TUPLE := $(BOARD_CROSS_TUPLE)
 ELDS_CROSS_COMPILE := $(ELDS_CROSS_TUPLE)-
@@ -49,14 +53,17 @@ ELDS_TOOLCHAIN_BUILDER := $(ELDS)/toolchain/builder
 ELDS_TOOLCHAIN_TARBALLS := $(ELDS)/toolchain/tarballs
 ELDS_TOOLCHAIN_CONFIG := $(ELDS_TOOLCHAIN_BUILD)/.config
 ELDS_TOOLCHAIN_TARGETS := $(ELDS_TOOLCHAIN_PATH)/bin/$(ELDS_CROSS_COMPILE)gcc \
-	$(ELDS_TOOLCHAIN_PATH)/bin/$(ELDS_CROSS_COMPILE)g++ \
-	$(ELDS_TOOLCHAIN_PATH)/$(ELDS_CROSS_TUPLE)/debug-root/usr/bin/gdbserver \
+	$(ELDS_TOOLCHAIN_PATH)/bin/$(ELDS_CROSS_COMPILE)g++
+ELDS_TOOLCHAIN_TARGET_FINAL := $(ELDS_TOOLCHAIN_PATH)/bin/$(ELDS_CROSS_COMPILE)g++
+ifdef BOARD_ROOTFS_TREE
+ELDS_TOOLCHAIN_TARGETS += $(ELDS_TOOLCHAIN_PATH)/$(ELDS_CROSS_TUPLE)/debug-root/usr/bin/gdbserver \
 	$(ELDS_TOOLCHAIN_PATH)/$(ELDS_CROSS_TUPLE)/debug-root/usr/bin/ltrace \
 	$(ELDS_TOOLCHAIN_PATH)/$(ELDS_CROSS_TUPLE)/debug-root/usr/bin/strace
 ELDS_TOOLCHAIN_TARGET_FINAL := $(ELDS_TOOLCHAIN_PATH)/$(ELDS_CROSS_TUPLE)/debug-root/usr/bin/gdbserver
+endif
 
 # Bootloader Definitions
-ifdef BOARD_BOOTLOADER
+ifdef BOARD_BOOTLOADER_TREE
 ELDS_BOOTLOADER := $(BOARD_BOOTLOADER)
 ELDS_BOOTLOADER_TREE := $(BOARD_BOOTLOADER_TREE)
 ELDS_BOOTLOADER_BUILD := $(BOARD_BOOTLOADER_BUILD)
@@ -66,6 +73,7 @@ ELDS_BOOTLOADER_TARGET_FINAL ?= $(BOARD_ROOTFS_FINAL)/target/boot/u-boot.img
 endif
 
 # Root Filesystem Definitions
+ifdef BOARD_ROOTFS_TREE
 ELDS_ROOTFS := Buildroot
 ELDS_ROOTFS_TREE := $(BOARD_ROOTFS_TREE)
 ELDS_ROOTFS_SCM := $(ELDS_SCM)/$(ELDS_ROOTFS_TREE)
@@ -75,8 +83,10 @@ ELDS_ROOTFS_TARBALLS := $(ELDS)/rootfs/tarballs
 ELDS_ROOTFS_CONFIG := $(ELDS_ROOTFS_BUILD)/.config
 ELDS_ROOTFS_TARGETS := $(BOARD_ROOTFS_TARGETS)
 ELDS_ROOTFS_TARGET_FINAL := $(BOARD_ROOTFS_FINAL)/images/rootfs.tar
+endif
 
 # Kernel Definitions
+ifdef BOARD_KERNEL_TREE
 ELDS_KERNEL := Linux
 ELDS_KERNEL_TREE := $(BOARD_KERNEL_TREE)
 ELDS_KERNEL_BUILD := $(ELDS_ROOTFS_BUILD)/build/$(ELDS_KERNEL_TREE)
@@ -123,6 +133,7 @@ ifdef BOARD_KERNEL_DT_OTHER
 ELDS_KERNEL_TARGETS += $(BOARD_ROOTFS_FINAL)/target/boot/$(BOARD_KERNEL_DT_OTHER).dtb
 endif
 ELDS_KERNEL_TARGET_FINAL := $(BOARD_ROOTFS_FINAL)/target/lib/modules/$(ELDS_KERNEL_VERSION)
+endif
 
 # Misc.
 ELDS_ISSUE := $(shell printf "$(ELDS_BOARD) Solution @ $(shell git describe --always)")
@@ -156,7 +167,7 @@ define solution-env
 	@printf "ELDS_CROSS_TUPLE             : $(ELDS_CROSS_TUPLE)\n"
 	@printf "========================================================================\n"
 	$(call $(ELDS_BOARD)-env)
-	@if ! [ "x$(BOARD_BOOTLOADER)" = "x" ]; then \
+	@if ! [ "x$(BOARD_BOOTLOADER_TREE)" = "x" ]; then \
 		printf "ELDS_BOOTLOADER_TARGET_FINAL : $(ELDS_BOOTLOADER_TARGET_FINAL)\n"; \
 	fi
 	@printf "========================================================================\n"
@@ -167,24 +178,28 @@ define solution-env
 	@printf "ELDS_TOOLCHAIN_BUILD         : $(ELDS_TOOLCHAIN_BUILD)\n"
 	@printf "ELDS_TOOLCHAIN_TARGETS       : $(ELDS_TOOLCHAIN_TARGETS)\n"
 	@printf "ELDS_TOOLCHAIN_TARGET_FINAL  : $(ELDS_TOOLCHAIN_TARGET_FINAL)\n"
-	@printf "========================================================================\n"
-	@printf "ELDS_ROOTFS                  : $(ELDS_ROOTFS)\n"
-	@printf "ELDS_ROOTFS_TREE             : $(ELDS_ROOTFS_TREE)\n"
-	@printf "ELDS_ROOTFS_VERSION          : $(ELDS_ROOTFS_VERSION)\n"
-	@printf "ELDS_ROOTFS_BUILD            : $(ELDS_ROOTFS_BUILD)\n"
-	@printf "ELDS_ROOTFS_TARGETS          : $(ELDS_ROOTFS_TARGETS)\n"
-	@printf "ELDS_ROOTFS_TARGET_FINAL     : $(ELDS_ROOTFS_TARGET_FINAL)\n"
-	@printf "========================================================================\n"
-	@printf "ELDS_KERNEL                  : $(ELDS_KERNEL)\n"
-	@printf "ELDS_KERNEL_TREE             : $(ELDS_KERNEL_TREE)\n"
-	@printf "ELDS_KERNEL_VERSION          : $(ELDS_KERNEL_VERSION)\n"
-	@printf "ELDS_KERNEL_LOCALVERSION     : $(ELDS_KERNEL_LOCALVERSION)\n"
-	@printf "ELDS_KERNEL_DTB              : $(ELDS_KERNEL_DTB)\n"
-	@printf "ELDS_KERNEL_DTB_OTHER        : $(ELDS_KERNEL_DTB_OTHER)\n"
-	@printf "ELDS_KERNEL_BUILD            : $(ELDS_KERNEL_BUILD)\n"
-	@printf "ELDS_KERNEL_BOOT             : $(ELDS_KERNEL_BOOT)\n"
-	@printf "ELDS_KERNEL_TARGETS          : $(ELDS_KERNEL_TARGETS)\n"
-	@printf "ELDS_KERNEL_TARGET_FINAL     : $(ELDS_KERNEL_TARGET_FINAL)\n"
+	@if ! [ "x$(BOARD_ROOTFS_TREE)" = "x" ]; then \
+		printf "========================================================================\n"; \
+		printf "ELDS_ROOTFS                  : $(ELDS_ROOTFS)\n"; \
+		printf "ELDS_ROOTFS_TREE             : $(ELDS_ROOTFS_TREE)\n"; \
+		printf "ELDS_ROOTFS_VERSION          : $(ELDS_ROOTFS_VERSION)\n"; \
+		printf "ELDS_ROOTFS_BUILD            : $(ELDS_ROOTFS_BUILD)\n"; \
+		printf "ELDS_ROOTFS_TARGETS          : $(ELDS_ROOTFS_TARGETS)\n"; \
+		printf "ELDS_ROOTFS_TARGET_FINAL     : $(ELDS_ROOTFS_TARGET_FINAL)\n"; \
+	fi
+	@if ! [ "x$(BOARD_KERNEL_TREE)" = "x" ]; then \
+		printf "========================================================================\n"; \
+		printf "ELDS_KERNEL                  : $(ELDS_KERNEL)\n"; \
+		printf "ELDS_KERNEL_TREE             : $(ELDS_KERNEL_TREE)\n"; \
+		printf "ELDS_KERNEL_VERSION          : $(ELDS_KERNEL_VERSION)\n"; \
+		printf "ELDS_KERNEL_LOCALVERSION     : $(ELDS_KERNEL_LOCALVERSION)\n"; \
+		printf "ELDS_KERNEL_DTB              : $(ELDS_KERNEL_DTB)\n"; \
+		printf "ELDS_KERNEL_DTB_OTHER        : $(ELDS_KERNEL_DTB_OTHER)\n"; \
+		printf "ELDS_KERNEL_BUILD            : $(ELDS_KERNEL_BUILD)\n"; \
+		printf "ELDS_KERNEL_BOOT             : $(ELDS_KERNEL_BOOT)\n"; \
+		printf "ELDS_KERNEL_TARGETS          : $(ELDS_KERNEL_TARGETS)\n"; \
+		printf "ELDS_KERNEL_TARGET_FINAL     : $(ELDS_KERNEL_TARGET_FINAL)\n"; \
+	fi
 	@printf "========================================================================\n"
 	@printf "ELDS_ARCHIVE                 : $(ELDS_ARCHIVE)\n"
 	@printf "PATH                         : $(PATH)\n"
@@ -195,18 +210,20 @@ export ELDS
 export ELDS_BOARD
 export ELDS_ISSUE
 export ELDS_CROSS_TUPLE
-export ELDS_TOOLCHAIN_BUILD
 export ELDS_TOOLCHAIN_TREE
-ifdef BOARD_BOOTLOADER
-export ELDS_BOOTLOADER_TREE
-endif
-export ELDS_KERNEL_TREE
-export ELDS_ROOTFS_TREE
 export ELDS_TOOLCHAIN_SCM
-ifdef BOARD_BOOTLOADER
+export ELDS_TOOLCHAIN_BUILD
+export ELDS_TOOLCHAIN_TARBALLS
+ifdef BOARD_BOOTLOADER_TREE
+export ELDS_BOOTLOADER_TREE
 export ELDS_BOOTLOADER_SCM
 endif
+ifdef BOARD_KERNEL_TREE
+export ELDS_KERNEL_TREE
 export ELDS_KERNEL_SCM
+endif
+ifdef BOARD_ROOTFS_TREE
+export ELDS_ROOTFS_TREE
 export ELDS_ROOTFS_SCM
-export ELDS_TOOLCHAIN_TARBALLS
 export ELDS_ROOTFS_TARBALLS
+endif

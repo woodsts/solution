@@ -139,14 +139,17 @@ endif
 kernel-config: $(ELDS_KERNEL_CONFIG)
 
 $(ELDS_KERNEL_CONFIG): $(BOARD_KERNEL_CONFIG)
+ifdef BOARD_KERNEL_TREE
 	@mkdir -p $(ELDS_KERNEL_BUILD)
 	@cat $< > $@
+endif
 
 # Build kernel for embedded target board
 .PHONY: kernel
 kernel: $(ELDS_KERNEL_TARGET_FINAL)
 
 $(ELDS_KERNEL_TARGET_FINAL): $(ELDS_TOOLCHAIN_TARGETS)
+ifdef BOARD_KERNEL_TREE
 	@printf "\n***** [$(ELDS_BOARD)][$(BOARD_TYPE)] $(ELDS_KERNEL) $(ELDS_KERNEL_VERSION) *****\n\n"
 	@$(MAKE) $(ELDS_KERNEL_TREE)-check
 	@$(MAKE) kernel-config
@@ -213,9 +216,11 @@ endif
 		LOCALVERSION=$(ELDS_KERNEL_LOCALVERSION) \
 		INSTALL_HDR_PATH=$(ELDS_ROOTFS_BUILD)/staging/usr/include
 	$(call $(ELDS_BOARD)-finalize)
+endif
 
 # Run Linux kernel build with options
 kernel-%: $(ELDS_KERNEL_CONFIG)
+ifdef BOARD_KERNEL_TREE
 	@printf "\n***** [$(ELDS_BOARD)][$(BOARD_TYPE)] make $@ *****\n\n"
 ifdef BOARD_KERNEL_DT_OTHER
 	@rsync -av $(BOARD_CONFIG)/dts/$(ELDS_BOARD)/*.* $(ELDS_KERNEL_SCM)/arch/arm/boot/dts/
@@ -251,45 +256,56 @@ endif
 		cat $< > $(BOARD_KERNEL_CONFIG); \
 	fi
 	$(call $(ELDS_BOARD)-finalize)
+endif
 
 # Remove kernel targets
 .PHONY: kernel-rm
 kernel-rm:
+ifdef BOARD_KERNEL_TREE
 	$(RM) -r $(ELDS_KERNEL_TARGETS)
+endif
 
 # Restore existing rootfs configuration for embedded target board
 .PHONY: rootfs-config
 rootfs-config: $(ELDS_ROOTFS_CONFIG)
 
 $(ELDS_ROOTFS_CONFIG): $(BOARD_ROOTFS_CONFIG)
+ifdef BOARD_ROOTFS_TREE
 	@mkdir -p $(ELDS_ROOTFS_BUILD)
 	@mkdir -p $(ELDS_ROOTFS_TARBALLS)
 	@cat $< > $@
+endif
 
 # Build rootfs for embedded target board
 .PHONY: rootfs
 rootfs: $(ELDS_ROOTFS_TARGET_FINAL)
 
 $(ELDS_ROOTFS_TARGET_FINAL): $(ELDS_TOOLCHAIN_TARGETS)
+ifdef BOARD_ROOTFS_TREE
 	@printf "\n***** [$(ELDS_BOARD)][$(BOARD_TYPE)] $(ELDS_ROOTFS) $(ELDS_ROOTFS_VERSION) *****\n\n"
 	@$(MAKE) $(ELDS_ROOTFS_TREE)-check
 	@$(MAKE) rootfs-config
 	$(MAKE) -C $(ELDS_ROOTFS_SCM) O=$(ELDS_ROOTFS_BUILD)
 	$(call $(ELDS_BOARD)-finalize)
+endif
 
 # Run 'make rootfs' with options
 rootfs-%: $(ELDS_ROOTFS_CONFIG)
+ifdef BOARD_ROOTFS_TREE
 	@printf "\n***** [$(ELDS_BOARD)][$(BOARD_TYPE)] make $@ *****\n\n"
 	$(MAKE) -C $(ELDS_SCM)/buildroot O=$(ELDS_ROOTFS_BUILD) $(*F)
 	@if ! [ "$(*F)" = "distclean" ]; then \
 		cat $< > $(BOARD_ROOTFS_CONFIG); \
 	fi
 	$(call $(ELDS_BOARD)-finalize)
+endif
 
 # Remove rootfs targets
 .PHONY: rootfs-rm
 rootfs-rm:
+ifdef BOARD_ROOTFS_TREE
 	$(RM) $(ELDS_ROOTFS_TARGETS)
+endif
 
 # Selectively remove some solution artifacts
 .PHONY: clean
