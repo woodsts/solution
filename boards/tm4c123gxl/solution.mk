@@ -8,7 +8,7 @@
 #
 
 ELDS ?= /solution
-ELDS_BOARD ?= tm4c123g
+ELDS_BOARD ?= tm4c123gxl
 
 BOARD_HOSTNAME := $(ELDS_BOARD)
 
