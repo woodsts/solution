@@ -109,10 +109,6 @@ endif
 ifeq ($(ksublevel),SUBLEVEL = 0)
 # sublevel = 0 does not appear in actual tag
 ELDS_KERNEL_VERSION := $(kversion).0$(ELDS_KERNEL_LOCALVERSION)
-ifneq ($(shell cd $(ELDS_KERNEL_SCM) && git describe 2>/dev/null | grep -e "-rc"),)
-# this is a release candidate
-ELDS_KERNEL_LOCALVERSION := -$(shell printf $(klocalversion) | cut -d '-' -f 2-8)
-endif
 else
 # sublevel is non-zero
 ELDS_KERNEL_VERSION := $(kversion)$(ELDS_KERNEL_LOCALVERSION)
@@ -199,6 +195,11 @@ define solution-env
 		printf "ELDS_KERNEL_BOOT             : $(ELDS_KERNEL_BOOT)\n"; \
 		printf "ELDS_KERNEL_TARGETS          : $(ELDS_KERNEL_TARGETS)\n"; \
 		printf "ELDS_KERNEL_TARGET_FINAL     : $(ELDS_KERNEL_TARGET_FINAL)\n"; \
+		if ! [ "x$(DEBUG)" = "x" ]; then \
+			printf "kversion                     : $(kversion)\n"; \
+			printf "ksublevel                    : $(ksublevel)\n"; \
+			printf "klocalversion                : $(klocalversion)\n"; \
+		fi; \
 	fi
 	@printf "========================================================================\n"
 	@printf "ELDS_ARCHIVE                 : $(ELDS_ARCHIVE)\n"
