@@ -19,8 +19,8 @@ BOARD_MCU := tm4c123gh6pm
 BOARD_TOOLCHAIN_TREE ?= crosstool-ng
 
 BOARD_ARCH ?= arm
-BOARD_VENDOR ?= cortexm4
-BOARD_ABI ?= eabihf
+BOARD_VENDOR ?= none
+BOARD_ABI ?= eabi
 BOARD_CROSS_TUPLE := $(BOARD_ARCH)-$(BOARD_VENDOR)-$(BOARD_ABI)
 
 BOARD_SCM ?= $(ELDS)/scm

@@ -1,5 +1,7 @@
 include ../solution.mk
 
+export PATH := $(ELDS)/toolchain/$(BOARD_CROSS_TUPLE)/bin:$(PATH)
+
 TARGET_NAME = tiva-$(BOARD_TYPE)
 
 TARGET_ELF = $(TARGET_NAME).elf
