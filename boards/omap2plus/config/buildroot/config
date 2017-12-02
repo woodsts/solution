@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Buildroot 2017.11 Configuration
+# Buildroot 2018.02-git-00180-ga73fa46fa2 Configuration
 #
 BR2_HAVE_DOT_CONFIG=y
 BR2_HOST_GCC_AT_LEAST_4_5=y
@@ -58,14 +58,34 @@ BR2_ARM_CPU_HAS_VFPV3=y
 BR2_ARM_CPU_HAS_ARM=y
 BR2_ARM_CPU_HAS_THUMB2=y
 BR2_ARM_CPU_ARMV7A=y
+
+#
+# armv4 cores
+#
 # BR2_arm920t is not set
 # BR2_arm922t is not set
+# BR2_fa526 is not set
+# BR2_strongarm is not set
+
+#
+# armv5 cores
+#
 # BR2_arm926t is not set
+# BR2_iwmmxt is not set
+# BR2_xscale is not set
+
+#
+# armv6 cores
+#
 # BR2_arm1136j_s is not set
 # BR2_arm1136jf_s is not set
 # BR2_arm1176jz_s is not set
 # BR2_arm1176jzf_s is not set
 # BR2_arm11mpcore is not set
+
+#
+# armv7a cores
+#
 # BR2_cortex_a5 is not set
 # BR2_cortex_a7 is not set
 BR2_cortex_a8=y
@@ -75,18 +95,31 @@ BR2_cortex_a8=y
 # BR2_cortex_a15_a7 is not set
 # BR2_cortex_a17 is not set
 # BR2_cortex_a17_a7 is not set
+# BR2_pj4 is not set
+
+#
+# armv7m cores
+#
+# BR2_cortex_m3 is not set
+# BR2_cortex_m4 is not set
+
+#
+# armv8 cores
+#
+# BR2_cortex_a32 is not set
+# BR2_cortex_a35 is not set
 # BR2_cortex_a53 is not set
 # BR2_cortex_a57 is not set
 # BR2_cortex_a57_a53 is not set
 # BR2_cortex_a72 is not set
 # BR2_cortex_a72_a53 is not set
-# BR2_cortex_m3 is not set
-# BR2_cortex_m4 is not set
-# BR2_fa526 is not set
-# BR2_pj4 is not set
-# BR2_strongarm is not set
-# BR2_xscale is not set
-# BR2_iwmmxt is not set
+# BR2_cortex_a73 is not set
+# BR2_cortex_a73_a35 is not set
+# BR2_cortex_a73_a53 is not set
+# BR2_exynos_m1 is not set
+# BR2_falkor is not set
+# BR2_qdf24xx is not set
+# BR2_xgene1 is not set
 # BR2_ARM_EABI is not set
 BR2_ARM_EABIHF=y
 # BR2_ARM_FPU_VFPV2 is not set
@@ -187,8 +220,8 @@ BR2_PACKAGE_HAS_TOOLCHAIN_EXTERNAL=y
 BR2_PACKAGE_PROVIDES_TOOLCHAIN_EXTERNAL="toolchain-external-custom"
 BR2_TOOLCHAIN_EXTERNAL_PREFIX="$(ELDS_CROSS_TUPLE)"
 BR2_TOOLCHAIN_EXTERNAL_CUSTOM_PREFIX="$(ELDS_CROSS_TUPLE)"
-# BR2_TOOLCHAIN_EXTERNAL_GCC_7 is not set
-BR2_TOOLCHAIN_EXTERNAL_GCC_6=y
+BR2_TOOLCHAIN_EXTERNAL_GCC_7=y
+# BR2_TOOLCHAIN_EXTERNAL_GCC_6 is not set
 # BR2_TOOLCHAIN_EXTERNAL_GCC_5 is not set
 # BR2_TOOLCHAIN_EXTERNAL_GCC_4_9 is not set
 # BR2_TOOLCHAIN_EXTERNAL_GCC_4_8 is not set
@@ -198,11 +231,12 @@ BR2_TOOLCHAIN_EXTERNAL_GCC_6=y
 # BR2_TOOLCHAIN_EXTERNAL_GCC_4_4 is not set
 # BR2_TOOLCHAIN_EXTERNAL_GCC_4_3 is not set
 # BR2_TOOLCHAIN_EXTERNAL_GCC_OLD is not set
+BR2_TOOLCHAIN_EXTERNAL_HEADERS_4_14=y
 # BR2_TOOLCHAIN_EXTERNAL_HEADERS_4_13 is not set
 # BR2_TOOLCHAIN_EXTERNAL_HEADERS_4_12 is not set
 # BR2_TOOLCHAIN_EXTERNAL_HEADERS_4_11 is not set
 # BR2_TOOLCHAIN_EXTERNAL_HEADERS_4_10 is not set
-BR2_TOOLCHAIN_EXTERNAL_HEADERS_4_9=y
+# BR2_TOOLCHAIN_EXTERNAL_HEADERS_4_9 is not set
 # BR2_TOOLCHAIN_EXTERNAL_HEADERS_4_8 is not set
 # BR2_TOOLCHAIN_EXTERNAL_HEADERS_4_7 is not set
 # BR2_TOOLCHAIN_EXTERNAL_HEADERS_4_6 is not set
@@ -292,7 +326,12 @@ BR2_TOOLCHAIN_HEADERS_AT_LEAST_4_6=y
 BR2_TOOLCHAIN_HEADERS_AT_LEAST_4_7=y
 BR2_TOOLCHAIN_HEADERS_AT_LEAST_4_8=y
 BR2_TOOLCHAIN_HEADERS_AT_LEAST_4_9=y
-BR2_TOOLCHAIN_HEADERS_AT_LEAST="4.9"
+BR2_TOOLCHAIN_HEADERS_AT_LEAST_4_10=y
+BR2_TOOLCHAIN_HEADERS_AT_LEAST_4_11=y
+BR2_TOOLCHAIN_HEADERS_AT_LEAST_4_12=y
+BR2_TOOLCHAIN_HEADERS_AT_LEAST_4_13=y
+BR2_TOOLCHAIN_HEADERS_AT_LEAST_4_14=y
+BR2_TOOLCHAIN_HEADERS_AT_LEAST="4.14"
 BR2_TOOLCHAIN_GCC_AT_LEAST_4_3=y
 BR2_TOOLCHAIN_GCC_AT_LEAST_4_4=y
 BR2_TOOLCHAIN_GCC_AT_LEAST_4_5=y
@@ -302,9 +341,9 @@ BR2_TOOLCHAIN_GCC_AT_LEAST_4_8=y
 BR2_TOOLCHAIN_GCC_AT_LEAST_4_9=y
 BR2_TOOLCHAIN_GCC_AT_LEAST_5=y
 BR2_TOOLCHAIN_GCC_AT_LEAST_6=y
-BR2_TOOLCHAIN_GCC_AT_LEAST="6"
+BR2_TOOLCHAIN_GCC_AT_LEAST_7=y
+BR2_TOOLCHAIN_GCC_AT_LEAST="7"
 BR2_TOOLCHAIN_HAS_MNAN_OPTION=y
-BR2_TOOLCHAIN_HAS_MFPXX_OPTION=y
 BR2_TOOLCHAIN_HAS_SYNC_1=y
 BR2_TOOLCHAIN_HAS_SYNC_2=y
 BR2_TOOLCHAIN_HAS_SYNC_4=y
@@ -449,7 +488,7 @@ BR2_PACKAGE_FFMPEG_EXTRACONF=""
 BR2_PACKAGE_KODI_ARCH_SUPPORTS=y
 
 #
-# kodi needs python w/ .py modules, a uClibc or glibc toolchain w/ C++, locale, threads, wchar, dynamic library, gcc >= 4.8, host gcc >= 4.6
+# kodi needs python w/ .py modules, a uClibc or glibc toolchain w/ C++, threads, wchar, dynamic library, gcc >= 4.8, host gcc >= 4.6
 #
 
 #
@@ -761,6 +800,7 @@ BR2_PACKAGE_LIBERATION_SERIF=y
 # BR2_PACKAGE_OPENTYRIAN is not set
 # BR2_PACKAGE_PRBOOM is not set
 # BR2_PACKAGE_SL is not set
+# BR2_PACKAGE_SOLARUS is not set
 # BR2_PACKAGE_STELLA is not set
 
 #
@@ -953,6 +993,7 @@ BR2_PACKAGE_LINUX_FIRMWARE_TI_WL128X=y
 # BR2_PACKAGE_WILC1000_FIRMWARE is not set
 # BR2_PACKAGE_WILINK_BT_FIRMWARE is not set
 # BR2_PACKAGE_ZD1211_FIRMWARE is not set
+# BR2_PACKAGE_ARMBIAN_FIRMWARE is not set
 
 #
 # a10disp needs a Linux kernel to be built
@@ -1550,6 +1591,7 @@ BR2_PACKAGE_WEBKITGTK_ARCH_SUPPORTS=y
 #
 BR2_PACKAGE_WEBP=y
 BR2_PACKAGE_WEBP_DEMUX=y
+# BR2_PACKAGE_WEBP_MUX is not set
 # BR2_PACKAGE_ZBAR is not set
 # BR2_PACKAGE_ZXING_CPP is not set
 
@@ -1811,6 +1853,7 @@ BR2_PACKAGE_LIBPCAP=y
 BR2_PACKAGE_LIBTIRPC=y
 # BR2_PACKAGE_LIBTORRENT is not set
 # BR2_PACKAGE_LIBUPNP is not set
+# BR2_PACKAGE_LIBUPNP18 is not set
 # BR2_PACKAGE_LIBUPNPP is not set
 # BR2_PACKAGE_LIBURIPARSER is not set
 # BR2_PACKAGE_LIBVNCSERVER is not set
@@ -2114,6 +2157,7 @@ BR2_PACKAGE_ETHTOOL_PRETTY_PRINT=y
 # BR2_PACKAGE_HANS is not set
 # BR2_PACKAGE_HIAWATHA is not set
 BR2_PACKAGE_HOSTAPD=y
+# BR2_PACKAGE_HOSTAPD_DRIVER_RTW is not set
 BR2_PACKAGE_HOSTAPD_ACS=y
 BR2_PACKAGE_HOSTAPD_EAP=y
 BR2_PACKAGE_HOSTAPD_WPS=y
@@ -2229,6 +2273,7 @@ BR2_PACKAGE_NFTABLES=y
 BR2_PACKAGE_RSYNC=y
 # BR2_PACKAGE_RTORRENT is not set
 # BR2_PACKAGE_RTPTOOLS is not set
+# BR2_PACKAGE_RYGEL is not set
 # BR2_PACKAGE_S6_DNS is not set
 # BR2_PACKAGE_S6_NETWORKING is not set
 # BR2_PACKAGE_SAMBA4 is not set
@@ -2443,6 +2488,7 @@ BR2_PACKAGE_INITSCRIPTS=y
 # BR2_PACKAGE_KEYUTILS is not set
 BR2_PACKAGE_KMOD=y
 # BR2_PACKAGE_KVMTOOL is not set
+# BR2_PACKAGE_LIBOSTREE is not set
 BR2_PACKAGE_LXC=y
 # BR2_PACKAGE_MONIT is not set
 # BR2_PACKAGE_NCDU is not set
@@ -2658,6 +2704,11 @@ BR2_PACKAGE_HOST_TI_CGT_PRU_ARCH_SUPPORTS=y
 #
 
 #
+# Legacy options removed in 2018.02
+#
+# BR2_PACKAGE_GNUPG2_GPGV2 is not set
+
+#
 # Legacy options removed in 2017.11
 #
 # BR2_PACKAGE_RFKILL is not set
@@ -2801,7 +2852,6 @@ BR2_TARGET_ROOTFS_EXT2_EXTRA_BLOCKS=0
 # BR2_TOOLCHAIN_EXTERNAL_CODESOURCERY_POWERPC is not set
 # BR2_TOOLCHAIN_EXTERNAL_CODESOURCERY_POWERPC_E500V2 is not set
 # BR2_x86_i386 is not set
-# BR2_PACKAGE_QT5WEBKIT_EXAMPLES is not set
 # BR2_PACKAGE_QT5QUICK1 is not set
 BR2_TARGET_UBOOT_CUSTOM_PATCH_DIR=""
 # BR2_PACKAGE_XDRIVER_XF86_INPUT_VOID is not set
