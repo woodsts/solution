@@ -101,9 +101,9 @@ define omap2plus-finalize
 				$(BOARD_TARGET)/boot/System.map \
 				$(BOARD_ROOTFS_FINAL)/target/boot/; \
 		fi; \
-		if [ -d $(BOARD_TARGET)/lib/modules/$(ELDS_KERNEL_VERSION) ]; then \
-			rsync -a $(BOARD_TARGET)/lib/modules/$(ELDS_KERNEL_VERSION) \
-				$(BOARD_ROOTFS_FINAL)/target/lib/modules/; \
+		if [ -d $(BOARD_TARGET)/lib/modules ]; then \
+			rsync -a $(BOARD_TARGET)/lib/modules \
+				$(BOARD_ROOTFS_FINAL)/target/lib/; \
 		fi; \
 		if [ -d $(BOARD_TARGET)/lib/firmware ]; then \
 			rsync -a $(BOARD_TARGET)/lib/firmware \
