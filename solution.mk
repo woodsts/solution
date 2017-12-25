@@ -109,6 +109,9 @@ endif
 ifeq ($(ksublevel),SUBLEVEL = 0)
 # sublevel = 0 does not appear in actual tag
 ELDS_KERNEL_VERSION := $(kversion).0$(ELDS_KERNEL_LOCALVERSION)
+ifeq (x$(shell cd $(ELDS_KERNEL_SCM) && git describe --exact-match 2>/dev/null),x)
+ELDS_KERNEL_LOCALVERSION := -$(shell echo $(klocalversion) | cut -d '-' -f 2-5)
+endif
 else
 # sublevel is non-zero
 ELDS_KERNEL_VERSION := $(kversion)$(ELDS_KERNEL_LOCALVERSION)
