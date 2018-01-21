@@ -2,8 +2,8 @@
 
 usage()
 {
-	printf "USAGE: push <board> mmc\n"
-	printf "       push <board> net <ip-address>\n"
+	printf "USAGE: push <board> mmc [noboot|nokern]\n"
+	printf "       push <board> net <ip-address> [noboot|nokern]\n"
 }
 
 if [ "x${2}" = "x" ]; then
@@ -39,6 +39,13 @@ case "${1}" in
 		;;
 esac
 
+push_kernel="1"
+
+echo "$@" | grep -q nokern
+if [ "$?" = "0" ]; then
+	push_kernel="0"
+fi
+
 push_bootloader="1"
 
 echo "$@" | grep -q noboot
@@ -46,7 +53,13 @@ if [ "$?" = "0" ]; then
 	push_bootloader="0"
 fi
 
-send_list="boot lib/firmware lib/modules"
+if [ "${push_kernel}" = "0" ] && [ "${push_bootloader}" = "0" ]; then
+	printf "Invalid options: Cannot use both 'noboot' and 'nokern'!\n"
+	usage
+	exit 1
+fi
+
+send_list="lib/firmware"
 
 case "${transfer_type}" in
 	mmc)
@@ -60,14 +73,25 @@ case "${transfer_type}" in
 				exit 1
 			fi
 		fi
+		# rootfs
 		pushd ${target_dir}
+		if [ "${push_kernel}" = "1" ]; then
+			send_list="boot/*.dtb boot/uImage boot/zImage ${send_list}"
+		fi
+		if [ "${push_bootloader}" = "1" ]; then
+			send_list="boot/uEnv.txt boot/MLO boot/u-boot.img ${send_list}"
+		fi
 		sudo rsync -aPR ${send_list} ${media}/rootfs/ && sync
 		popd
-		send_list="*.dtb uImage zImage"
-		if [ "${push_bootloader}" = "1" ]; then
-			send_list="MLO u-boot.img ${send_list}"
-		fi
+		# BOOT
 		pushd ${target_dir}/boot
+		send_list=""
+		if [ "${push_kernel}" = "1" ]; then
+			send_list="*.dtb uImage zImage"
+		fi
+		if [ "${push_bootloader}" = "1" ]; then
+			send_list="MLO u-boot.img uEnv.txt ${send_list}"
+		fi
 		rsync -P ${send_list} ${media}/BOOT/ && sync
 		popd
 		;;
@@ -77,14 +101,25 @@ case "${transfer_type}" in
 			usage
 			exit 1
 		fi
+		# rootfs
 		pushd ${target_dir}
+		if [ "${push_kernel}" = "1" ]; then
+			send_list="boot/*.dtb boot/uImage boot/zImage ${send_list}"
+		fi
+		if [ "${push_bootloader}" = "1" ]; then
+			send_list="boot/uEnv.txt boot/MLO boot/u-boot.img ${send_list}"
+		fi
 		rsync -aPR ${send_list} root@${3}:/
 		popd
-		send_list="*.dtb uImage zImage"
-		if [ "${push_bootloader}" = "1" ]; then
-			send_list="MLO u-boot.img ${send_list}"
-		fi
+		# BOOT
 		pushd ${target_dir}/boot
+		send_list=""
+		if [ "${push_kernel}" = "1" ]; then
+			send_list="*.dtb uImage zImage"
+		fi
+		if [ "${push_bootloader}" = "1" ]; then
+			send_list="MLO u-boot.img uEnv.txt ${send_list}"
+		fi
 		rsync -P ${send_list} root@${3}:/media/BOOT/
 		popd
 		;;
