@@ -16,6 +16,7 @@ BOARD_ABI ?= gnueabihf
 BOARD_CROSS_TUPLE := $(BOARD_ARCH)-$(BOARD_VENDOR)-$(BOARD_OS)-$(BOARD_ABI)
 
 BOARD_CONFIG := $(ELDS)/boards/$(BOARD_TYPE)/config
+BOARD_SCRIPTS := $(ELDS)/boards/$(BOARD_TYPE)/scripts
 BOARD_TOOLCHAIN_CONFIG := $(BOARD_CONFIG)/crosstool-ng/config
 BOARD_ROOTFS_CONFIG := $(BOARD_CONFIG)/buildroot/config
 BOARD_KERNEL_CONFIG := $(BOARD_CONFIG)/$(BOARD_KERNEL_TREE)/config
@@ -62,6 +63,7 @@ define omap2plus-bootloader
 		$(RM) $(BOARD_BOOTLOADER_TARGET)/MLO*; \
 		cp -av $(BOARD_BOOTLOADER_BINARY_SPL) $(BOARD_BOOTLOADER_TARGET)/; \
 		cp -av $(BOARD_BOOTLOADER_BINARY_IMAGE) $(BOARD_BOOTLOADER_TARGET)/; \
+		cp -av $(BOARD_SCRIPTS)/u-boot/uEnv-$(ELDS_BOARD).txt $(BOARD_BOOTLOADER_TARGET)/uEnv.txt; \
 		;; \
 	*) \
 		printf "\n***** [$(ELDS_BOARD)][$(BOARD_TYPE)] make $(*F) *****\n\n"; \
@@ -87,6 +89,7 @@ define omap2plus-finalize
 	$(ELDS_BOOTLOADER_TARGET_FINAL)) \
 		if [ -d $(BOARD_TARGET)/boot ]; then \
 			cp -a \
+				$(BOARD_BOOTLOADER_TARGET)/uEnv.txt \
 				$(BOARD_BOOTLOADER_TARGET)/MLO \
 				$(BOARD_BOOTLOADER_TARGET)/u-boot.img \
 				$(BOARD_ROOTFS_FINAL)/target/boot/; \
