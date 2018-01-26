@@ -17,12 +17,12 @@ case "${BOARD_TYPE}" in
 		printf "\n***** [${ELDS_BOARD}][${BOARD_TYPE}] Setup /etc/fstab *****\n\n"
 		mkdir -p ${TARGET}/media/BOOT
 		mkdir -p ${TARGET}/media/rootfs
-		printf "/dev/mmcblk0p1 /media/BOOT auto errors=remount-ro 0 1\n" >> ${TARGET}/etc/fstab
-		printf "/dev/mmcblk0p2 /media/rootfs auto errors=remount-ro 0 1\n" >> ${TARGET}/etc/fstab
+		printf "/dev/mmcblk0p1 /media/BOOT auto defaults 0 0\n" >> ${TARGET}/etc/fstab
+		printf "/dev/mmcblk0p2 /media/rootfs auto defaults 0 0\n" >> ${TARGET}/etc/fstab
 		case "${ELDS_BOARD}" in
 			*omap3-evm*|*beagle-c4*|*overo*|*torpedo*)
 				mkdir -p ${TARGET}/media/ubifs
-				printf "ubi0:rootfs /media/ubifs ubifs errors=remount-ro 0 1\n" >> ${TARGET}/etc/fstab
+				printf "ubi0:rootfs /media/ubifs ubifs defaults 0 0\n" >> ${TARGET}/etc/fstab
 				;;
 			*)
 				;;
