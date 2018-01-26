@@ -87,7 +87,7 @@ case "${transfer_type}" in
 		# rootfs
 		pushd ${target_dir}
 		if [ "${push_kernel}" = "1" ]; then
-			send_list="boot/*.dtb boot/uImage boot/zImage ${send_list}"
+			send_list="boot/*.dtb boot/uImage boot/zImage lib/modules ${send_list}"
 		fi
 		if [ "${push_bootloader}" = "1" ]; then
 			send_list="boot/uEnv.txt boot/MLO boot/u-boot.img ${send_list}"
@@ -115,7 +115,7 @@ case "${transfer_type}" in
 		# rootfs
 		pushd ${target_dir}
 		if [ "${push_kernel}" = "1" ]; then
-			send_list="boot/*.dtb boot/uImage boot/zImage ${send_list}"
+			send_list="boot/*.dtb boot/uImage boot/zImage lib/modules ${send_list}"
 		fi
 		if [ "${push_bootloader}" = "1" ]; then
 			send_list="boot/uEnv.txt boot/MLO boot/u-boot.img ${send_list}"
