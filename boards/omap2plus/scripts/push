@@ -2,8 +2,8 @@
 
 usage()
 {
-	printf "USAGE: push <board> mmc [noboot|nokern]\n"
-	printf "       push <board> net <ip-address> [noboot|nokern]\n"
+	printf "USAGE: push <board> mmc [noboot|nokern|nofirm]\n"
+	printf "       push <board> net <ip-address> [noboot|nokern|nofirm]\n"
 }
 
 if [ "x${2}" = "x" ]; then
@@ -53,13 +53,24 @@ if [ "$?" = "0" ]; then
 	push_bootloader="0"
 fi
 
-if [ "${push_kernel}" = "0" ] && [ "${push_bootloader}" = "0" ]; then
-	printf "Invalid options: Cannot use both 'noboot' and 'nokern'!\n"
-	usage
-	exit 1
+push_firmware="1"
+
+echo "$@" | grep -q nofirm
+if [ "$?" = "0" ]; then
+	push_firmware="0"
 fi
 
-send_list="lib/firmware"
+if [ "${push_kernel}" = "0" ] && [ "${push_bootloader}" = "0" ] && [ "${push_firmware}" = "0" ]; then
+	printf "Invalid options: nothing to do!\n"
+	usage
+	exit 0
+fi
+
+if [ "${push_firmware}" = "1" ]; then
+	send_list="lib/firmware"
+else
+	send_list=""
+fi
 
 case "${transfer_type}" in
 	mmc)
